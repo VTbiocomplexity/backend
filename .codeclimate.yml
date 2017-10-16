@@ -1,0 +1,24 @@
+---
+engines:
+  duplication:
+    enabled: true
+    checks:
+      Similar Code:
+        enabled: false
+    config:
+      languages:
+        javascript:
+          mass_threshold: 60
+  eslint:
+    enabled: true
+  fixme:
+    enabled: true
+ratings:
+  paths:
+  - "**.js"
+  - "**.jsx"
+exclude_paths:
+- test/
+- node_modules/
+- coverage/
+- frontend/
