@@ -1,7 +1,7 @@
 {
-  "name": "montageBackend",
+  "name": "backend",
   "version": "0.0.1",
-  "description": "montageBackend",
+  "description": "backend",
   "main": "index.js",
   "engines": {
     "node": "8.7.0",
@@ -10,10 +10,10 @@
   },
   "license": "MIT",
   "scripts": {
-    "preinstall": "npm install -g npm && npm install -g yarn",
+    "installglobals": "npm install -g npm && npm install -g yarn",
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && yarn cache clean && yarn install",
+    "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && yarn cache clean && npm run installglobals && yarn install",
     "debug": "node --inspect-brk index.js",
     "mocha": "mocha  -r ./test/bootstrap.js test/**/*.js",
     "nyc": "nyc npm run mocha",
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/VTbiocomplexity/montageBackend.git"
+    "url": "git+ssh://git@github.com/VTbiocomplexity/backend.git"
   },
   "author": "VTbiocomplexity <>",
   "contributors": [
