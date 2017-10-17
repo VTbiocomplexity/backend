@@ -10,10 +10,10 @@
   },
   "license": "MIT",
   "scripts": {
-    "preinstall": "npm install -g npm && npm install -g yarn",
+    "installglobals": "npm install -g npm && npm install -g yarn",
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && yarn cache clean && yarn install",
+    "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && yarn cache clean && npm run installglobals && yarn install",
     "debug": "node --inspect-brk index.js",
     "mocha": "mocha  -r ./test/bootstrap.js test/**/*.js",
     "nyc": "nyc npm run mocha",
