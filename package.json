@@ -1,7 +1,7 @@
 {
-  "name": "montageBackend",
+  "name": "backend",
   "version": "0.0.1",
-  "description": "montageBackend",
+  "description": "backend",
   "main": "index.js",
   "engines": {
     "node": "8.7.0",
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/VTbiocomplexity/montageBackend.git"
+    "url": "git+ssh://git@github.com/VTbiocomplexity/backend.git"
   },
   "author": "VTbiocomplexity <>",
   "contributors": [
