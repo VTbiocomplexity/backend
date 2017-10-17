@@ -191,7 +191,7 @@ describe('functional test User CRUD',  () => {
       chai.request(server)
       .put('/user/' + Uid)
       .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-      .send({ userType: 'Charity' })
+      .send({ userType: 'Developer' })
       .end((err, res) => {
         expect(res).to.have.status(200);
         done();
