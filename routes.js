@@ -6,11 +6,13 @@ const user  = require('./model/user/user-router');
 // const volOpp = require('./model/volOpp/volOpp-router');
 // const signup = require('./model/signup/signup-router');
 const auth = require('./auth');
+const hello = require('./hello/index');
 const authUtils = require('./auth/authUtils');
 
 module.exports = function(app) {
     app.use(router);
     router.use('/auth', auth);
+    router.use('/hello', hello);
     router.use('/user', authUtils.ensureAuthenticated, user);
     // router.use('/book', book);
     // router.use('/charity', authUtils.ensureAuthenticated, charity);
