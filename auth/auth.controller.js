@@ -23,14 +23,15 @@ exports.login = function(req, res) {
     if (!user) {
       return res.status(401).json({ message: 'Wrong email and/or password' });
     }
+    user.comparePassword(req.body.password, (err, isMatch) => {
+      console.log(isMatch);
+      if (!isMatch) {
+        return res.status(401).send({ message: 'Wrong email and/or password' });
+      }
     console.log(user);
     const userToken = { token: authUtils.createJWT(user) };
     console.log(userToken);
-    // user.comparePassword(req.body.password, (err, isMatch) => {
-    //   if (!isMatch) {
-    //     return res.status(401).send({ message: 'Wrong email and/or password' });
-    //   }
       res.send(userToken);
     });
-  // });
+  });
 };
