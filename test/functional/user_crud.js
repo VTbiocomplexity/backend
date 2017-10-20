@@ -108,7 +108,7 @@ describe('functional test User CRUD',  () => {
     .post('/user/')
     .set({ origin: allowedUrl })
     .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-      .send({ email: 'foo3@example.com' })
+    .send({ email: 'foo3@example.com' })
     .end((err, res) => {
       expect(res).to.have.status(200);
       done();
@@ -210,6 +210,82 @@ describe('functional test User CRUD',  () => {
       .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
       .end((err, res) => {
         expect(res).to.have.status(204);
+        done();
+      });
+    });
+  });
+
+  it('should signup the new user', (done) => {
+    chai.request(server)
+    .post('/auth/signup')
+    .set({ origin: allowedUrl })
+    .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+    .send({ email: 'foo3@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
+    .end((err, res) => {
+      expect(res).to.have.status(201);
+      done();
+    });
+  });
+
+  it('should not signup the new user if the email already exists', (done) => {
+    const User = new User1();
+    User.name = 'foo4';
+    User.email = 'foo4@example.com';
+    User.save((err) => {
+      chai.request(server)
+      .post('/auth/signup')
+      .set({ origin: allowedUrl })
+      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foo4@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
+      .end((err, res) => {
+        expect(res).to.have.status(409);
+        done();
+      });
+    });
+  });
+  it('should login the user', (done) => {
+    chai.request(server)
+    .post('/auth/signup')
+    .set({ origin: allowedUrl })
+    .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
+    .send({ email: 'foo3@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
+    .end((err, res) => {
+      chai.request(server)
+      .post('/auth/login')
+      .set({ origin: allowedUrl })
+      .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
+      .send({ email: 'foo3@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
+      .end((err, resp) => {
+        expect(resp).to.have.status(200);
+        done();
+      });
+    });
+  });
+  it('should not login the user when email does not exist', (done) => {
+    chai.request(server)
+    .post('/auth/login')
+    .set({ origin: allowedUrl })
+    .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
+    .send({ email: 'yoyo@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
+    .end((err, res) => {
+      expect(res).to.have.status(401);
+      done();
+    });
+  });
+  it('should not login the user with incorrect password', (done) => {
+    chai.request(server)
+    .post('/auth/signup')
+    .set({ origin: allowedUrl })
+    .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
+    .send({ email: 'foo3@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
+    .end((err, res) => {
+      chai.request(server)
+      .post('/auth/login')
+      .set({ origin: allowedUrl })
+      .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
+      .send({ email: 'foo3@example.com', name: 'foomanchew', password: 'notlottanumbers5' })
+      .end((err, resp) => {
+        expect(resp).to.have.status(401);
         done();
       });
     });
