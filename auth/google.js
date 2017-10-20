@@ -7,7 +7,7 @@ const peopleApiUrl = 'https://www.googleapis.com/plus/v1/people/me/openIdConnect
 
 class Google {
   static authenticate(req, res) {
-    console.log(req.body);
+    // console.log(req.body);
     const params = {
       code: req.body.code,
       client_id: req.body.clientId,

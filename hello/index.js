@@ -1,21 +1,10 @@
 const express = require('express');
-// const authUtils = require('./authUtils');
-const authController = require('./auth.controller.js');
-// var meController = require('./me.controller.js');
-// var identSrv = require('./identSrv.js');
-const google = require('./google.js');
-// var linkedin = require('./linkedin.js');
-// var twitter = require('./twitter.js');
-// var facebook = require('./facebook.js');
-// var github = require('./github.js');
-// var live = require('./live.js');
-// var yahoo = require('./yahoo.js');
-// var foursquare = require('./foursquare');
 const router = express.Router();
-
-router.post('/signup', authController.signup);
-router.post('/login', authController.login);
-router.post('/google', google.authenticate);
+const sayhi = require('./sayhi.js');
+router.get('/sayhi', sayhi.hi);
+// router.post('/signup', authController.signup);
+// router.post('/login', authController.login);
+// router.post('/google', google.authenticate);
 // router.post('/linkedin', linkedin.authenticate);
 // router.post('/twitter', twitter.authenticate);
 // router.post('/facebook', facebook.authenticate);
