@@ -13,8 +13,25 @@ describe('Index test', () => {
     .set({ origin: allowedUrl })
     .set('authorization', 'Bearer ')
     .end((err, res) => {
-        expect(res).to.have.status(200);
-        done();
-      });
+      expect(res).to.have.status(200);
+      done();
     });
+  });
+
+  it('should return hello when get sent to /hello/sayhi', (done) => {
+    chai.request(server)
+    .get('/hello/sayhi')
+    .set({ origin: allowedUrl })
+    .set('authorization', 'Bearer ')
+    .end((err, res) => {
+      expect(res).to.have.status(200);
+      // res.json().then((data) => {
+        console.log(res.body);
+        expect(res.body).to.eql({ message: 'hello' });
+        done();
+      // });
+      // done();
+    // });
+  });
+});
 });

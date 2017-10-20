@@ -31,7 +31,7 @@ exports.login = function(req, res) {
     user.comparePassword(req.body.password, (err, isMatch) => {
       console.log(isMatch);
       if (!isMatch) {
-        return res.status(401).send({ message: 'Wrong email and/or password' });
+        return res.status(401).json({ message: 'Wrong email and/or password' });
       }
     console.log(user);
     const userToken = { token: authUtils.createJWT(user) };
