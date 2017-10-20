@@ -8,7 +8,12 @@ exports.signup = function(req, res) {
     const user = new User({
       name: req.body.name,
       email: req.body.email,
-      password: req.body.password
+      password: req.body.password,
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      userDetails: req.body.userDetails,
+      organization: req.body.organization,
+      organisms: req.body.organisms
     });
     if (existingUser) {
       return res.status(409).send({ message: 'Email is already taken' });

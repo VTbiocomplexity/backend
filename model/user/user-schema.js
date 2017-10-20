@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 
 const userSchema = new Schema({
   name: { type: String, required: true },
+  firstname: { type: String, required: false },
+  lastname: { type: String, required: false },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: false, select: false },
   // isOhafUser: { type: Boolean, required: false },
@@ -13,7 +15,9 @@ const userSchema = new Schema({
   userCity: { type: String, required: false },
   userState: { type: String, required: false },
   userZip: { type: String, required: false },
-  userDetails:{ type: String, required: false }
+  userDetails: { type: String, required: false },
+  organization: { type: String, required: false },
+  organisms: { type: String, required: false }
   // volTravelDistMiles: { type: Number, required: false },
   // volCauses: { type: [String], required: false },
   // volTalents: { type: [String], required: false },
