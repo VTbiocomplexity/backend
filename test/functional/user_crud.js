@@ -243,6 +243,58 @@ describe('functional test User CRUD',  () => {
       });
     });
   });
+
+  it('should not signup the new user if the email is not valid', (done) => {
+    // const User = new User1();
+    // User.name = 'foo4';
+    // User.email = 'foo4example.com';
+    // User.save((err) => {
+      chai.request(server)
+      .post('/auth/signup')
+      .set({ origin: allowedUrl })
+      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foo4example.com', name: 'foomanchew', password: 'lottanumbers35555' })
+      .end((err, res) => {
+        expect(res).to.have.status(409);
+        done();
+      });
+    // });
+  });
+
+  it('should not signup the new user if the password is not valid', (done) => {
+    // const User = new User1();
+    // User.name = 'foo4';
+    // User.email = 'foo4example.com';
+    // User.save((err) => {
+      chai.request(server)
+      .post('/auth/signup')
+      .set({ origin: allowedUrl })
+      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foo4@example.com', name: 'foomanchew', password: '00' })
+      .end((err, res) => {
+        expect(res).to.have.status(409);
+        done();
+      });
+    // });
+  });
+
+  it('should not signup the new user if the name is not valid', (done) => {
+    // const User = new User1();
+    // User.name = 'foo4';
+    // User.email = 'foo4example.com';
+    // User.save((err) => {
+      chai.request(server)
+      .post('/auth/signup')
+      .set({ origin: allowedUrl })
+      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foo4@example.com', password: '00kljkl;' })
+      .end((err, res) => {
+        expect(res).to.have.status(409);
+        done();
+      });
+    // });
+  });
+
   it('should login the user', (done) => {
     chai.request(server)
     .post('/auth/signup')
