@@ -49,6 +49,7 @@
     "moment": "^2.15.2",
     "mongoose": "^4.10.0",
     "morgan": "^1.8.1",
+    "nodemailer": "^4.3.0",
     "request": "^2.78.0",
     "snyk": "^1.41.1"
   },

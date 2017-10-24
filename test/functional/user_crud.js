@@ -42,7 +42,7 @@ describe('functional test User CRUD',  () => {
     User.email = 'foo2@example.com';
     User.save();
     chai.request(server)
-    .put('/user/' + User.id)
+    .put('/user/' + User._id)
     .set({ origin: allowedUrl })
     .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
     .send({ name: 'foobar' })
@@ -60,7 +60,7 @@ describe('functional test User CRUD',  () => {
     User.email = 'foo2@example.com';
     User.save();
     chai.request(server)
-    .delete('/user/' + User.id)
+    .delete('/user/' + User._id)
     .set({ origin: allowedUrl })
     .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
     .end((err, res) => {

@@ -4,10 +4,12 @@ const bcrypt = require('bcryptjs');
 
 const userSchema = new Schema({
   name: { type: String, required: true },
+  id: { type: String, required: false },
   firstname: { type: String, required: false },
   lastname: { type: String, required: false },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: false, select: false },
+  resetCode: { type: String, required: false },
   // isOhafUser: { type: Boolean, required: false },
   userPhone: { type: Number, required: false },
   userType: { type: String, required: false },
