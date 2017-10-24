@@ -18,6 +18,17 @@ exports.signup = function(req, res) {
     if (existingUser) {
       return res.status(409).send({ message: 'Email is already taken' });
     }
+    if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(user.email))  {
+      console.log('email is valid');
+    } else {
+      return res.status(409).send({ message: 'Email address is invalid format' });
+    }
+    if (user.password.length < 8) {
+      return res.status(409).send({ message: 'Password is not min 8 characters' });
+    }
+    if (user.name === '' || user.name === null || user.name === undefined) {
+      return res.status(409).send({ message: 'User Name is missing' });
+    }
     user.save(() => res.status(201).json({ token: authUtils.createJWT(user) }));
   });
 };
@@ -33,9 +44,9 @@ exports.login = function(req, res) {
       if (!isMatch) {
         return res.status(401).json({ message: 'Wrong email and/or password' });
       }
-    console.log(user);
-    const userToken = { token: authUtils.createJWT(user) };
-    console.log(userToken);
+      console.log(user);
+      const userToken = { token: authUtils.createJWT(user) };
+      console.log(userToken);
       res.send(userToken);
     });
   });
