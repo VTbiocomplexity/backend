@@ -10,6 +10,7 @@ const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: false, select: false },
   resetCode: { type: String, required: false },
+  isPswdReset: { type: Boolean, required: false },
   // isOhafUser: { type: Boolean, required: false },
   userPhone: { type: Number, required: false },
   userType: { type: String, required: false },

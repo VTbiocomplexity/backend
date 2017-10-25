@@ -94,9 +94,49 @@ exports.validemail = function(req, res) {
     if (!user) {
       return res.status(401).json({ message: 'incorrect email or code' });
     }
-      user.resetCode = '';
-      user.save((err) => {
-            res.status(201).json({ success: true });
-        });
+    user.resetCode = '';
+    user.save((err) => {
+      res.status(201).json({ success: true });
+    });
+  });
+};
+
+exports.resetpass = function(req, res) {
+  console.log('email:' + req.body.email);
+  User.findOne({ email: req.body.email }, (err, user) => {
+    console.log(user);
+    if (!user) {
+      return res.status(401).json({ message: 'incorrect email address' });
+    }
+    const min = Math.ceil(10000);
+    const max = Math.floor(99999);
+    const randomNumba = Math.floor(Math.random() * (max - min)) + min;
+    user.resetCode = randomNumba;
+    user.isPswdReset = true;
+    user.save((err) => {
+      res.status(201).json({ success: true });
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'vt.biocomplexity@gmail.com',
+          pass: 'Googlei5Fun!'
+        }
+      });
+
+      const mailOptions = {
+        from: 'vt.biocomplexity@gmail.com',
+        to: user.email,
+        subject: 'Password Reset',
+        html: '<h1>A PATRIC Password Reset was Requested for ' + user.name + '.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" href="http://localhost:3000/user/?email=' + user.email + '">' +
+        'link</a>, then enter the following code to reset your password: <br><br><strong>' + randomNumba + '</strong></p><p><i>If a reset was requested in error, you can ignore this email and login to PATRIC as usual.</i></p>' // TODO localhost:3000 needs to be a variable for the url
+      };
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+    });
   });
 };
