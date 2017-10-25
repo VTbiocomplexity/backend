@@ -83,3 +83,17 @@ exports.login = function(req, res) {
     });
   });
 };
+
+exports.validemail = function(req, res) {
+  console.log('email:' + req.body.email + ' resetCode:' + req.body.resetCode);
+  User.findOne({ email: req.body.email, resetCode: req.body.resetCode }, (err, user) => {
+    console.log(user);
+    if (!user) {
+      return res.status(401).json({ message: 'incorrect email or code' });
+    }
+      user.resetCode = '';
+      user.save((err) => {
+            res.status(201).json({ success: true });
+        });
+  });
+};

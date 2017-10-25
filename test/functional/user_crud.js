@@ -342,4 +342,38 @@ describe('functional test User CRUD',  () => {
       });
     });
   });
+  it('should validate the new user email', (done) => {
+    const User = new User1();
+    User.name = 'foo3';
+    User.email = 'foo3@example.com';
+    User.resetCode = '12345';
+    User.save((err) => {
+      // const Uid = User._id;
+      chai.request(server)
+      .put('/auth/validemail')
+      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foo3@example.com', resetCode: '12345' })
+      .end((err, res) => {
+        expect(res).to.have.status(201);
+        done();
+      });
+    });
+  });
+  it('should not validate the new user email with incorrect code', (done) => {
+    const User = new User1();
+    User.name = 'foo3';
+    User.email = 'foo3@example.com';
+    User.resetCode = '12345';
+    User.save((err) => {
+      // const Uid = User._id;
+      chai.request(server)
+      .put('/auth/validemail')
+      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foo3@example.com', resetCode: '12222' })
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        done();
+      });
+    });
+  });
 });
