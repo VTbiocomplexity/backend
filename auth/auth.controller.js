@@ -12,6 +12,7 @@ exports.signup = function(req, res) {
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,
+      isPswdReset: false,
       resetCode: randomNumba,
       firstname: req.body.firstname,
       lastname: req.body.lastname,
@@ -72,7 +73,9 @@ exports.login = function(req, res) {
       return res.status(401).json({ message: 'Wrong email and/or password' });
     }
     if (user.resetCode !== '' && user.resetCode !== null && user.resetCode !== undefined) {
-      return res.status(401).json({ message: 'Validate your email address or click forgot password link to reset' });
+      if (!user.isPswdReset) {
+        return res.status(401).json({ message: 'Validate your email address or click forgot password link to reset' });
+      }
     }
     user.comparePassword(req.body.password, (err, isMatch) => {
       console.log(isMatch);
@@ -83,6 +86,9 @@ exports.login = function(req, res) {
       const userToken = { token: authUtils.createJWT(user) };
       console.log(userToken);
       res.send(userToken);
+      user.isPswdReset = false;
+      user.resetCode = '';
+      user.save();
     });
   });
 };
@@ -95,6 +101,7 @@ exports.validemail = function(req, res) {
       return res.status(401).json({ message: 'incorrect email or code' });
     }
     user.resetCode = '';
+    user.isPswdReset = false;
     user.save((err) => {
       res.status(201).json({ success: true });
     });
@@ -137,6 +144,25 @@ exports.resetpass = function(req, res) {
           console.log('Email sent: ' + info.response);
         }
       });
+    });
+  });
+};
+
+exports.passwdreset = function(req, res) {
+  console.log('email:' + req.body.email + ' resetCode:' + req.body.resetCode);
+  User.findOne({ email: req.body.email, resetCode: req.body.resetCode }, (err, user) => {
+    console.log(user);
+    if (!user) {
+      return res.status(401).json({ message: 'incorrect email or code' });
+    }
+    user.resetCode = '';
+    user.isPswdReset = false;
+    user.password = req.body.password;
+    if (user.password.length < 8) {
+      return res.status(401).send({ message: 'Password is not min 8 characters' });
+    }
+    user.save((err) => {
+      res.status(201).json({ success: true });
     });
   });
 };

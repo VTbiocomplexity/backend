@@ -313,6 +313,25 @@ describe('Functional test User',  () => {
       });
     });
   });
+  it('should allow the user to login after requesting a password reset', (done) => {
+    const User = new User1();
+    User.name = 'foo4';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    User.resetCode = '12345';
+    User.isPswdReset = true;
+    User.save((err) => {
+      chai.request(server)
+      .post('/auth/login')
+      .set({ origin: allowedUrl })
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
+      .send({ email: 'foo3@example.com', password: 'lottanumbers35555' })
+      .end((err, resp) => {
+        expect(resp).to.have.status(200);
+        done();
+      });
+    });
+  });
   it('should not login the user when email does not exist', (done) => {
     chai.request(server)
     .post('/auth/login')
@@ -342,7 +361,7 @@ describe('Functional test User',  () => {
       });
     });
   });
-  it('should not login the user when email has not been varified', (done) => {
+  it('should not login the user when email has not been verified', (done) => {
     const User = new User1();
     User.name = 'foo3';
     User.email = 'foo3@example.com';
@@ -422,6 +441,60 @@ describe('Functional test User',  () => {
       .put('/auth/resetpass')
       // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
       .send({ email: 'foosy4@example.com' })
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        done();
+      });
+    });
+  });
+  it('resets the password', (done) => {
+    const User = new User1();
+    User.name = 'foo3';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    User.resetCode = '12345';
+    User.save((err) => {
+      // const Uid = User._id;
+      chai.request(server)
+      .put('/auth/passwdreset')
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foo3@example.com', password: 'gygygygy', resetCode: '12345' })
+      .end((err, res) => {
+        expect(res).to.have.status(201);
+        done();
+      });
+    });
+  });
+  it('does not reset the password with an invalid code', (done) => {
+    const User = new User1();
+    User.name = 'foo3';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    User.resetCode = '12345';
+    User.save((err) => {
+      // const Uid = User._id;
+      chai.request(server)
+      .put('/auth/passwdreset')
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foo3@example.com', password: 'gygygygy', resetCode: '11111' })
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        done();
+      });
+    });
+  });
+  it('does not reset the password with an invalid password', (done) => {
+    const User = new User1();
+    User.name = 'foo3';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    User.resetCode = '12345';
+    User.save((err) => {
+      // const Uid = User._id;
+      chai.request(server)
+      .put('/auth/passwdreset')
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foo3@example.com', password: 'gyg', resetCode: '12345' })
       .end((err, res) => {
         expect(res).to.have.status(401);
         done();
