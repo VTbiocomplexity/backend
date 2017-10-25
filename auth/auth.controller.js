@@ -5,9 +5,9 @@ const authUtils = require('./authUtils');
 exports.signup = function(req, res) {
   console.log('req body ' + req.body.email);
   User.findOne({ email: req.body.email }, (err, existingUser) => {
-    const min = Math.ceil(10000);
-    const max = Math.floor(99999);
-    const randomNumba = Math.floor(Math.random() * (max - min)) + min;
+    // const min = Math.ceil(10000);
+    // const max = Math.floor(99999);
+    const randomNumba = authUtils.generateCode(99999, 10000);
     const user = new User({
       name: req.body.name,
       email: req.body.email,
@@ -23,47 +23,27 @@ exports.signup = function(req, res) {
     if (existingUser) {
       return res.status(409).send({ message: 'Email is already taken' });
     }
-    if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(user.email))  {
-      console.log('email is valid');
-    } else {
-      return res.status(409).send({ message: 'Email address is invalid format' });
+    const validData = user.validateSignup();
+    if (validData !== '') {
+      return res.status(409).send({ message: validData });
     }
-    if (user.password.length < 8) {
-      return res.status(409).send({ message: 'Password is not min 8 characters' });
-    }
-    if (user.name === '' || user.name === null || user.name === undefined) {
-      return res.status(409).send({ message: 'User Name is missing' });
-    }
+    // if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(user.email))  {
+    //   console.log('email is valid');
+    // } else {
+    //   return res.status(409).send({ message: 'Email address is invalid format' });
+    // }
+    // if (user.password.length < 8) {
+    //   return res.status(409).send({ message: 'Password is not min 8 characters' });
+    // }
+    // if (user.name === '' || user.name === null || user.name === undefined) {
+    //   return res.status(409).send({ message: 'User Name is missing' });
+    // }
     user.save(() => {
       res.status(201).json({ email: user.email });
       const mailbody = '<h1>Welcome ' + user.name + ' to PATRIC.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" href="http://localhost:3000/user/?email=' + user.email + '">' +
       'link</a>, then enter the following code to verify your email: <br><br><strong>' + randomNumba + '</strong></p>';
+      // TODO localhost:3000 needs to be a variable for the url
       authUtils.sendEmail(mailbody, user.email, 'Verify Your Email Address');
-      // const transporter = nodemailer.createTransport({
-      //   service: 'gmail',
-      //   auth: {
-      //     user: 'vt.biocomplexity@gmail.com',
-      //     pass: 'Googlei5Fun!'
-      //   }
-      // });
-
-      // const mailOptions = {
-      //   from: 'vt.biocomplexity@gmail.com',
-      //   to: user.email,
-      //   subject: 'Verify Your Email Address',
-      //   html: '<h1>Welcome ' + user.name + ' to PATRIC.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" href="http://localhost:3000/user/?email=' + user.email + '">' +
-      //   'link</a>, then enter the following code to verify your email: <br><br><strong>' + randomNumba + '</strong></p>'
-      // };
-      // transporter.sendMail(mailOptions, (error, info) => {
-      //   if (error) {
-      //     console.log(error);
-      //   } else {
-      //     console.log('Email sent: ' + info.response);
-      //   }
-      // });
-      // res.status(201).json({ token: authUtils.createJWT(user) }));
-      // }
-
     });
   });
 };
@@ -117,39 +97,17 @@ exports.resetpass = function(req, res) {
     if (!user) {
       return res.status(401).json({ message: 'incorrect email address' });
     }
-    const min = Math.ceil(10000);
-    const max = Math.floor(99999);
-    const randomNumba = Math.floor(Math.random() * (max - min)) + min;
+    // const min = Math.ceil(10000);
+    // const max = Math.floor(99999);
+    const randomNumba = authUtils.generateCode(99999, 10000);
     user.resetCode = randomNumba;
     user.isPswdReset = true;
     user.save((err) => {
       res.status(201).json({ success: true });
       const mailBody = '<h1>A PATRIC Password Reset was Requested for ' + user.name + '.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" href="http://localhost:3000/user/?email=' + user.email + '">' +
-        'link</a>, then enter the following code to reset your password: <br><br><strong>' + randomNumba + '</strong></p><p><i>If a reset was requested in error, you can ignore this email and login to PATRIC as usual.</i></p>';
-        // TODO localhost:3000 needs to be a variable for the url
+      'link</a>, then enter the following code to reset your password: <br><br><strong>' + randomNumba + '</strong></p><p><i>If a reset was requested in error, you can ignore this email and login to PATRIC as usual.</i></p>';
+      // TODO localhost:3000 needs to be a variable for the url
       authUtils.sendEmail(mailBody, user.email, 'Password Reset');
-      // const transporter = nodemailer.createTransport({
-      //   service: 'gmail',
-      //   auth: {
-      //     user: 'vt.biocomplexity@gmail.com',
-      //     pass: 'Googlei5Fun!'
-      //   }
-      // });
-      //
-      // const mailOptions = {
-      //   from: 'vt.biocomplexity@gmail.com',
-      //   to: user.email,
-      //   subject: 'Password Reset',
-      //   html: '<h1>A PATRIC Password Reset was Requested for ' + user.name + '.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" href="http://localhost:3000/user/?email=' + user.email + '">' +
-      //   'link</a>, then enter the following code to reset your password: <br><br><strong>' + randomNumba + '</strong></p><p><i>If a reset was requested in error, you can ignore this email and login to PATRIC as usual.</i></p>' // TODO localhost:3000 needs to be a variable for the url
-      // };
-      // transporter.sendMail(mailOptions, (error, info) => {
-      //   if (error) {
-      //     console.log(error);
-      //   } else {
-      //     console.log('Email sent: ' + info.response);
-      //   }
-      // });
     });
   });
 };
