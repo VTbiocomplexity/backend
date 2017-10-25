@@ -1,6 +1,6 @@
 const User1 = require('../../model/user/user-schema');
 const authUtils = require('../../auth/authUtils');
-describe('functional test User CRUD',  () => {
+describe('Functional test User',  () => {
   beforeEach((done) => {
     mockgoose(mongoose).then(() => {
       User1.collection.drop();
@@ -295,18 +295,18 @@ describe('functional test User CRUD',  () => {
     // });
   });
 
-  it('should login the user', (done) => {
-    chai.request(server)
-    .post('/auth/signup')
-    .set({ origin: allowedUrl })
-    .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
-    .send({ email: 'foo3@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
-    .end((err, res) => {
+  it('should allow the user to login', (done) => {
+    const User = new User1();
+    User.name = 'foo4';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    User.resetCode = '';
+    User.save((err) => {
       chai.request(server)
       .post('/auth/login')
       .set({ origin: allowedUrl })
       .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
-      .send({ email: 'foo3@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
+      .send({ email: 'foo3@example.com', password: 'lottanumbers35555' })
       .end((err, resp) => {
         expect(resp).to.have.status(200);
         done();
@@ -325,17 +325,35 @@ describe('functional test User CRUD',  () => {
     });
   });
   it('should not login the user with incorrect password', (done) => {
-    chai.request(server)
-    .post('/auth/signup')
-    .set({ origin: allowedUrl })
-    .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
-    .send({ email: 'foo3@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
-    .end((err, res) => {
+    const User = new User1();
+    User.name = 'foo3';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    User.resetCode = '';
+    User.save((err) => {
       chai.request(server)
       .post('/auth/login')
       .set({ origin: allowedUrl })
       .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
-      .send({ email: 'foo3@example.com', name: 'foomanchew', password: 'notlottanumbers5' })
+      .send({ email: 'foo3@example.com', password: 'notlottanumbers5' })
+      .end((err, resp) => {
+        expect(resp).to.have.status(401);
+        done();
+      });
+    });
+  });
+  it('should not login the user when email has not been varified', (done) => {
+    const User = new User1();
+    User.name = 'foo3';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    User.resetCode = '12345';
+    User.save((err) => {
+      chai.request(server)
+      .post('/auth/login')
+      .set({ origin: allowedUrl })
+      .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
+      .send({ email: 'foo3@example.com', password: 'notlottanumbers5' })
       .end((err, resp) => {
         expect(resp).to.have.status(401);
         done();
