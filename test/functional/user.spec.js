@@ -199,7 +199,7 @@ describe('Functional test User',  () => {
     });
   });
 
-  it('should delete the new user by id', (done) => {
+  it('should delete the user by id', (done) => {
     const User = new User1();
     User.name = 'foo3';
     User.email = 'foo3@example.com';
@@ -219,7 +219,7 @@ describe('Functional test User',  () => {
     chai.request(server)
     .post('/auth/signup')
     .set({ origin: allowedUrl })
-    .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+    // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
     .send({ email: 'foo3@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
     .end((err, res) => {
       expect(res).to.have.status(201);
@@ -235,7 +235,7 @@ describe('Functional test User',  () => {
       chai.request(server)
       .post('/auth/signup')
       .set({ origin: allowedUrl })
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
       .send({ email: 'foo4@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
       .end((err, res) => {
         expect(res).to.have.status(409);
@@ -252,7 +252,7 @@ describe('Functional test User',  () => {
       chai.request(server)
       .post('/auth/signup')
       .set({ origin: allowedUrl })
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
       .send({ email: 'foo4example.com', name: 'foomanchew', password: 'lottanumbers35555' })
       .end((err, res) => {
         expect(res).to.have.status(409);
@@ -269,7 +269,7 @@ describe('Functional test User',  () => {
       chai.request(server)
       .post('/auth/signup')
       .set({ origin: allowedUrl })
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
       .send({ email: 'foo4@example.com', name: 'foomanchew', password: '00' })
       .end((err, res) => {
         expect(res).to.have.status(409);
@@ -286,7 +286,7 @@ describe('Functional test User',  () => {
       chai.request(server)
       .post('/auth/signup')
       .set({ origin: allowedUrl })
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
       .send({ email: 'foo4@example.com', password: '00kljkl;' })
       .end((err, res) => {
         expect(res).to.have.status(409);
@@ -305,7 +305,7 @@ describe('Functional test User',  () => {
       chai.request(server)
       .post('/auth/login')
       .set({ origin: allowedUrl })
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
       .send({ email: 'foo3@example.com', password: 'lottanumbers35555' })
       .end((err, resp) => {
         expect(resp).to.have.status(200);
@@ -317,7 +317,7 @@ describe('Functional test User',  () => {
     chai.request(server)
     .post('/auth/login')
     .set({ origin: allowedUrl })
-    .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
+    // .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
     .send({ email: 'yoyo@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
     .end((err, res) => {
       expect(res).to.have.status(401);
@@ -334,7 +334,7 @@ describe('Functional test User',  () => {
       chai.request(server)
       .post('/auth/login')
       .set({ origin: allowedUrl })
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
       .send({ email: 'foo3@example.com', password: 'notlottanumbers5' })
       .end((err, resp) => {
         expect(resp).to.have.status(401);
@@ -352,7 +352,7 @@ describe('Functional test User',  () => {
       chai.request(server)
       .post('/auth/login')
       .set({ origin: allowedUrl })
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
       .send({ email: 'foo3@example.com', password: 'notlottanumbers5' })
       .end((err, resp) => {
         expect(resp).to.have.status(401);
@@ -369,7 +369,7 @@ describe('Functional test User',  () => {
       // const Uid = User._id;
       chai.request(server)
       .put('/auth/validemail')
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
       .send({ email: 'foo3@example.com', resetCode: '12345' })
       .end((err, res) => {
         expect(res).to.have.status(201);
@@ -386,8 +386,42 @@ describe('Functional test User',  () => {
       // const Uid = User._id;
       chai.request(server)
       .put('/auth/validemail')
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
       .send({ email: 'foo3@example.com', resetCode: '12222' })
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        done();
+      });
+    });
+  });
+  it('handles a reset password request with a valid email', (done) => {
+    const User = new User1();
+    User.name = 'foo3';
+    User.email = 'foo3@example.com';
+    // User.resetCode = '12345';
+    User.save((err) => {
+      // const Uid = User._id;
+      chai.request(server)
+      .put('/auth/resetpass')
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foo3@example.com' })
+      .end((err, res) => {
+        expect(res).to.have.status(201);
+        done();
+      });
+    });
+  });
+  it('does not allow a reset password request with an invalid email', (done) => {
+    const User = new User1();
+    User.name = 'foo3';
+    User.email = 'foo3@example.com';
+    // User.resetCode = '12345';
+    User.save((err) => {
+      // const Uid = User._id;
+      chai.request(server)
+      .put('/auth/resetpass')
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foosy4@example.com' })
       .end((err, res) => {
         expect(res).to.have.status(401);
         done();

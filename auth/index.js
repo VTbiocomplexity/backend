@@ -17,6 +17,7 @@ router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 router.post('/google', google.authenticate);
 router.put('/validemail', authController.validemail);
+router.put('/resetpass', authController.resetpass);
 // router.post('/linkedin', linkedin.authenticate);
 // router.post('/twitter', twitter.authenticate);
 // router.post('/facebook', facebook.authenticate);
