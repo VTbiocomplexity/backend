@@ -71,6 +71,9 @@ exports.login = function(req, res) {
     if (!user) {
       return res.status(401).json({ message: 'Wrong email and/or password' });
     }
+    if (user.resetCode !== '' && user.resetCode !== null && user.resetCode !== undefined) {
+      return res.status(401).json({ message: 'Validate your email address or click forgot password link to reset' });
+    }
     user.comparePassword(req.body.password, (err, isMatch) => {
       console.log(isMatch);
       if (!isMatch) {
