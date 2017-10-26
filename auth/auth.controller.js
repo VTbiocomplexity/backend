@@ -14,10 +14,10 @@ exports.signup = function(req, res) {
       password: req.body.password,
       isPswdReset: false,
       resetCode: randomNumba,
-      firstname: req.body.firstname,
-      lastname: req.body.lastname,
-      userDetails: req.body.userDetails,
-      organization: req.body.organization,
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      interests: req.body.interests,
+      affiliation: req.body.affiliation,
       organisms: req.body.organisms
     });
     if (existingUser) {
