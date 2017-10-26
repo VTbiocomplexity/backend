@@ -44,7 +44,6 @@ exports.signup = function(req, res) {
       const mailbody = '<h1>Welcome ' + user.name + ' to PATRIC.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" ' +
       'href="' + process.env.FrontendUrl + '/user/?email=' + user.email + '">' +
       'link</a>, then enter the following code to verify your email: <br><br><strong>' + randomNumba + '</strong></p>';
-      // TODO localhost:3000 needs to be a variable for the url
       authUtils.sendEmail(mailbody, user.email, 'Verify Your Email Address');
     });
   });
@@ -109,7 +108,6 @@ exports.resetpass = function(req, res) {
       const mailBody = '<h1>A PATRIC Password Reset was Requested for ' + user.name + '.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" href="' +
       process.env.FrontendUrl + '/user/?email=' + user.email + '">' +
       'link</a>, then enter the following code to reset your password: <br><br><strong>' + randomNumba + '</strong></p><p><i>If a reset was requested in error, you can ignore this email and login to PATRIC as usual.</i></p>';
-      // TODO localhost:3000 needs to be a variable for the url
       authUtils.sendEmail(mailBody, user.email, 'Password Reset');
     });
   });
