@@ -1,4 +1,8 @@
 ---
+checks:
+  method-lines:
+    config:
+      threshold: 30
 engines:
   duplication:
     enabled: true
@@ -9,9 +13,6 @@ engines:
       languages:
         javascript:
           mass_threshold: 60
-  method-lines:
-    config:
-      threshold: 30
   eslint:
     enabled: true
   fixme:
