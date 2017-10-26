@@ -1,5 +1,11 @@
 ---
-engines:
+checks:
+  method-lines:
+    config:
+      threshold: 30
+  argument-count:
+    enabled: false
+plugins:
   duplication:
     enabled: true
     checks:
@@ -9,18 +15,11 @@ engines:
       languages:
         javascript:
           mass_threshold: 60
-  method-lines:
-    config:
-      threshold: 30
   eslint:
     enabled: true
   fixme:
     enabled: true
-ratings:
-  paths:
-  - "**.js"
-  - "**.jsx"
-exclude_paths:
+exclude_patterns:
 - test/
 - node_modules/
 - coverage/
