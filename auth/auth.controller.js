@@ -3,7 +3,7 @@ const User = require('../model/user/user-schema');
 // const jwt = require('jwt-simple');
 const authUtils = require('./authUtils');
 exports.signup = function(req, res) {
-  console.log('req body ' + req.body.email);
+  // console.log('req body ' + req.body.email);
   User.findOne({ email: req.body.email }, (err, existingUser) => {
     // const min = Math.ceil(10000);
     // const max = Math.floor(99999);
