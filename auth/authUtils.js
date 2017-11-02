@@ -2,6 +2,8 @@ const moment = require('moment');
 const jwt = require('jwt-simple');
 const config = require('../config');
 const nodemailer = require('nodemailer');
+// const uuid = require('node-uuid');
+// const crypto = require('crypto');
 
 class AuthUtils {
   static createJWT(user) {
@@ -60,6 +62,27 @@ class AuthUtils {
     const max = Math.floor(hi);
     return Math.floor(Math.random() * (max - min)) + min;
   }
-}
 
-module.exports = AuthUtils;
+  // static generateBearerToken(user, req) {
+  //   const name = user.first_name + user.last_name;
+  //   const tokenid = uuid.v4().toString();
+  //   const exp = new Date();
+  //   exp.setFullYear(exp.getFullYear() + 1);
+  //   const expiration = Math.floor(exp.valueOf() / 1000);
+  //   // const realm = config.get('realm');
+  //   const payload = [
+  //     'un=' + name + '@' + realm, 'tokenid=' + tokenid,
+  //     'expiry=' + expiration, 'client_id=' + name + '@' + realm,
+  //     'token_type=Bearer', 'realm=' + config.realm];
+  //     payload.push('SigningSubject=' + config.signingSubjectURL);
+  //     // const key = SigningPEM.toString('ascii');
+  //     const sign = crypto.createSign('RSA-SHA1');
+  //     sign.update(payload.join('|'));
+  //     const signature = sign.sign(key, 'hex');
+  //     const token = payload.join('|') + '|sig=' + signature;
+  //     console.log('New Bearer Token: ', token);
+  //     return token;
+  //   }
+  }
+
+  module.exports = AuthUtils;

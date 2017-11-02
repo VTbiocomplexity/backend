@@ -153,7 +153,7 @@ describe('Functional test User',  () => {
     });
   });
 
-  it('should return 404 error when Id no valid on delete', (done) => {
+  it('should return 404 error when Id not valid on delete', (done) => {
     const Uid = '5872';
     chai.request(server)
     .delete('/user/' + Uid)
@@ -174,6 +174,7 @@ describe('Functional test User',  () => {
       const Uid = User._id;
       chai.request(server)
       .get('/user/' + Uid)
+      .set({ origin: allowedUrl })
       .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
       .end((err, res) => {
         expect(res).to.have.status(200);
@@ -218,12 +219,30 @@ describe('Functional test User',  () => {
   it('should signup the new user', (done) => {
     chai.request(server)
     .post('/auth/signup')
-    .set({ origin: allowedUrl })
+    // .set({ origin: allowedUrl })
     // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-    .send({ email: 'foo3@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
+    .send({ email: 'foo3@example.com', name: 'foomanchew', password: 'lottanumbers35555', id: 'yoyo23' })
     .end((err, res) => {
       expect(res).to.have.status(201);
       done();
+    });
+  });
+
+  it('should not signup the new user if the userid already exists', (done) => {
+    const User = new User1();
+    User.name = 'foo4';
+    User.email = 'foo4@example.com';
+    User.id = 'yoyo23';
+    User.save((err) => {
+      chai.request(server)
+      .post('/auth/signup')
+      // .set({ origin: allowedUrl })
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foobar@example.com', name: 'foomanchew', password: 'lottanumbers35555', id: 'yoyo23' })
+      .end((err, res) => {
+        expect(res).to.have.status(409);
+        done();
+      });
     });
   });
 
@@ -234,7 +253,7 @@ describe('Functional test User',  () => {
     User.save((err) => {
       chai.request(server)
       .post('/auth/signup')
-      .set({ origin: allowedUrl })
+      // .set({ origin: allowedUrl })
       // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
       .send({ email: 'foo4@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
       .end((err, res) => {
@@ -249,15 +268,15 @@ describe('Functional test User',  () => {
     // User.name = 'foo4';
     // User.email = 'foo4example.com';
     // User.save((err) => {
-      chai.request(server)
-      .post('/auth/signup')
-      .set({ origin: allowedUrl })
-      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-      .send({ email: 'foo4example.com', name: 'foomanchew', password: 'lottanumbers35555' })
-      .end((err, res) => {
-        expect(res).to.have.status(409);
-        done();
-      });
+    chai.request(server)
+    .post('/auth/signup')
+    // .set({ origin: allowedUrl })
+    // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+    .send({ email: 'foo4example.com', name: 'foomanchew', password: 'lottanumbers35555' })
+    .end((err, res) => {
+      expect(res).to.have.status(409);
+      done();
+    });
     // });
   });
 
@@ -266,15 +285,15 @@ describe('Functional test User',  () => {
     // User.name = 'foo4';
     // User.email = 'foo4example.com';
     // User.save((err) => {
-      chai.request(server)
-      .post('/auth/signup')
-      .set({ origin: allowedUrl })
-      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-      .send({ email: 'foo4@example.com', name: 'foomanchew', password: '00' })
-      .end((err, res) => {
-        expect(res).to.have.status(409);
-        done();
-      });
+    chai.request(server)
+    .post('/auth/signup')
+    // .set({ origin: allowedUrl })
+    // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+    .send({ email: 'foo4@example.com', name: 'foomanchew', password: '00' })
+    .end((err, res) => {
+      expect(res).to.have.status(409);
+      done();
+    });
     // });
   });
 
@@ -283,19 +302,19 @@ describe('Functional test User',  () => {
     // User.name = 'foo4';
     // User.email = 'foo4example.com';
     // User.save((err) => {
-      chai.request(server)
-      .post('/auth/signup')
-      .set({ origin: allowedUrl })
-      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-      .send({ email: 'foo4@example.com', password: '00kljkl;' })
-      .end((err, res) => {
-        expect(res).to.have.status(409);
-        done();
-      });
+    chai.request(server)
+    .post('/auth/signup')
+    // .set({ origin: allowedUrl })
+    // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+    .send({ email: 'foo4@example.com', password: '00kljkl;' })
+    .end((err, res) => {
+      expect(res).to.have.status(409);
+      done();
+    });
     // });
   });
 
-  it('should allow the user to login', (done) => {
+  it('should allow the user to login with email', (done) => {
     const User = new User1();
     User.name = 'foo4';
     User.email = 'foo3@example.com';
@@ -303,10 +322,112 @@ describe('Functional test User',  () => {
     User.resetCode = '';
     User.save((err) => {
       chai.request(server)
+
       .post('/auth/login')
-      .set({ origin: allowedUrl })
+      // .set({ origin: allowedUrl })
       // .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
       .send({ email: 'foo3@example.com', password: 'lottanumbers35555' })
+      .end((err, resp) => {
+        expect(resp).to.have.status(200);
+        done();
+      });
+    });
+  });
+  it('should allow the user to login with userid', (done) => {
+    const User = new User1();
+    User.name = 'foo4';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    User.id = 'yoyo23';
+    User.resetCode = '';
+    User.save((err) => {
+      chai.request(server)
+
+      .post('/auth/login')
+      // .set({ origin: allowedUrl })
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
+      .send({ id: 'yoyo23', password: 'lottanumbers35555' })
+      .end((err, resp) => {
+        expect(resp).to.have.status(200);
+        done();
+      });
+    });
+  });
+  it('should not allow the user to login with incorrect userid', (done) => {
+    const User = new User1();
+    User.name = 'foo4';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    User.id = 'yoyo23';
+    User.resetCode = '';
+    User.save((err) => {
+      chai.request(server)
+
+      .post('/auth/login')
+      // .set({ origin: allowedUrl })
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
+      .send({ id: 'yoyo24', password: 'lottanumbers35555' })
+      .end((err, resp) => {
+        expect(resp).to.have.status(401);
+        done();
+      });
+    });
+  });
+  it('should not allow the user to login with correct userid but incorect password', (done) => {
+    const User = new User1();
+    User.name = 'foo4';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    User.id = 'yoyo23';
+    User.resetCode = '';
+    User.save((err) => {
+      chai.request(server)
+
+      .post('/auth/login')
+      // .set({ origin: allowedUrl })
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
+      .send({ id: 'yoyo23', password: 'fewnumbers33' })
+      .end((err, resp) => {
+        expect(resp).to.have.status(401);
+        done();
+      });
+    });
+  });
+  it('prevents user to login with userid without email varification', (done) => {
+    const User = new User1();
+    User.name = 'foo4';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    User.id = 'yoyo23';
+    User.resetCode = '12345';
+    User.save((err) => {
+      chai.request(server)
+
+      .post('/auth/login')
+      // .set({ origin: allowedUrl })
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
+      .send({ id: 'yoyo23', password: 'lottanumbers35555' })
+      .end((err, resp) => {
+        expect(resp).to.have.status(401);
+        done();
+      });
+    });
+  });
+  it('allows user to login with userid and existing password after password reset request', (done) => {
+    const User = new User1();
+    User.name = 'foo4';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    User.id = 'yoyo23';
+    User.resetCode = '12345';
+    User.isPswdReset = true;
+    User.save((err) => {
+      chai.request(server)
+
+      .post('/auth/login')
+      // .set({ origin: allowedUrl })
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
+      .send({ id: 'yoyo23', password: 'lottanumbers35555' })
       .end((err, resp) => {
         expect(resp).to.have.status(200);
         done();
@@ -323,7 +444,7 @@ describe('Functional test User',  () => {
     User.save((err) => {
       chai.request(server)
       .post('/auth/login')
-      .set({ origin: allowedUrl })
+      // .set({ origin: allowedUrl })
       // .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
       .send({ email: 'foo3@example.com', password: 'lottanumbers35555' })
       .end((err, resp) => {
@@ -337,7 +458,7 @@ describe('Functional test User',  () => {
     .post('/auth/login')
     .set({ origin: allowedUrl })
     // .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
-    .send({ email: 'yoyo@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
+    .send({ email: 'yoyo@example.com', password: 'lottanumbers35555' })
     .end((err, res) => {
       expect(res).to.have.status(401);
       done();
@@ -352,7 +473,7 @@ describe('Functional test User',  () => {
     User.save((err) => {
       chai.request(server)
       .post('/auth/login')
-      .set({ origin: allowedUrl })
+      // .set({ origin: allowedUrl })
       // .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
       .send({ email: 'foo3@example.com', password: 'notlottanumbers5' })
       .end((err, resp) => {
