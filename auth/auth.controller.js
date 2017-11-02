@@ -3,6 +3,7 @@ const User = require('../model/user/user-schema');
 // const config = require('../config');
 // const jwt = require('jwt-simple');
 const authUtils = require('./authUtils');
+
 exports.signup = function(req, res) {
   // console.log('req body ' + req.body.email);
   User.findOne({ email: req.body.email }, (err, existingUser) => {
@@ -23,6 +24,15 @@ exports.signup = function(req, res) {
     });
     if (existingUser) {
       return res.status(409).send({ message: 'Email is already taken' });
+    }
+    console.log(req.body.id);
+    if (req.body.id) {
+      User.findOne({ id: req.body.id }, (err, existingUser) => {
+        if (existingUser) {
+          return res.status(409).send({ message: 'Userid is already taken' });
+        } user.id = req.body.id;
+        console.log('this is the user id: ' + user.id);
+      });
     }
     const validData = user.validateSignup();
     if (validData !== '') {
@@ -50,30 +60,72 @@ exports.signup = function(req, res) {
 };
 
 exports.login = function(req, res) {
-  console.log('req body ' + req.body.email);
+  let founduser = false;
+  console.log('req body email' + req.body.email);
+  console.log('req body userid ' + req.body.id);
+  let reqUserId = '';
+  if (req.body.id) {
+    reqUserId = req.body.id;
+  }
+    // the '+password' is used during the comparePassword function
   User.findOne({ email: req.body.email }, '+password', (err, user) => {
-    if (!user) {
-      return res.status(401).json({ message: 'Wrong email and/or password' });
+    if (!user && reqUserId === '') {
+      return res.status(401).json({ message: 'Wrong email address' });
     }
-    if (user.resetCode !== '' && user.resetCode !== null && user.resetCode !== undefined) {
-      if (!user.isPswdReset) {
-        return res.status(401).json({ message: 'Validate your email address or click forgot password link to reset' });
+    if (user) {
+      founduser = true;
+      console.log('found this user by email ' + founduser);
+      if (user.resetCode !== '' && user.resetCode !== null && user.resetCode !== undefined) {
+        if (!user.isPswdReset) {
+          return res.status(401).json({ message: 'Validate your email address or click forgot password link to reset' });
+        }
       }
+      user.comparePassword(req.body.password, (err, isMatch) => {
+        console.log('this is the password given: ' + req.body.password);
+        console.log('this is the password match: ' + isMatch);
+        if (!isMatch) {
+          return res.status(401).json({ message: 'Wrong password' });
+        }
+        // console.log(founduser);
+        const userToken = { token: authUtils.createJWT(user) };
+        console.log(userToken);
+        res.send(userToken);
+        user.isPswdReset = false;
+        user.resetCode = '';
+        user.save();
+      });
     }
-    user.comparePassword(req.body.password, (err, isMatch) => {
-      console.log(isMatch);
-      if (!isMatch) {
-        return res.status(401).json({ message: 'Wrong email and/or password' });
-      }
-      console.log(user);
-      const userToken = { token: authUtils.createJWT(user) };
-      console.log(userToken);
-      res.send(userToken);
-      user.isPswdReset = false;
-      user.resetCode = '';
-      user.save();
-    });
   });
+  if (!founduser && req.body.id) {
+    // the '+password' is used during the comparePassword function
+    User.findOne({ id: req.body.id }, '+password', (err, user) => {
+      if (user) {
+        founduser = user;
+        console.log('found this user by id ' + founduser);
+        if (user.resetCode !== '' && user.resetCode !== null && user.resetCode !== undefined) {
+          if (!user.isPswdReset) {
+            return res.status(401).json({ message: 'Validate your email address or click forgot password link to reset' });
+          }
+        }
+        user.comparePassword(req.body.password, (err, isMatch) => {
+          console.log('this is the password given: ' + req.body.password);
+          console.log('this is the password match: ' + isMatch);
+          if (!isMatch) {
+            return res.status(401).json({ message: 'Wrong password' });
+          }
+          // console.log(founduser);
+          const userToken = { token: authUtils.createJWT(user) };
+          console.log(userToken);
+          res.send(userToken);
+          user.isPswdReset = false;
+          user.resetCode = '';
+          user.save();
+        });
+      } else {
+        return res.status(401).json({ message: 'Userid does not exist' });
+      }
+    });
+  }
 };
 
 exports.validemail = function(req, res) {

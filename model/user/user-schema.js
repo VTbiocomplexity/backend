@@ -4,13 +4,14 @@ const bcrypt = require('bcryptjs');
 
 const userSchema = new Schema({
   name: { type: String, required: true },
-  id: { type: String, required: false },
+  id: { type: String, required: false, unique: true, sparse: true },
   first_name: { type: String, required: false },
   last_name: { type: String, required: false },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: false, select: false },
   resetCode: { type: String, required: false },
   isPswdReset: { type: Boolean, required: false },
+  primaryApp: { type: String, required: false },
   // isOhafUser: { type: Boolean, required: false },
   userPhone: { type: Number, required: false },
   userType: { type: String, required: false },
@@ -50,6 +51,7 @@ userSchema.pre('save', function(next) {
 });
 
 userSchema.methods.comparePassword = function(password, done) {
+  // console.log('trying to compare a password now');
   bcrypt.compare(password, this.password, (err, isMatch) => {
           done(err, isMatch);
       });

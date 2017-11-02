@@ -1,8 +1,13 @@
-// const request = require('request');
+// const authUtils = require('../auth/authUtils');
 class Sayhi {
   static hi(req, res) {
     // request.get((...args) => {
-      res.send({ message: 'hello' });
+    res.send({ message: 'hello' });
+    // const user = {
+    //   first_name: 'Joe',
+    //   last_name: 'Smith'
+    // };
+    // authUtils.generateBearerToken(user, null);
     // });
   }
 }
