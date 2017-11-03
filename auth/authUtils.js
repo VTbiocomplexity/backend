@@ -66,11 +66,11 @@ class AuthUtils {
     }
     user.comparePassword(req.body.password, (err, isMatch) => {
       if (!isMatch) { return res.status(401).json({ message: 'Wrong password' }); }
-      const userToken = { token: this.createJWT(user) };
-      res.send(userToken);
+      const userToken = { token: this.createJWT(user), email: user.email };
       user.isPswdReset = false;
       user.resetCode = '';
       user.save();
+      return res.send(userToken);
     });
   }
   // static generateBearerToken(user, req) {
