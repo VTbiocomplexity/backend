@@ -16,7 +16,7 @@
     "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && yarn cache clean && npm run installglobals && yarn install && npm run postinstallsh",
     "debug": "node --inspect-brk index.js",
     "mocha": "mocha  -r ./test/bootstrap.js test/**/*.js",
-    "nyc": "nyc npm run mocha",
+    "nyc": "nyc nyc --reporter=lcov --reporter=text-lcov npm run mocha",
     "test": "eslint . && istanbul  cover  ./node_modules/.bin/_mocha  -r ./test/bootstrap.js test/**/*.js  --coverage --dir ./coverage",
     "test:debug": "./node_modules/.bin/mocha --inspect-brk -r ./test/bootstrap.js test/**/*.js",
     "eslint-fix": "./node_modules/eslint/bin/eslint.js --fix .",
@@ -49,10 +49,10 @@
     "moment": "^2.15.2",
     "mongoose": "^4.10.0",
     "morgan": "^1.8.1",
-    "uuid": "^3.1.0",
     "nodemailer": "^4.3.0",
     "request": "^2.78.0",
-    "snyk": "^1.41.1"
+    "snyk": "^1.41.1",
+    "uuid": "^3.1.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
@@ -70,6 +70,7 @@
     "mockgoose": "^6.0.8",
     "nock": "^9.0.27",
     "nodemon": "^1.9.2",
+    "nyc": "^11.3.0",
     "proxyquire": "^1.7.11",
     "sinon": "^4.1.0",
     "sinon-chai": "^2.14.0",

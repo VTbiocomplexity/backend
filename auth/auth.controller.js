@@ -3,26 +3,23 @@ const User = require('../model/user/user-schema');
 const authUtils = require('./authUtils');
 
 exports.signup = function(req, res) {
+  // let existingUser = false;
+  const randomNumba = authUtils.generateCode(99999, 10000);
+  const user = new User({
+    name: req.body.name, id: req.body.id, email: req.body.email, password: req.body.password, isPswdReset: false, resetCode: randomNumba, first_name: req.body.first_name, last_name: req.body.last_name, interests: req.body.interests, affiliation: req.body.affiliation, organisms: req.body.organisms
+  });
   User.findOne({ email: req.body.email }, (err, existingUser) => {
-    const randomNumba = authUtils.generateCode(99999, 10000);
-    const user = new User({
-      name: req.body.name, email: req.body.email, password: req.body.password, isPswdReset: false, resetCode: randomNumba, first_name: req.body.first_name, last_name: req.body.last_name, interests: req.body.interests, affiliation: req.body.affiliation, organisms: req.body.organisms
-    });
     if (existingUser) { return res.status(409).send({ message: 'Email is already taken' }); }
-    console.log(req.body.id);
-    if (req.body.id) {
-      User.findOne({ id: req.body.id }, (err, existingUser) => {
-        if (existingUser) { return res.status(409).send({ message: 'Userid is already taken' }); }
-        user.id = req.body.id;
+    User.findOne({ id: req.body.id }, (err, existingUser2) => {
+      if (existingUser2) { return res.status(409).send({ message: 'Userid is already taken' }); }
+      const validData = user.validateSignup();
+      if (validData !== '') { return res.status(409).send({ message: validData }); }
+      user.save(() => {
+        const mailbody = '<h1>Welcome ' + user.name + ' to PATRIC.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" ' +
+        'href="' + process.env.FrontendUrl + '/user/?email=' + user.email + '">link</a>, then enter the following code to verify your email: <br><br><strong>' + randomNumba + '</strong></p>';
+        authUtils.sendEmail(mailbody, user.email, 'Verify Your Email Address');
+        return res.status(201).json({ email: user.email });
       });
-    }
-    const validData = user.validateSignup();
-    if (validData !== '') { return res.status(409).send({ message: validData }); }
-    user.save(() => {
-      res.status(201).json({ email: user.email });
-      const mailbody = '<h1>Welcome ' + user.name + ' to PATRIC.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" ' +
-      'href="' + process.env.FrontendUrl + '/user/?email=' + user.email + '">link</a>, then enter the following code to verify your email: <br><br><strong>' + randomNumba + '</strong></p>';
-      authUtils.sendEmail(mailbody, user.email, 'Verify Your Email Address');
     });
   });
 };
