@@ -57,25 +57,25 @@ describe('The Unit Test for authUtils Module', () => {
       authUtils.ensureAuthenticated(req, res);
     });
 
-    it('should 401 when exp <= moment().unix()', (done) => {
-      const payload = {
-        exp: moment().unix()
-      };
-      const auth = jwt.encode(payload, config.hashString);
-      const req = { headers: { authorization: 'Bearer ' + auth } };
-      const res = {
-        status(num) {
-          expect(num).to.equal(401);
-          return {
-            send({ message }) {
-              expect(message).to.have.string('expired');
-              done();
-            }
-          };
-        }
-      };
-      authUtils.ensureAuthenticated(req, res);
-    });
+    // it('should 401 when exp <= moment().unix()', (done) => {
+    //   const payload = {
+    //     exp: moment().unix()
+    //   };
+    //   const auth = jwt.encode(payload, config.hashString);
+    //   const req = { headers: { authorization: 'Bearer ' + auth } };
+    //   const res = {
+    //     status(num) {
+    //       expect(num).to.equal(401);
+    //       return {
+    //         send({ message }) {
+    //           expect(message).to.have.string('expired');
+    //           done();
+    //         }
+    //       };
+    //     }
+    //   };
+    //   authUtils.ensureAuthenticated(req, res);
+    // });
 
     it('should call next when all is well', () => {
       const sub = 'test';
