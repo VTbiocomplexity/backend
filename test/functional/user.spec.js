@@ -1,15 +1,15 @@
 const User1 = require('../../model/user/user-schema');
 const authUtils = require('../../auth/authUtils');
 describe('Functional test User',  () => {
-  beforeEach((done) => {
-    mockgoose(mongoose).then(() => {
+  beforeEach(async () => {
+    await mockgoose(mongoose);
       User1.collection.drop();
-      User1.ensureIndexes(() => {
+      await User1.ensureIndexes();
         allowedUrl = JSON.parse(process.env.AllowUrl).urls[0];
         global.server = require('../../index'); // eslint-disable-line global-require
-        done();
-      });
-    });
+        // done();
+      // });
+  //  });
   });
 
   it('should create a new user', (done) => {
@@ -228,12 +228,12 @@ describe('Functional test User',  () => {
     });
   });
 
-  it('should not signup the new user if the userid already exists', (done) => {
+  it('should not signup the new user if the userid already exists', async() => {
     const User = new User1();
     User.name = 'foo4';
     User.email = 'foo4@example.com';
     User.id = 'yoyo23';
-    User.save((err) => {
+    await User.save();
       chai.request(server)
       .post('/auth/signup')
       // .set({ origin: allowedUrl })
@@ -241,16 +241,16 @@ describe('Functional test User',  () => {
       .send({ email: 'foobar@example.com', name: 'foomanchew', password: 'lottanumbers35555', id: 'yoyo23' })
       .end((err, res) => {
         expect(res).to.have.status(409);
-        done();
+        // done();
       });
     });
-  });
+  // });
 
-  it('should not signup the new user if the email already exists', (done) => {
+  it('should not signup the new user if the email already exists', async() => {
     const User = new User1();
     User.name = 'foo4';
     User.email = 'foo4@example.com';
-    User.save((err) => {
+    await User.save();
       chai.request(server)
       .post('/auth/signup')
       // .set({ origin: allowedUrl })
@@ -258,12 +258,29 @@ describe('Functional test User',  () => {
       .send({ email: 'foo4@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
       .end((err, res) => {
         expect(res).to.have.status(409);
-        done();
+        // done();
       });
     });
-  });
+  // });
 
-  it('should not signup the new user if the email is not valid', (done) => {
+  // it('should not signup the new user if the email is not valid', async () => {
+  //   // const User = new User1();
+  //   // User.name = 'foo4';
+  //   // User.email = 'foo4example.com';
+  //   // User.save((err) => {
+  //   await chai.request(server)
+  //   .post('/auth/signup')
+  //   // .set({ origin: allowedUrl })
+  //   // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+  //   .send({ email: 'foo4example.com', name: 'foomanchew', password: 'lottanumbers35555' })
+  //   .end((err, res) => {
+  //     expect(res).to.have.status(409);
+  //     // done();
+  //   });
+  //   // });
+  // });
+
+  it('should not signup the new user if the name, password, or email is not valid', (done) => {
     // const User = new User1();
     // User.name = 'foo4';
     // User.email = 'foo4example.com';
@@ -272,7 +289,7 @@ describe('Functional test User',  () => {
     .post('/auth/signup')
     // .set({ origin: allowedUrl })
     // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-    .send({ email: 'foo4example.com', name: 'foomanchew', password: 'lottanumbers35555' })
+    .send({ email: 'foo4example.com', password: '00' })
     .end((err, res) => {
       expect(res).to.have.status(409);
       done();
@@ -280,39 +297,22 @@ describe('Functional test User',  () => {
     // });
   });
 
-  it('should not signup the new user if the password is not valid', (done) => {
-    // const User = new User1();
-    // User.name = 'foo4';
-    // User.email = 'foo4example.com';
-    // User.save((err) => {
-    chai.request(server)
-    .post('/auth/signup')
-    // .set({ origin: allowedUrl })
-    // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-    .send({ email: 'foo4@example.com', name: 'foomanchew', password: '00' })
-    .end((err, res) => {
-      expect(res).to.have.status(409);
-      done();
-    });
-    // });
-  });
-
-  it('should not signup the new user if the name is not valid', (done) => {
-    // const User = new User1();
-    // User.name = 'foo4';
-    // User.email = 'foo4example.com';
-    // User.save((err) => {
-    chai.request(server)
-    .post('/auth/signup')
-    // .set({ origin: allowedUrl })
-    // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-    .send({ email: 'foo4@example.com', password: '00kljkl;' })
-    .end((err, res) => {
-      expect(res).to.have.status(409);
-      done();
-    });
-    // });
-  });
+  // it('should not signup the new user if the name is not valid', (done) => {
+  //   // const User = new User1();
+  //   // User.name = 'foo4';
+  //   // User.email = 'foo4example.com';
+  //   // User.save((err) => {
+  //   chai.request(server)
+  //   .post('/auth/signup')
+  //   // .set({ origin: allowedUrl })
+  //   // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+  //   .send({ email: 'foo4@example.com', password: '00kljkl;' })
+  //   .end((err, res) => {
+  //     expect(res).to.have.status(409);
+  //     done();
+  //   });
+  //   // });
+  // });
 
   it('should allow the user to login with email', (done) => {
     const User = new User1();
@@ -551,12 +551,12 @@ describe('Functional test User',  () => {
       });
     });
   });
-  it('does not allow a reset password request with an invalid email', (done) => {
+  it('does not allow a reset password request with an invalid email', async() => {
     const User = new User1();
     User.name = 'foo3';
     User.email = 'foo3@example.com';
     // User.resetCode = '12345';
-    User.save((err) => {
+    await User.save();
       // const Uid = User._id;
       chai.request(server)
       .put('/auth/resetpass')
@@ -564,10 +564,10 @@ describe('Functional test User',  () => {
       .send({ email: 'foosy4@example.com' })
       .end((err, res) => {
         expect(res).to.have.status(401);
-        done();
+        // done();
       });
     });
-  });
+  // });
   it('resets the password', (done) => {
     const User = new User1();
     User.name = 'foo3';
@@ -604,13 +604,13 @@ describe('Functional test User',  () => {
       });
     });
   });
-  it('does not reset the password with an invalid password', (done) => {
+  it('does not reset the password with an invalid password', async () => {
     const User = new User1();
     User.name = 'foo3';
     User.email = 'foo3@example.com';
     User.password = 'lottanumbers35555';
     User.resetCode = '12345';
-    User.save((err) => {
+    await User.save();
       // const Uid = User._id;
       chai.request(server)
       .put('/auth/passwdreset')
@@ -618,8 +618,8 @@ describe('Functional test User',  () => {
       .send({ email: 'foo3@example.com', password: 'gyg', resetCode: '12345' })
       .end((err, res) => {
         expect(res).to.have.status(401);
-        done();
+        // done();
       });
     });
-  });
+  // });
 });
