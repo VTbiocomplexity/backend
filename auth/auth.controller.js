@@ -32,9 +32,10 @@ exports.login = function(req, res) {
   console.log('req body email' + req.body.email);
   console.log('req body userid ' + req.body.id);
   let reqUserId = '';
-  if (req.body.id) {
+  if (req.body.id !== '' && req.body.id !== null && req.body.id !== undefined) {
     reqUserId = req.body.id;
   }
+  console.log(reqUserId);
   // the '+password' is used during the comparePassword function
   User.findOne({ email: req.body.email }, '+password', (err, user) => {
     if (!user && reqUserId === '') {
@@ -43,24 +44,24 @@ exports.login = function(req, res) {
     if (user) {
       founduser = true;
       authUtils.verifySaveUser(user, req, res);
-      // if (user.resetCode !== '' && user.resetCode !== null && user.resetCode !== undefined) {
-      //   if (!user.isPswdReset) {
-      //     return res.status(401).json({ message: 'Validate your email address or click forgot password link to reset' });
+      //   if (user.resetCode !== '' && user.resetCode !== null && user.resetCode !== undefined) {
+      //     if (!user.isPswdReset) {
+      //       return res.status(401).json({ message: 'Validate your email address or click forgot password link to reset' });
+      //     }
       //   }
-      // }
-      // user.comparePassword(req.body.password, (err, isMatch) => {
-      //   if (!isMatch) { return res.status(401).json({ message: 'Wrong password' }); }
-      //   const userToken = { token: authUtils.createJWT(user) };
-      //   res.send(userToken);
-      //   user.isPswdReset = false;
-      //   user.resetCode = '';
-      //   user.save();
-      // });
+      //   user.comparePassword(req.body.password, (err, isMatch) => {
+      //     if (!isMatch) { return res.status(401).json({ message: 'Wrong password' }); }
+      //     const userToken = { token: authUtils.createJWT(user) };
+      //     res.send(userToken);
+      //     user.isPswdReset = false;
+      //     user.resetCode = '';
+      //     user.save();
+      //   });
     }
   });
-  if (!founduser && req.body.id) {
+  if (!founduser && reqUserId !== '') {
     // the '+password' is used during the comparePassword function
-    User.findOne({ id: req.body.id }, '+password', (err, user) => {
+    User.findOne({ id: reqUserId }, '+password', (err, user) => {
       if (user) {
         authUtils.verifySaveUser(user, req, res);
         // founduser = user;
