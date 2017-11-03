@@ -35,48 +35,50 @@ exports.login = function(req, res) {
   if (req.body.id) {
     reqUserId = req.body.id;
   }
-      // the '+password' is used during the comparePassword function
+  // the '+password' is used during the comparePassword function
   User.findOne({ email: req.body.email }, '+password', (err, user) => {
     if (!user && reqUserId === '') {
       return res.status(401).json({ message: 'Wrong email address' });
     }
     if (user) {
       founduser = true;
-      if (user.resetCode !== '' && user.resetCode !== null && user.resetCode !== undefined) {
-        if (!user.isPswdReset) {
-          return res.status(401).json({ message: 'Validate your email address or click forgot password link to reset' });
-        }
-      }
-      user.comparePassword(req.body.password, (err, isMatch) => {
-        if (!isMatch) { return res.status(401).json({ message: 'Wrong password' }); }
-        const userToken = { token: authUtils.createJWT(user) };
-        res.send(userToken);
-        user.isPswdReset = false;
-        user.resetCode = '';
-        user.save();
-      });
+      authUtils.verifySaveUser(user, req, res);
+      // if (user.resetCode !== '' && user.resetCode !== null && user.resetCode !== undefined) {
+      //   if (!user.isPswdReset) {
+      //     return res.status(401).json({ message: 'Validate your email address or click forgot password link to reset' });
+      //   }
+      // }
+      // user.comparePassword(req.body.password, (err, isMatch) => {
+      //   if (!isMatch) { return res.status(401).json({ message: 'Wrong password' }); }
+      //   const userToken = { token: authUtils.createJWT(user) };
+      //   res.send(userToken);
+      //   user.isPswdReset = false;
+      //   user.resetCode = '';
+      //   user.save();
+      // });
     }
   });
   if (!founduser && req.body.id) {
     // the '+password' is used during the comparePassword function
     User.findOne({ id: req.body.id }, '+password', (err, user) => {
       if (user) {
-        founduser = user;
-        if (user.resetCode !== '' && user.resetCode !== null && user.resetCode !== undefined) {
-          if (!user.isPswdReset) {
-            return res.status(401).json({ message: 'Validate your email address or click forgot password link to reset' });
-          }
-        }
-        user.comparePassword(req.body.password, (err, isMatch) => {
-          if (!isMatch) {
-            return res.status(401).json({ message: 'Wrong password' });
-          }
-          const userToken = { token: authUtils.createJWT(user) };
-          res.send(userToken);
-          user.isPswdReset = false;
-          user.resetCode = '';
-          user.save();
-        });
+        authUtils.verifySaveUser(user, req, res);
+        // founduser = user;
+        // if (user.resetCode !== '' && user.resetCode !== null && user.resetCode !== undefined) {
+        //   if (!user.isPswdReset) {
+        //     return res.status(401).json({ message: 'Validate your email address or click forgot password link to reset' });
+        //   }
+        // }
+        // user.comparePassword(req.body.password, (err, isMatch) => {
+        //   if (!isMatch) {
+        //     return res.status(401).json({ message: 'Wrong password' });
+        //   }
+        //   const userToken = { token: authUtils.createJWT(user) };
+        //   res.send(userToken);
+        //   user.isPswdReset = false;
+        //   user.resetCode = '';
+        //   user.save();
+        // });
       } else {
         return res.status(401).json({ message: 'Userid does not exist' });
       }

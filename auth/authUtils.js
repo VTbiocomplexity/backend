@@ -2,7 +2,7 @@ const moment = require('moment');
 const jwt = require('jwt-simple');
 const config = require('../config');
 const nodemailer = require('nodemailer');
-// const uuid = require('node-uuid');
+// const uuid = require('uuid');
 // const crypto = require('crypto');
 
 class AuthUtils {
@@ -50,11 +50,6 @@ class AuthUtils {
       html: bodyhtml
     };
     transporter.sendMail(mailOptions, (error, info) => {
-      // if (error) {
-      // console.log(error);
-      // } else {
-      // console.log('Email sent: ' + info.response);
-      // }
     });
   }
   static generateCode(hi, low) {
@@ -63,6 +58,21 @@ class AuthUtils {
     return Math.floor(Math.random() * (max - min)) + min;
   }
 
+  static verifySaveUser(user, req, res) {
+    if (user.resetCode !== '' && user.resetCode !== null && user.resetCode !== undefined) {
+      if (!user.isPswdReset) {
+        return res.status(401).json({ message: 'Validate your email address or click forgot password link to reset' });
+      }
+    }
+    user.comparePassword(req.body.password, (err, isMatch) => {
+      if (!isMatch) { return res.status(401).json({ message: 'Wrong password' }); }
+      const userToken = { token: this.createJWT(user) };
+      res.send(userToken);
+      user.isPswdReset = false;
+      user.resetCode = '';
+      user.save();
+    });
+  }
   // static generateBearerToken(user, req) {
   //   const name = user.first_name + user.last_name;
   //   const tokenid = uuid.v4().toString();
@@ -83,6 +93,6 @@ class AuthUtils {
   //     console.log('New Bearer Token: ', token);
   //     return token;
   //   }
-  }
+}
 
-  module.exports = AuthUtils;
+module.exports = AuthUtils;

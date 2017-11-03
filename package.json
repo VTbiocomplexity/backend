@@ -49,15 +49,15 @@
     "moment": "^2.15.2",
     "mongoose": "^4.10.0",
     "morgan": "^1.8.1",
-    "node-uuid": "^1.4.8",
+    "uuid": "^3.1.0",
     "nodemailer": "^4.3.0",
     "request": "^2.78.0",
     "snyk": "^1.41.1"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
-    "chai": "^3.5.0",
-    "chai-as-promised": "^6.0.0",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
     "chai-http": "^3.0.0",
     "chokidar-cli": "^1.2.0",
     "eslint": "^3.2.2",
@@ -66,13 +66,13 @@
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.0.0",
     "istanbul": "^0.4.5",
-    "mocha": "^3.1.2",
+    "mocha": "3.1.2",
     "mockgoose": "^6.0.8",
-    "nock": "^9.0.13",
+    "nock": "^9.0.27",
     "nodemon": "^1.9.2",
     "proxyquire": "^1.7.11",
     "sinon": "^4.1.0",
-    "sinon-chai": "^2.8.0",
+    "sinon-chai": "^2.14.0",
     "supertest": "^3.0.0"
   }
 }
