@@ -49,7 +49,7 @@ routes(app);
 app.get('*', (request, response) => {
   response.sendFile(path.normalize(path.join(__dirname, 'frontend/dist/index.html')));
 });
-
+console.log(mongoose.connection.readyState);
 app.listen(config.server.port, () => {
   console.log(`Magic happens on port ${config.server.port}`);
 });
