@@ -17,7 +17,7 @@
     "debug": "node --inspect-brk index.js",
     "mocha": "mocha  -r ./test/bootstrap.js test/**/*.js",
     "nyc": "nyc nyc --reporter=lcov --reporter=text-lcov npm run mocha",
-    "test": "eslint . && istanbul  cover  ./node_modules/.bin/_mocha  -r ./test/bootstrap.js test/**/*.js  --coverage --dir ./coverage",
+    "test": "eslint . && npm run nyc",
     "test:debug": "./node_modules/.bin/mocha --inspect-brk -r ./test/bootstrap.js test/**/*.js",
     "eslint-fix": "./node_modules/eslint/bin/eslint.js --fix .",
     "postinstallsh": "./postinstall.sh"
