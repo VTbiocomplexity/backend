@@ -373,6 +373,26 @@ describe('Functional test User',  () => {
       });
     });
   });
+  it('should not allow the user to login with incorrect userid and incorrect email', (done) => {
+    const User = new User1();
+    User.name = 'foo4';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    User.id = 'yoyo23';
+    User.resetCode = '';
+    User.save((err) => {
+      chai.request(server)
+
+      .post('/auth/login')
+      // .set({ origin: allowedUrl })
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
+      .send({ id: 'yoyo24', password: 'lottanumbers35555', email: 'foogie@yoyo.com' })
+      .end((err, resp) => {
+        expect(resp).to.have.status(401);
+        done();
+      });
+    });
+  });
   it('should not allow the user to login with correct userid but incorect password', (done) => {
     const User = new User1();
     User.name = 'foo4';
