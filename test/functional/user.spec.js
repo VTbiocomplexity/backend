@@ -247,57 +247,41 @@ describe('Functional test User',  () => {
     });
   });
 
-  it('should not signup the new user if the userid already exists', async() => {
+  it('should not signup the new user if the userid already exists', (done) => {
     const User = new User1();
     User.name = 'foo4';
     User.email = 'foo4@example.com';
     User.id = 'yoyo23';
-    await User.save();
-    chai.request(server)
-    .post('/auth/signup')
-    // .set({ origin: allowedUrl })
-    // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-    .send({ email: 'foobar@example.com', name: 'foomanchew', password: 'lottanumbers35555', id: 'yoyo23' })
-    .end((err, res) => {
-      expect(res).to.have.status(409);
-      // done();
+    User.save((err) => {
+      chai.request(server)
+      .post('/auth/signup')
+      // .set({ origin: allowedUrl })
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foobar@example.com', name: 'foomanchew', password: 'lottanumbers35555', id: 'yoyo23' })
+      .end((err, res) => {
+        expect(res).to.have.status(409);
+        done();
+      });
     });
   });
   // });
 
-  it('should not signup the new user if the email already exists', async() => {
+  it('should not signup the new user if the email already exists', (done) => {
     const User = new User1();
     User.name = 'foo4';
     User.email = 'foo4@example.com';
-    await User.save();
-    chai.request(server)
-    .post('/auth/signup')
-    // .set({ origin: allowedUrl })
-    // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-    .send({ email: 'foo4@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
-    .end((err, res) => {
-      expect(res).to.have.status(409);
-      // done();
+    User.save((err) => {
+      chai.request(server)
+      .post('/auth/signup')
+      // .set({ origin: allowedUrl })
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foo4@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
+      .end((err, res) => {
+        expect(res).to.have.status(409);
+        done();
+      });
     });
   });
-  // });
-
-  // it('should not signup the new user if the email is not valid', async () => {
-  //   // const User = new User1();
-  //   // User.name = 'foo4';
-  //   // User.email = 'foo4example.com';
-  //   // User.save((err) => {
-  //   await chai.request(server)
-  //   .post('/auth/signup')
-  //   // .set({ origin: allowedUrl })
-  //   // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-  //   .send({ email: 'foo4example.com', name: 'foomanchew', password: 'lottanumbers35555' })
-  //   .end((err, res) => {
-  //     expect(res).to.have.status(409);
-  //     // done();
-  //   });
-  //   // });
-  // });
 
   it('should not signup the new user if the name, password, or email is not valid', (done) => {
     // const User = new User1();
@@ -701,7 +685,7 @@ describe('Functional test User',  () => {
     });
     // });
   });
-  it('does not allow change to existing email for change email request', (done) => {
+  it('does not allow change email to an already existing email', (done) => {
     const User = new User1();
     User.name = 'foo3';
     User.email = 'foo3@example.com';
@@ -718,6 +702,23 @@ describe('Functional test User',  () => {
         done();
       });
     });
-    // });
+  });
+  it('does not allow change email to a non existing user', (done) => {
+    const User = new User1();
+    User.name = 'foo3';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    // User.resetCode = '12345';
+    User.save((err) => {
+      // const Uid = User._id;
+      chai.request(server)
+      .put('/auth/changeemail')
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foo4@example.com', changeemail: 'foo4@example.com' })
+      .end((err, res) => {
+        expect(res).to.have.status(409);
+        done();
+      });
+    });
   });
 });
