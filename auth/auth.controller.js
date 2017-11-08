@@ -148,3 +148,32 @@ exports.passwdreset = function(req, res) {
     });
   });
 };
+
+exports.changeemail = function(req, res) {
+  console.log('request to change the email address');
+  if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(req.body.changeemail)) {
+    console.log('email is valid');
+  } else {
+    return res.status(409).json({ message: 'Email address is not a valid format' });
+  }
+  User.findOne({ email: req.body.changeemail }, (err, user) => {
+    if (user) {
+      return res.status(409).json({ message: 'Email address already exists' });
+    }
+    User.findOne( { email: req.body.email }, (err, existinguser) => {
+      if (!existinguser) {
+        return res.status(409).json({ message: 'current user does not exist' });
+      }
+      existinguser.resetCode = authUtils.generateCode(99999, 10000);
+      existinguser.changeemail = req.body.changeemail;
+      existinguser.save((err) => {
+        console.log(existinguser);
+        res.status(201).json({ success: true });
+        const mailBody = '<h1>A PATRIC Email Address Change was Requested for ' + existinguser.name + '.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" href="' +
+        process.env.FrontendUrl + '/userutil/?changeemail=' + existinguser.changeemail + '">' +
+        'link</a>, then enter the following code to validate this new email: <br><br><strong>' + existinguser.resetCode + '</strong></p><p><i>If this reset was requested in error, you can ignore it and login to PATRIC as usual.</i></p>';
+        authUtils.sendEmail(mailBody, existinguser.changeemail, 'Email Change Request');
+      });
+    });
+  });
+};
