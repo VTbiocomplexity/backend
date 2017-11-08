@@ -3,13 +3,13 @@ const authUtils = require('../../auth/authUtils');
 describe('Functional test User',  () => {
   beforeEach(async () => {
     await mockgoose(mongoose);
-      User1.collection.drop();
-      await User1.ensureIndexes();
-        allowedUrl = JSON.parse(process.env.AllowUrl).urls[0];
-        global.server = require('../../index'); // eslint-disable-line global-require
-        // done();
-      // });
-  //  });
+    User1.collection.drop();
+    await User1.ensureIndexes();
+    allowedUrl = JSON.parse(process.env.AllowUrl).urls[0];
+    global.server = require('../../index'); // eslint-disable-line global-require
+    // done();
+    // });
+    //  });
   });
 
   it('should create a new user', (done) => {
@@ -36,21 +36,40 @@ describe('Functional test User',  () => {
     });
   });
 
+  it('should not update a user when the name is an empty string', (done) => {
+    const User = new User1();
+    User.name = 'foo';
+    User.email = 'foo2@example.com';
+    User.save((err) => {
+      chai.request(server)
+      .put('/user/' + User._id)
+      .set({ origin: allowedUrl })
+      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ name: '' })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.nModified === 0);
+        done();
+      });
+    });
+  });
+
   it('should modify a user', (done) => {
     const User = new User1();
     User.name = 'foo';
     User.email = 'foo2@example.com';
-    User.save();
-    chai.request(server)
-    .put('/user/' + User._id)
-    .set({ origin: allowedUrl })
-    .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-    .send({ name: 'foobar' })
-    .end((err, res) => {
-      expect(res).to.have.status(200);
-      expect(res.nModified > 0);
-      // TODO: Write a GET request to verify that user's name has been changed
-      done();
+    User.save((err) => {
+      chai.request(server)
+      .put('/user/' + User._id)
+      .set({ origin: allowedUrl })
+      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ name: 'foobar' })
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.nModified > 0);
+        // TODO: Write a GET request to verify that user's name has been changed
+        done();
+      });
     });
   });
 
@@ -234,16 +253,16 @@ describe('Functional test User',  () => {
     User.email = 'foo4@example.com';
     User.id = 'yoyo23';
     await User.save();
-      chai.request(server)
-      .post('/auth/signup')
-      // .set({ origin: allowedUrl })
-      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-      .send({ email: 'foobar@example.com', name: 'foomanchew', password: 'lottanumbers35555', id: 'yoyo23' })
-      .end((err, res) => {
-        expect(res).to.have.status(409);
-        // done();
-      });
+    chai.request(server)
+    .post('/auth/signup')
+    // .set({ origin: allowedUrl })
+    // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+    .send({ email: 'foobar@example.com', name: 'foomanchew', password: 'lottanumbers35555', id: 'yoyo23' })
+    .end((err, res) => {
+      expect(res).to.have.status(409);
+      // done();
     });
+  });
   // });
 
   it('should not signup the new user if the email already exists', async() => {
@@ -251,16 +270,16 @@ describe('Functional test User',  () => {
     User.name = 'foo4';
     User.email = 'foo4@example.com';
     await User.save();
-      chai.request(server)
-      .post('/auth/signup')
-      // .set({ origin: allowedUrl })
-      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-      .send({ email: 'foo4@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
-      .end((err, res) => {
-        expect(res).to.have.status(409);
-        // done();
-      });
+    chai.request(server)
+    .post('/auth/signup')
+    // .set({ origin: allowedUrl })
+    // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+    .send({ email: 'foo4@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
+    .end((err, res) => {
+      expect(res).to.have.status(409);
+      // done();
     });
+  });
   // });
 
   // it('should not signup the new user if the email is not valid', async () => {
@@ -577,16 +596,16 @@ describe('Functional test User',  () => {
     User.email = 'foo3@example.com';
     // User.resetCode = '12345';
     await User.save();
-      // const Uid = User._id;
-      chai.request(server)
-      .put('/auth/resetpass')
-      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-      .send({ email: 'foosy4@example.com' })
-      .end((err, res) => {
-        expect(res).to.have.status(401);
-        // done();
-      });
+    // const Uid = User._id;
+    chai.request(server)
+    .put('/auth/resetpass')
+    // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+    .send({ email: 'foosy4@example.com' })
+    .end((err, res) => {
+      expect(res).to.have.status(401);
+      // done();
     });
+  });
   // });
   it('resets the password', (done) => {
     const User = new User1();
@@ -631,15 +650,15 @@ describe('Functional test User',  () => {
     User.password = 'lottanumbers35555';
     User.resetCode = '12345';
     await User.save();
-      // const Uid = User._id;
-      chai.request(server)
-      .put('/auth/passwdreset')
-      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-      .send({ email: 'foo3@example.com', password: 'gyg', resetCode: '12345' })
-      .end((err, res) => {
-        expect(res).to.have.status(401);
-        // done();
-      });
+    // const Uid = User._id;
+    chai.request(server)
+    .put('/auth/passwdreset')
+    // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+    .send({ email: 'foo3@example.com', password: 'gyg', resetCode: '12345' })
+    .end((err, res) => {
+      expect(res).to.have.status(401);
+      // done();
     });
+  });
   // });
 });
