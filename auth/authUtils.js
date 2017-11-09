@@ -60,7 +60,12 @@ class AuthUtils {
 
   static verifySaveUser(user, req, res) {
     if (user.resetCode !== '' && user.resetCode !== null && user.resetCode !== undefined) {
-      if (!user.isPswdReset && (user.changeemail === null || user.changeemail === '' || user.changeemail === undefined)) {
+      if (user.isPswdReset) {
+        console.log('continue');
+      } else if (user.changeemail !== null && user.changeemail !== '' && user.changeemail !== undefined) {
+        console.log('continue');
+      } else {
+      // if (!user.isPswdReset && (user.changeemail === null || user.changeemail === '' || user.changeemail === undefined)) {
         return res.status(401).json({ message: 'Validate your email address or click forgot password link to reset' });
       }
     }
@@ -78,6 +83,7 @@ class AuthUtils {
     const userToken = { token: this.createJWT(user), email: user.email };
     user.isPswdReset = false;
     user.resetCode = '';
+    user.changeemail = '';
     user.save();
     return res.send(userToken);
   }
@@ -87,6 +93,13 @@ class AuthUtils {
     }
     return res.status(409).json({ message: 'Email address is not a valid format' });
   }
+  static setIfExists(item) {
+    if (item !== '' && item !== null && item !== undefined) {
+      return item;
+  }
+  return '';
+  }
 }
+
 
 module.exports = AuthUtils;

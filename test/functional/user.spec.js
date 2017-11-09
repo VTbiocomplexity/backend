@@ -476,6 +476,26 @@ describe('Functional test User',  () => {
       });
     });
   });
+  it('should allow the user to login with their old email after requesting a change email', (done) => {
+    const User = new User1();
+    User.name = 'foo4';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    User.resetCode = '12345';
+    User.changeemail = 'foo@bar.com';
+    // User.isPswdReset = true;
+    User.save((err) => {
+      chai.request(server)
+      .post('/auth/login')
+      // .set({ origin: allowedUrl })
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo3@example.com'))
+      .send({ email: 'foo3@example.com', password: 'lottanumbers35555' })
+      .end((err, resp) => {
+        expect(resp).to.have.status(200);
+        done();
+      });
+    });
+  });
   it('should not login the user when email does not exist', (done) => {
     chai.request(server)
     .post('/auth/login')
