@@ -28,12 +28,12 @@ exports.login = function(req, res) {
   console.log('req body userid ' + req.body.id);
   let reqUserId = '';
   let reqUserEmail = '';
-  if (req.body.id !== '' && req.body.id !== null && req.body.id !== undefined) {
-    reqUserId = req.body.id;
-  }
-  if (req.body.email !== '' && req.body.email !== null && req.body.email !== undefined) {
-    reqUserEmail = req.body.email;
-  }
+  // if (req.body.id !== '' && req.body.id !== null && req.body.id !== undefined) {
+    reqUserId = authUtils.setIfExists(req.body.id);
+  // }
+  // if (req.body.email !== '' && req.body.email !== null && req.body.email !== undefined) {
+    reqUserEmail = authUtils.setIfExists(req.body.email);
+  // }
   User.findOne({ $or: [{ id: reqUserId }, { email: reqUserId }, { email: reqUserEmail }] }, '+password', (err, user) => {
     if (!user && reqUserId === '') {
       return res.status(401).json({ message: 'Wrong email address' });
