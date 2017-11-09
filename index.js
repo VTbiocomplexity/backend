@@ -26,8 +26,8 @@ app.use(express.static(path.normalize(path.join(__dirname, 'frontend/dist'))));
 
 // Handle rejected promises globally
 app.use((req, res, next) => {
-  process.on('unhandledRejection', (reason, promise) => {
     /* istanbul ignore next */
+  process.on('unhandledRejection', (reason, promise) => {
     next(new Error(reason));
   });
   next();
