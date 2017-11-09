@@ -39,7 +39,7 @@ class AuthUtils {
       service: 'gmail',
       auth: {
         user: 'vt.biocomplexity@gmail.com',
-        pass: 'Googlei5Fun!'
+        pass: process.env.emailPWD
       }
     });
 
