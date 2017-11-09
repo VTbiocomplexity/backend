@@ -66,33 +66,27 @@ class AuthUtils {
     }
     user.comparePassword(req.body.password, (err, isMatch) => {
       if (!isMatch) { return res.status(401).json({ message: 'Wrong password' }); }
-      const userToken = { token: this.createJWT(user), email: user.email };
-      user.isPswdReset = false;
-      user.resetCode = '';
-      user.save();
-      return res.send(userToken);
+      this.saveSendToken(user, req, res);
+      // const userToken = { token: this.createJWT(user), email: user.email };
+      // user.isPswdReset = false;
+      // user.resetCode = '';
+      // user.save();
+      // return res.send(userToken);
     });
   }
-  // static generateBearerToken(user, req) {
-  //   const name = user.first_name + user.last_name;
-  //   const tokenid = uuid.v4().toString();
-  //   const exp = new Date();
-  //   exp.setFullYear(exp.getFullYear() + 1);
-  //   const expiration = Math.floor(exp.valueOf() / 1000);
-  //   // const realm = config.get('realm');
-  //   const payload = [
-  //     'un=' + name + '@' + realm, 'tokenid=' + tokenid,
-  //     'expiry=' + expiration, 'client_id=' + name + '@' + realm,
-  //     'token_type=Bearer', 'realm=' + config.realm];
-  //     payload.push('SigningSubject=' + config.signingSubjectURL);
-  //     // const key = SigningPEM.toString('ascii');
-  //     const sign = crypto.createSign('RSA-SHA1');
-  //     sign.update(payload.join('|'));
-  //     const signature = sign.sign(key, 'hex');
-  //     const token = payload.join('|') + '|sig=' + signature;
-  //     console.log('New Bearer Token: ', token);
-  //     return token;
-  //   }
+  static saveSendToken(user, req, res) {
+    const userToken = { token: this.createJWT(user), email: user.email };
+    user.isPswdReset = false;
+    user.resetCode = '';
+    user.save();
+    return res.send(userToken);
+  }
+  static checkEmailSyntax(req, res) {
+    if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(req.body.changeemail)) {
+      return console.log('email is valid');
+    }
+    return res.status(409).json({ message: 'Email address is not a valid format' });
+  }
 }
 
 module.exports = AuthUtils;

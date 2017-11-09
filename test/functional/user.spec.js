@@ -666,25 +666,25 @@ describe('Functional test User',  () => {
     });
     // });
   });
-  it('validates email for change email request', (done) => {
-    const User = new User1();
-    User.name = 'foo3';
-    User.email = 'foo3@example.com';
-    User.password = 'lottanumbers35555';
-    // User.resetCode = '12345';
-    User.save((err) => {
-      // const Uid = User._id;
-      chai.request(server)
-      .put('/auth/changeemail')
-      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-      .send({ email: 'foo3@example.com', changeemail: 'foo4foo.com' })
-      .end((err, res) => {
-        expect(res).to.have.status(409);
-        done();
-      });
-    });
-    // });
-  });
+  // it('validates email for change email request', (done) => {
+  //   const User = new User1();
+  //   User.name = 'foo3';
+  //   User.email = 'foo3@example.com';
+  //   User.password = 'lottanumbers35555';
+  //   // User.resetCode = '12345';
+  //   User.save((err) => {
+  //     // const Uid = User._id;
+  //     chai.request(server)
+  //     .put('/auth/changeemail')
+  //     // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+  //     .send({ email: 'foo3@example.com', changeemail: 'foo4foo.com' })
+  //     .end((err, res) => {
+  //       expect(res).to.have.status(409);
+  //       done();
+  //     });
+  //   });
+  //   // });
+  // });
   it('does not allow change email to an already existing email', (done) => {
     const User = new User1();
     User.name = 'foo3';
