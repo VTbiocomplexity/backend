@@ -60,7 +60,7 @@ class AuthUtils {
 
   static verifySaveUser(user, req, res) {
     if (user.resetCode !== '' && user.resetCode !== null && user.resetCode !== undefined) {
-      if (!user.isPswdReset) {
+      if (!user.isPswdReset && (user.changeemail === null || user.changeemail === '' || user.changeemail === undefined)) {
         return res.status(401).json({ message: 'Validate your email address or click forgot password link to reset' });
       }
     }
