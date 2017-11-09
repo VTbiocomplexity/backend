@@ -721,4 +721,104 @@ describe('Functional test User',  () => {
       });
     });
   });
+  it('updates the email to the new email when pin is correct', (done) => {
+    const User = new User1();
+    User.name = 'foo3';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    User.resetCode = '12345';
+    User.changeemail = 'foo@bar.com';
+    // User.resetCode = '12345';
+    User.save((err) => {
+      // const Uid = User._id;
+      chai.request(server)
+      .put('/auth/updateemail')
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foo3@example.com', changeemail: 'foo@bar.com', resetCode: '12345' })
+      .end((err, res) => {
+        expect(res).to.have.status(201);
+        done();
+      });
+    });
+  });
+  it('does not update the email to the new email when email is not valid format', (done) => {
+    const User = new User1();
+    User.name = 'foo3';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    User.resetCode = '12345';
+    User.changeemail = 'foo@bar.com';
+    // User.resetCode = '12345';
+    User.save((err) => {
+      // const Uid = User._id;
+      chai.request(server)
+      .put('/auth/updateemail')
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foo3@example.com', changeemail: 'foobar.com', resetCode: '12345' })
+      .end((err, res) => {
+        expect(res).to.have.status(409);
+        done();
+      });
+    });
+  });
+  it('does not update the email to the new email when current email does not exist', (done) => {
+    const User = new User1();
+    User.name = 'foo3';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    User.resetCode = '12345';
+    User.changeemail = 'foo@bar.com';
+    // User.resetCode = '12345';
+    User.save((err) => {
+      // const Uid = User._id;
+      chai.request(server)
+      .put('/auth/updateemail')
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foo@example.com', changeemail: 'foo@bar.com', resetCode: '12345' })
+      .end((err, res) => {
+        expect(res).to.have.status(409);
+        done();
+      });
+    });
+  });
+  it('does not update the email to the new email when the reset code is not correct', (done) => {
+    const User = new User1();
+    User.name = 'foo3';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    User.resetCode = '12345';
+    User.changeemail = 'foo@bar.com';
+    // User.resetCode = '12345';
+    User.save((err) => {
+      // const Uid = User._id;
+      chai.request(server)
+      .put('/auth/updateemail')
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foo3@example.com', changeemail: 'foo@bar.com', resetCode: '12347' })
+      .end((err, res) => {
+        expect(res).to.have.status(409);
+        done();
+      });
+    });
+  });
+  it('does not update the email to the new email when the changeemail does not match', (done) => {
+    const User = new User1();
+    User.name = 'foo3';
+    User.email = 'foo3@example.com';
+    User.password = 'lottanumbers35555';
+    User.resetCode = '12345';
+    User.changeemail = 'foo@bar.com';
+    // User.resetCode = '12345';
+    User.save((err) => {
+      // const Uid = User._id;
+      chai.request(server)
+      .put('/auth/updateemail')
+      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .send({ email: 'foo3@example.com', changeemail: 'foo12@bar.com', resetCode: '12345' })
+      .end((err, res) => {
+        expect(res).to.have.status(409);
+        done();
+      });
+    });
+  });
 });
