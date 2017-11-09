@@ -202,8 +202,8 @@ exports.updateemail = function(req, res) {
       user.resetCode = '';
       user.email = req.body.changeemail;
       user.changeemail = '';
-      existinguser.save((err) => {
-        console.log(existinguser);
+      user.save((err) => {
+        // console.log(existinguser);
         res.status(201).json({ success: true });
         // const mailBody = '<h1>A PATRIC Email Address Change was Requested for ' + existinguser.name + '.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" href="' +
         // process.env.FrontendUrl + '/userutil/?changeemail=' + existinguser.changeemail + '">' +
