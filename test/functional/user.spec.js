@@ -1,14 +1,14 @@
 const User1 = require('../../model/user/user-schema');
 const authUtils = require('../../auth/authUtils');
 describe('Functional test User',  () => {
-  beforeEach(async () => {
-    await mockgoose(mongoose);
+  beforeEach((done) => {
+    mockgoose(mongoose).then(() => {
     User1.collection.drop();
-    await User1.ensureIndexes();
+    User1.ensureIndexes();
     allowedUrl = JSON.parse(process.env.AllowUrl).urls[0];
     global.server = require('../../index'); // eslint-disable-line global-require
-    // done();
-    // });
+    done();
+    });
     //  });
   });
 
