@@ -28,12 +28,8 @@ exports.login = function(req, res) {
   console.log('req body userid ' + req.body.id);
   let reqUserId = '';
   let reqUserEmail = '';
-  // if (req.body.id !== '' && req.body.id !== null && req.body.id !== undefined) {
     reqUserId = authUtils.setIfExists(req.body.id);
-  // }
-  // if (req.body.email !== '' && req.body.email !== null && req.body.email !== undefined) {
     reqUserEmail = authUtils.setIfExists(req.body.email);
-  // }
   User.findOne({ $or: [{ id: reqUserId }, { email: reqUserId }, { email: reqUserEmail }] }, '+password', (err, user) => {
     if (!user && reqUserId === '') {
       return res.status(401).json({ message: 'Wrong email address' });
@@ -66,7 +62,8 @@ exports.validemail = function(req, res) {
 
 exports.resetpass = function(req, res) {
   console.log('email:' + req.body.email);
-  User.findOne({ email: req.body.email }, (err, user) => {
+    // User.findOne({ $or: [{ id: reqUserId }, { email: reqUserId }, { email: reqUserEmail }] }
+  User.findOne({ $or:[{ email: req.body.email }, { id: req.body.email }] }, (err, user) => {
     console.log(user);
     if (!user) {
       return res.status(401).json({ message: 'incorrect email address' });
@@ -75,7 +72,7 @@ exports.resetpass = function(req, res) {
     user.resetCode = randomNumba;
     user.isPswdReset = true;
     user.save((err) => {
-      res.status(201).json({ success: true });
+      res.status(201).json({ email: user.email });
       const mailBody = '<h1>A PATRIC Password Reset was Requested for ' + user.name + '.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" href="' +
       process.env.FrontendUrl + '/userutil/?email=' + user.email + '">' +
       'link</a>, then enter the following code to reset your password: <br><br><strong>' + randomNumba + '</strong></p><p><i>If a reset was requested in error, you can ignore this email and login to PATRIC as usual.</i></p>';
