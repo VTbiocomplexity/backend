@@ -9,5 +9,6 @@ global.mockgoose = require('mockgoose');
 mongoose.Promise = bluebird;
 process.env.NODE_ENV = 'dev';
 process.env.MONGO_DB_URI = 'localhost';
+process.env.emailPWD = '';
 global.expect = chai.expect;
 chai.use(chaiHttp);
