@@ -2,8 +2,9 @@ const moment = require('moment');
 const jwt = require('jwt-simple');
 const config = require('../config');
 const nodemailer = require('nodemailer');
-// const uuid = require('uuid');
-// const crypto = require('crypto');
+const uuid = require('uuid');
+const crypto = require('crypto');
+// const config2 = require('../../config');
 
 class AuthUtils {
   static createJWT(user) {
@@ -52,6 +53,7 @@ class AuthUtils {
     transporter.sendMail(mailOptions, (error, info) => {
     });
   }
+
   static generateCode(hi, low) {
     const min = Math.ceil(low);
     const max = Math.floor(hi);
@@ -69,32 +71,58 @@ class AuthUtils {
     }
     // this means it is a brand new email to be verified
       if (hascode && !user.isPswdReset && !hasnewemail) {
-      //   console.log('continue');
-      // } else if (user.changeemail !== null && user.changeemail !== '' && user.changeemail !== undefined) {
-      //   console.log('continue');
-      // } else {
-      // if (!user.isPswdReset && (user.changeemail === null || user.changeemail === '' || user.changeemail === undefined)) {
         return res.status(401).json({ message: 'Validate your email address or click forgot password link to reset' });
       }
-
     user.comparePassword(req.body.password, (err, isMatch) => {
       if (!isMatch) { return res.status(401).json({ message: 'Wrong password' }); }
       this.saveSendToken(user, req, res);
-      // const userToken = { token: this.createJWT(user), email: user.email };
-      // user.isPswdReset = false;
-      // user.resetCode = '';
-      // user.save();
-      // return res.send(userToken);
     });
   }
+
   static saveSendToken(user, req, res) {
     const userToken = { token: this.createJWT(user), email: user.email };
     user.isPswdReset = false;
     user.resetCode = '';
     user.changeemail = '';
     user.save();
-    return res.send(userToken);
+    this.createSession(user, userToken, req, res);
+    // return res.send(userToken);
   }
+
+static createSession(user, userToken, req, res) {
+  delete user.password;
+  delete user.resetCode;
+  console.log('am i here yet');
+  req.session.authorizationToken = this.generateBearerToken(user);
+  user.id += '@patricbrc.org';
+  req.session.userProfile = user;
+  console.log(req.session);
+  req.session.save();
+  return res.status(201).json(userToken);
+}
+
+static generateBearerToken(user) {
+  const name = user.id;
+  console.log('trying to set the userid: ' + name);
+  const tokenid = uuid.v4().toString();
+  const exp = new Date(); exp.setFullYear(exp.getFullYear() + 1);
+  const expiration = Math.floor(exp.valueOf() / 1000);
+  const realm = config2.get('realm');
+  const payload = [
+    'un=' + name + '@' + realm, 'tokenid=' + tokenid,
+    'expiry=' + expiration, 'client_id=' + name + '@' + realm,
+    'token_type=Bearer', 'realm=' + realm
+  ];
+  payload.push('SigningSubject=' + config2.get('signingSubjectURL'));
+  const key = SigningPEM.toString('ascii');
+  const sign = crypto.createSign('RSA-SHA1');
+  sign.update(payload.join('|'));
+  const signature = sign.sign(key, 'hex');
+  const token = payload.join('|') + '|sig=' + signature;
+  console.log('New Bearer Token: ', token);
+  return token;
+}
+
   static checkEmailSyntax(req, res) {
     if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(req.body.changeemail)) {
       return console.log('email is valid');
