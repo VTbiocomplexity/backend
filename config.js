@@ -16,7 +16,8 @@ const config = {
   },
   hashString: process.env.HashString,
   realm: process.env.realm,
-  signingSubjectURL: process.env.signingSubjectURL
+  signingSubjectURL: process.env.signingSubjectURL,
+  gmailpassword: process.env.emailPWD
 };
 
 module.exports = config;
