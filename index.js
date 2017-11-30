@@ -17,18 +17,16 @@ const corsOptions =
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 const app  = express();
-
-// if (config.get('signing_PEM')) {
-//         let f = config.get('signing_PEM');
-//         if (f.charAt(0) !== '/') {
   /* eslint-disable */
-            const  f = __dirname + '/fake.pem';
-      /* eslint-enable */
+const  f = __dirname + '/fake.pem';
+/* eslint-enable */
         try {
                 console.log('Filename: ', f);
                 SigningPEM =   fs.readFileSync(f);
+                /* istanbul ignore else */
               if (SigningPEM) { console.log('Got PEM File'); }
         } catch (err) {
+          /* istanbul ignore next */
                 console.log('Could not find PEM File: ', f, err);
         }
 // }

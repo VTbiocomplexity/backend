@@ -93,6 +93,7 @@ static createSession(user, userToken, req, res) {
   delete user.password;
   delete user.resetCode;
   console.log('am i here yet');
+  /* istanbul ignore next */
   if (req.session === undefined) {
     req.session = { authorizationToken: '', save() {} };
   }
@@ -107,6 +108,7 @@ static createSession(user, userToken, req, res) {
 static generateBearerToken(user) {
   let config2;
   /* eslint-disable */
+  /* istanbul ignore if */
   if (fs.existsSync('../../config')) {
     config2 = require('../../config'); // eslint-disable-line import/no-unresolved
     /* eslint-enable */
