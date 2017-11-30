@@ -9,6 +9,7 @@ const bluebird   = require('bluebird');
 const config = require('./config');
 const routes = require('./routes');
 const cors = require('cors');
+const fs = require('fs');
 const enforce = require('express-sslify');
 const corsOptions =
 { origin: JSON.parse(process.env.AllowUrl).urls,
@@ -16,6 +17,21 @@ const corsOptions =
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 const app  = express();
+
+// if (config.get('signing_PEM')) {
+//         let f = config.get('signing_PEM');
+//         if (f.charAt(0) !== '/') {
+  /* eslint-disable */
+            const  f = __dirname + '/fake.pem';
+      /* eslint-enable */
+        try {
+                console.log('Filename: ', f);
+                SigningPEM =   fs.readFileSync(f);
+              if (SigningPEM) { console.log('Got PEM File'); }
+        } catch (err) {
+                console.log('Could not find PEM File: ', f, err);
+        }
+// }
 
 /* istanbul ignore if */
 if (process.env.NODE_ENV === 'production') {

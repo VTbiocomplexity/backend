@@ -4,7 +4,7 @@ const config = require('../config');
 const nodemailer = require('nodemailer');
 const uuid = require('uuid');
 const crypto = require('crypto');
-// const config2 = require('../../config');
+const fs = require('fs');
 
 class AuthUtils {
   static createJWT(user) {
@@ -93,15 +93,26 @@ static createSession(user, userToken, req, res) {
   delete user.password;
   delete user.resetCode;
   console.log('am i here yet');
+  if (req.session === undefined) {
+    req.session = { authorizationToken: '', save() {} };
+  }
   req.session.authorizationToken = this.generateBearerToken(user);
   user.id += '@patricbrc.org';
   req.session.userProfile = user;
   console.log(req.session);
   req.session.save();
-  return res.status(201).json(userToken);
+  return res.status(200).json(userToken);
 }
 
 static generateBearerToken(user) {
+  let config2;
+  /* eslint-disable */
+  if (fs.existsSync('../../config')) {
+    config2 = require('../../config'); // eslint-disable-line import/no-unresolved
+    /* eslint-enable */
+  } else {
+    config2 = { get(item) { return '1234'; } };
+  }
   const name = user.id;
   console.log('trying to set the userid: ' + name);
   const tokenid = uuid.v4().toString();
@@ -114,6 +125,19 @@ static generateBearerToken(user) {
     'token_type=Bearer', 'realm=' + realm
   ];
   payload.push('SigningSubject=' + config2.get('signingSubjectURL'));
+  console.log('what is the signing pem?');
+  console.log(SigningPEM);
+//   if (typeof SigningPEM === 'undefined' || SigningPEM === null || !SigningPEM) {
+//     console.log('trying to set a fake signing pem');
+//     /* eslint-disable */
+//     const f = __dirname + '/fake.pem';
+// console.log(f);
+//     // if (f.charAt(0) !== '/') {
+//     //         f = __dirname + '/' + f;
+//     // }
+//     //const SigningPEM = fs.readFileSync(f);
+//   }
+    /* eslint-enable */
   const key = SigningPEM.toString('ascii');
   const sign = crypto.createSign('RSA-SHA1');
   sign.update(payload.join('|'));
