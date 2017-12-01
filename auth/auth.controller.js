@@ -86,7 +86,7 @@ exports.resetpass = function(req, res) {
     user.save((err) => {
       res.status(201).json({ email: user.email });
       const mailBody = '<h1>A PATRIC Password Reset was Requested for ' + user.name + '.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" href="' +
-      frontURL + '/userutil/?email=' + user.email + '">' +
+      frontURL + '/userutil/?email=' + user.email + '&form=reset">' +
       'link</a>, then enter the following code to reset your password: <br><br><strong>' + randomNumba + '</strong></p><p><i>If a reset was requested in error, you can ignore this email and login to PATRIC as usual.</i></p>';
       authUtils.sendEmail(mailBody, user.email, 'Password Reset');
     });
