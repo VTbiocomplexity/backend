@@ -87,7 +87,6 @@ class AuthUtils {
     user.save((err) => {
       this.createSession(user, userToken, req, res);
     });
-    // return res.send(userToken);
   }
 
   static createSession(user, userToken, req, res) {
@@ -133,17 +132,6 @@ class AuthUtils {
     payload.push('SigningSubject=' + config2.get('signingSubjectURL'));
     console.log('what is the signing pem?');
     console.log(SigningPEM);
-    //   if (typeof SigningPEM === 'undefined' || SigningPEM === null || !SigningPEM) {
-    //     console.log('trying to set a fake signing pem');
-    //     /* eslint-disable */
-    //     const f = __dirname + '/fake.pem';
-    // console.log(f);
-    //     // if (f.charAt(0) !== '/') {
-    //     //         f = __dirname + '/' + f;
-    //     // }
-    //     //const SigningPEM = fs.readFileSync(f);
-    //   }
-    /* eslint-enable */
     const key = SigningPEM.toString('ascii');
     const sign = crypto.createSign('RSA-SHA1');
     sign.update(payload.join('|'));

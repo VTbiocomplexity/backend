@@ -1,7 +1,19 @@
-
+const fs = require('fs');
+const config = require('../config');
 const User = require('../model/user/user-schema');
 const authUtils = require('./authUtils');
-
+let frontURL = config.frontURL;
+let config2;
+/* eslint-disable */
+let pathtoconf = __dirname;
+pathtoconf = pathtoconf.replace('backend/auth', '');
+console.log(pathtoconf);
+/* istanbul ignore if */
+if (fs.existsSync(pathtoconf + 'config.js')) {
+  config2 = require('../../config');
+  frontURL = config2.get('frontendUrl');
+}
+/* eslint-enable */
 exports.signup = function(req, res) {
   const randomNumba = authUtils.generateCode(99999, 10000);
   const user = new User({
@@ -15,7 +27,7 @@ exports.signup = function(req, res) {
       if (validData !== '') { return res.status(409).send({ message: validData }); }
       user.save(() => {
         const mailbody = '<h1>Welcome ' + user.name + ' to PATRIC.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" ' +
-        'href="' + process.env.FrontendUrl + '/userutil/?email=' + user.email + '">link</a>, then enter the following code to verify your email: <br><br><strong>' + randomNumba + '</strong></p>';
+        'href="' + frontURL + '/userutil/?email=' + user.email + '">link</a>, then enter the following code to verify your email: <br><br><strong>' + randomNumba + '</strong></p>';
         authUtils.sendEmail(mailbody, user.email, 'Verify Your Email Address');
         return res.status(201).json({ email: user.email });
       });
@@ -74,7 +86,7 @@ exports.resetpass = function(req, res) {
     user.save((err) => {
       res.status(201).json({ email: user.email });
       const mailBody = '<h1>A PATRIC Password Reset was Requested for ' + user.name + '.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" href="' +
-      process.env.FrontendUrl + '/userutil/?email=' + user.email + '">' +
+      frontURL + '/userutil/?email=' + user.email + '">' +
       'link</a>, then enter the following code to reset your password: <br><br><strong>' + randomNumba + '</strong></p><p><i>If a reset was requested in error, you can ignore this email and login to PATRIC as usual.</i></p>';
       authUtils.sendEmail(mailBody, user.email, 'Password Reset');
     });
@@ -117,7 +129,7 @@ exports.changeemail = function(req, res) {
         console.log(existinguser);
         res.status(201).json({ success: true });
         const mailBody = '<h1>A PATRIC Email Address Change was Requested for ' + existinguser.name + '.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" href="' +
-        process.env.FrontendUrl + '/userutil/?changeemail=' + existinguser.changeemail + '">' +
+        frontURL + '/userutil/?changeemail=' + existinguser.changeemail + '">' +
         'link</a>, then enter the following code to validate this new email: <br><br><strong>' + existinguser.resetCode + '</strong></p><p><i>If this reset was requested in error, you can ignore it and login to PATRIC as usual.</i></p>';
         authUtils.sendEmail(mailBody, existinguser.changeemail, 'Email Change Request');
       });
