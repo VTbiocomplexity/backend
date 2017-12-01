@@ -36,11 +36,16 @@ class AuthUtils {
   }
 
   static sendEmail(bodyhtml, toemail, subjectline) {
+    let emailpassword = config.gmailpassword;
+    /* istanbul ignore next */
+    if (process.env.NODE_ENV === 'test') {
+      emailpassword = '';
+    }
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: 'vt.biocomplexity@gmail.com',
-        pass: config.gmailpassword
+        pass: emailpassword
       }
     });
 
