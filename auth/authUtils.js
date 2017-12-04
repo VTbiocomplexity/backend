@@ -117,7 +117,7 @@ class AuthUtils {
     pathtoconf = pathtoconf.replace('backend/auth', '');
     console.log(pathtoconf);
     /* istanbul ignore if */
-    if (config.appName === 'PATRIC' && fs.existsSync(pathtoconf + 'config.js')) {
+    if (fs.existsSync(pathtoconf + 'config.js')) {
       config2 = require('../../config');
       /* eslint-enable */
     } else {

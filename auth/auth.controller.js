@@ -1,19 +1,19 @@
-// const fs = require('fs');
+const fs = require('fs');
 const config = require('../config');
 const User = require('../model/user/user-schema');
 const authUtils = require('./authUtils');
-const frontURL = config.frontURL;
-// let config2;
-// /* eslint-disable */
-// let pathtoconf = __dirname;
-// pathtoconf = pathtoconf.replace('backend/auth', '');
-// console.log(pathtoconf);
-// /* istanbul ignore if */
-// if (fs.existsSync(pathtoconf + 'config.js')) {
-//   config2 = require('../../config');
-//   frontURL = config2.get('frontendUrl');
-// }
-// /* eslint-enable */
+let frontURL = config.frontURL;
+let config2;
+/* eslint-disable */
+let pathtoconf = __dirname;
+pathtoconf = pathtoconf.replace('backend/auth', '');
+console.log(pathtoconf);
+/* istanbul ignore if */
+if (fs.existsSync(pathtoconf + 'config.js')) {
+  config2 = require('../../config');
+  frontURL = config2.get('frontendUrl');
+}
+/* eslint-enable */
 exports.signup = function(req, res) {
   const randomNumba = authUtils.generateCode(99999, 10000);
   const user = new User({
