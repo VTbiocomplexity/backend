@@ -18,7 +18,8 @@ const config = {
   realm: process.env.realm,
   signingSubjectURL: process.env.signingSubjectURL,
   gmailpassword: process.env.emailPWD,
-  frontURL: process.env.FrontendUrl
+  frontURL: process.env.FrontendUrl,
+  appName: process.env.appName
 };
 
 module.exports = config;

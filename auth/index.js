@@ -13,7 +13,7 @@ const google = require('./google.js');
 // var foursquare = require('./foursquare');
 const router = express.Router();
 
-// router.post('/signup', authController.signup);
+router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 router.post('/google', google.authenticate);
 router.put('/validemail', authController.validemail);
