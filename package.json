@@ -18,7 +18,7 @@
     "postinstallsh": "./postinstall.sh",
     "snyk-protect": "snyk protect",
     "prepublish": "npm run snyk-protect",
-    "postinstall": "postinstallsh"
+    "postinstall": "npm run postinstallsh"
   },
   "repository": {
     "type": "git",
