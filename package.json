@@ -22,8 +22,7 @@
     "eslint-fix": "./node_modules/eslint/bin/eslint.js --fix .",
     "postinstallsh": "./postinstall.sh",
     "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect",
-    "postinstall": "npm run postinstallsh"
+    "prepublish": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
