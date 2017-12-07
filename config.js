@@ -15,11 +15,8 @@ const config = {
     url: process.env.MONGO_DB_URI
   },
   hashString: process.env.HashString,
-  realm: process.env.realm,
-  signingSubjectURL: process.env.signingSubjectURL,
   gmailpassword: process.env.emailPWD,
-  frontURL: process.env.FrontendUrl,
-  appName: process.env.appName
+  frontURL: process.env.FrontendUrl
 };
 
 module.exports = config;
