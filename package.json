@@ -52,14 +52,11 @@
     "morgan": "^1.9.0",
     "nodemailer": "^4.3.0",
     "request": "^2.83.0",
-    "snyk": "^1.52.0",
-    "uuid": "^3.1.0"
+    "snyk": "^1.52.0"
   },
   "devDependencies": {
-    "babel-eslint": "^7.2.3",
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",
-    "chokidar-cli": "^1.2.0",
     "cross-env": "^5.0.1",
     "eslint": "^3.2.2",
     "eslint-config-airbnb": "^14.1.0",
@@ -72,7 +69,6 @@
     "nock": "^9.0.27",
     "nodemon": "^1.9.2",
     "nyc": "^11.3.0",
-    "proxyquire": "^1.7.11",
     "sinon": "^4.1.0"
   },
   "snyk": true
