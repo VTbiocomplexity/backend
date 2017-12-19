@@ -9,7 +9,7 @@ const bluebird   = require('bluebird');
 const config = require('./config');
 const routes = require('./routes');
 const cors = require('cors');
-const fs = require('fs');
+// const fs = require('fs');
 const enforce = require('express-sslify');
 const corsOptions =
 { origin: JSON.parse(process.env.AllowUrl).urls,
@@ -18,18 +18,18 @@ const corsOptions =
 };
 const app  = express();
   /* eslint-disable */
-const  f = __dirname + '/fake.pem';
-/* eslint-enable */
-        try {
-                console.log('Filename: ', f);
-                SigningPEM =   fs.readFileSync(f);
-                /* istanbul ignore else */
-              if (SigningPEM) { console.log('Got PEM File'); }
-        } catch (err) {
-          /* istanbul ignore next */
-                console.log('Could not find PEM File: ', f, err);
-        }
-// }
+// const  f = __dirname + '/fake.pem';
+// /* eslint-enable */
+//         try {
+//                 console.log('Filename: ', f);
+//                 SigningPEM =   fs.readFileSync(f);
+//                 /* istanbul ignore else */
+//               if (SigningPEM) { console.log('Got PEM File'); }
+//         } catch (err) {
+//           /* istanbul ignore next */
+//                 console.log('Could not find PEM File: ', f, err);
+//         }
+// // }
 
 /* istanbul ignore if */
 if (process.env.NODE_ENV === 'production') {
