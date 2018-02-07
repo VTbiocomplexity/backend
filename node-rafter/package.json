@@ -1,0 +1,23 @@
+{
+  "name": "rafter",
+  "version": "1.0.0",
+  "description": "NodeJS Client for Rafter",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://ndsslgit.vbi.vt.edu/dmachi/node-rafter"
+  },
+  "author": "Matthew Wong <mttwong@vt.edu>",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^1.7.3",
+    "urijs": "^1.19.0"
+  },
+  "devDependencies": {
+    "jest": "^21.2.1",
+    "nock": "^9.1.4"
+  }
+}
