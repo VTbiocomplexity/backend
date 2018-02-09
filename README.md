@@ -9,5 +9,7 @@
 * Install Node.js, version listed in package.json
 * Install Yarn (not required, but recommended), see Yarn's installation instructions for your OS.
 * create a .env file at the project root, then request the contents from an app owner
+* download node-rafer from biocomplexity gitlab and unzip it not your project root folder (follow this gitlab repo to keep your local copy up-to-date)
+* yarn add ./node-rafter
 * For initial or recovery, `npm run clean install`
 * For minor updates, `yarn install`
