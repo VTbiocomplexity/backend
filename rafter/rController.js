@@ -3,12 +3,24 @@ const VolumeService = require('rafter').VolumeService;
 const accessTokenUrl = 'https://rafter.bi.vt.edu/usersvc/login';
 let vs;
 
-exports.volumeService = function(req, res) {
+class RC {
+static initVolS(req, res) {
   console.log(req.body.token);
-  console.log('this is your command: ' + req.body.command);
   vs = new VolumeService('https://rafter.bi.vt.edu/volumesvc/', req.body.token);
-  console.log(vs);
   vs.init();
+  return res.status(200).json({ home: true });
+}
+static runVolumeService(req, res) {
+// static runVolumeService(req, res, init = null) {
+  /* istanbul ignore else */
+  if (req.body.init !== null && req.body.init !== undefined) {
+    vs = req.body.init;
+  }
+  // console.log(req.body.token);
+  console.log('this is your command: ' + req.body.command);
+  // vs = new VolumeService('https://rafter.bi.vt.edu/volumesvc/', req.body.token);
+  // console.log(vs);
+  // vs.init();
   if (req.body.command === 'ls') {
     vs.list('/home/' + req.body.userName).then((dir) => {
       console.log(dir);
@@ -30,9 +42,9 @@ exports.volumeService = function(req, res) {
   }
   // vs = '';
   // return res.json(vs);
-};
+}
 
-exports.rlogin = function(req, res) {
+static rlogin(req, res) {
   console.log(req.body.id);
   const myID = encodeURIComponent(req.body.id);
   const myPassword = encodeURIComponent(req.body.password);
@@ -72,23 +84,6 @@ exports.rlogin = function(req, res) {
       return res.status(400).json(body);
     }
   });
-  // console.log('req body email' + req.body.email);
-  // console.log('req body userid ' + req.body.id);
-  // let reqUserId = '';
-  // let reqUserEmail = '';
-  //   reqUserId = authUtils.setIfExists(req.body.id);
-  //   reqUserEmail = authUtils.setIfExists(req.body.email);
-  // User.findOne({ $or: [{ id: reqUserId }, { email: reqUserId }, { email: reqUserEmail }] }, '+password', (err, user) => {
-  //   if (!user && reqUserId === '') {
-  //     return res.status(401).json({ message: 'Wrong email address' });
-  //   }
-  //   if (!user && reqUserEmail === '') {
-  //     return res.status(401).json({ message: 'Wrong email address or userid' });
-  //   }
-  //   if (user) {
-  //     authUtils.verifySaveUser(user, req, res);
-  //   } else {
-  //     return res.status(401).json({ message: 'unable to login, try again' });
-  //   }
-  // });
-};
+}
+}
+module.exports = RC;
