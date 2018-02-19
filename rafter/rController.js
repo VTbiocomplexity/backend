@@ -5,8 +5,13 @@ let vs;
 
 class RC {
 static initVolS(req, res) {
-  console.log(req.body.token);
+  // console.log(req.body.token);
+  // /* istanbul ignore else */
+  // if (req.body.init !== null && req.body.init !== undefined) {
+  //   vs = req.body.init;
+  // } else {
   vs = new VolumeService('https://rafter.bi.vt.edu/volumesvc/', req.body.token);
+// }
   vs.init();
   return res.status(200).json({ home: true });
 }
