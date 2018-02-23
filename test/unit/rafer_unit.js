@@ -46,7 +46,7 @@ describe('The Unit Test for Rafter', () => {
     rafter.rlogin(req, res);
   });
   it('initializes the volume service', async() => {
-    const req = { body: { command: 'ls', token: 'token', userName: 'yoyo' } };
+    const req = { body: { command: 'ls', token: 'token', userName: 'yoyo', rafterFile: { path: '/yo' } } };
     const res = {
       status(code) { return { json() {} }; }
       //   expect(code).to.equal(200);
@@ -57,8 +57,8 @@ describe('The Unit Test for Rafter', () => {
     await rafter.initVolS(req, res);
     // expect(res.status)
   });
-  it('tries to lists the contents of home directory but has an error', async() => {
-    const req = { body: { command: 'ls', token: 'token', userName: 'yoyo' } };
+  it('tries to lists the contents of a directory but has an error', async() => {
+    const req = { body: { command: 'ls', token: 'token', userName: 'yoyo', rafterFile: { path: '/yo' } } };
     const res = {
       status: (code) => {
         // expect(code).to.equal(200);
@@ -69,7 +69,7 @@ describe('The Unit Test for Rafter', () => {
     await rafter.runVolumeService(req, res);
   });
   it('lists the contents of home directory', async() => {
-    const req = { body: { command: 'ls', token: 'token', userName: 'yoyo' } };
+    const req = { body: { command: 'ls', token: 'token', userName: 'yoyo', rafterFile: { path: '/yo' } } };
     const res = {
       json(item) {}
     };

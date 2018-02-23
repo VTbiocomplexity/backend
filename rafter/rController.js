@@ -30,7 +30,7 @@ static runVolumeService(req, res) {
   // console.log(vs);
   // vs.init();
   if (req.body.command === 'ls') {
-    vs.list('/home/' + req.body.userName).then((dir) => {
+    vs.list('/home/' + req.body.userName + req.body.rafterFile.path).then((dir) => {
       console.log(dir);
       return res.json(dir);
     }).catch((err) => {
@@ -38,7 +38,7 @@ static runVolumeService(req, res) {
       return res.json(err);
     });
   } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'file') {
-  vs.create('/home/' + req.body.userName + '/', { name: req.body.rafterFile.name }).then((data) => {
+  vs.create('/home/' + req.body.userName + req.body.rafterFile.path + '/', { name: req.body.rafterFile.name }).then((data) => {
     console.log(data);
     return res.json(data);
   }).catch((err) => {
