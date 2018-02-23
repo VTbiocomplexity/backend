@@ -23,6 +23,9 @@ static runVolumeService(req, res) {
   }
   // console.log(req.body.token);
   console.log('this is your command: ' + req.body.command);
+  if (req.body.command !== 'ls' && (req.body.rafterFile.name === '' || req.body.rafterFile.name === null || req.body.rafterFile.name === undefined)) {
+    return res.status(400).json({ error: 'Invalid request: missing file/folder name' });
+  }
   // vs = new VolumeService('https://rafter.bi.vt.edu/volumesvc/', req.body.token);
   // console.log(vs);
   // vs.init();
@@ -34,7 +37,7 @@ static runVolumeService(req, res) {
       console.log(err);
       return res.json(err);
     });
-  } else if (req.body.command === 'create') {
+  } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'file') {
   vs.create('/home/' + req.body.userName + '/', { name: req.body.rafterFile.name }).then((data) => {
     console.log(data);
     return res.json(data);
@@ -42,8 +45,17 @@ static runVolumeService(req, res) {
     console.log(err);
     return res.json(err);
   });
-  } else {
-    return res.status(400).json({ message: 'invalid request' });
+} else if (req.body.command === 'create' && req.body.rafterFile.createType === 'folder') {
+  console.log(req.body.rafterFile.name);
+  vs.mkdir('/home/' + req.body.userName + '/' + req.body.rafterFile.name, { recursive: true }).then((data) => {
+    console.log(data);
+    return res.json(data);
+  }).catch((err) => {
+    console.log(err);
+    return res.json(err);
+  });
+  }  else {
+    return res.status(400).json({ error: 'invalid request' });
   }
   // vs = '';
   // return res.json(vs);
