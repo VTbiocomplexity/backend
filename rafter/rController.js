@@ -1,5 +1,5 @@
 const request = require('request');
-const VolumeService = require('rafter').VolumeService;
+const VolumeService = require('node-rafter').VolumeService;
 const accessTokenUrl = 'https://rafter.bi.vt.edu/usersvc/login';
 let vs;
 
