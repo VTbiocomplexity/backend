@@ -1,6 +1,10 @@
 const request = require('request');
 const VolumeService = require('node-rafter').VolumeService;
 const accessTokenUrl = 'https://rafter.bi.vt.edu/usersvc/login';
+// const path = require('path');
+// const mime = require('mime');
+// const fs = require('fs');
+
 let vs;
 
 class RC {
@@ -23,7 +27,7 @@ class RC {
     }
     // console.log(req.body.token);
     console.log('this is your command: ' + req.body.command);
-    if (req.body.command !== 'ls' && (req.body.rafterFile.name === '' || req.body.rafterFile.name === null || req.body.rafterFile.name === undefined)) {
+    if (req.body.command === 'create' && (req.body.rafterFile.name === '' || req.body.rafterFile.name === null || req.body.rafterFile.name === undefined)) {
       return res.status(400).json({ error: 'Invalid request: missing file/folder name' });
     }
     // vs = new VolumeService('https://rafter.bi.vt.edu/volumesvc/', req.body.token);
@@ -38,9 +42,16 @@ class RC {
         return res.json(err);
       });
     } else if (req.body.command === 'get') {
-      vs.get(req.body.fileID).then((dir) => {
-        console.log(dir);
-        return res.json(dir);
+      vs.get(req.body.fileID).then((file) => {
+        console.log(file);
+          // let file = __dirname + '/upload-folder/dramaticpenguin.MOV';
+          // const filename = path.basename(file);
+          // const mimetype = mime.lookup(file);
+          // res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+          // res.setHeader('Content-type', mimetype);
+          // const filestream = fs.createReadStream(file);
+          res.setHeader('content-disposition', 'attachment; filename=filename.xml');
+          return file.pipe(res);
       }).catch((err) => {
         console.log(err);
         return res.json(err);
