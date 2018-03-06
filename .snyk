@@ -26,4 +26,8 @@ ignore:
     - mongoose > mongodb > mongodb-core > bson:
         reason: None given
         expires: '2018-03-30T17:36:49.348Z'
+  'npm:cookie-signature:20180111':
+    - express > cookie-signature:
+        reason: None given
+        expires: '2018-04-05T13:42:50.460Z'
 patch: {}
