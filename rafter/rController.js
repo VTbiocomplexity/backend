@@ -44,21 +44,34 @@ class RC {
     } else if (req.body.command === 'get') {
       vs.get(req.body.fileID).then((file) => {
         console.log(file);
-          // let file = __dirname + '/upload-folder/dramaticpenguin.MOV';
-          // const filename = path.basename(file);
-          // const mimetype = mime.lookup(file);
-          // res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-          // res.setHeader('Content-type', mimetype);
-          // const filestream = fs.createReadStream(file);
-          res.setHeader('content-disposition', 'attachment; filename=filename.xml');
-          return file.pipe(res);
+        // let file = __dirname + '/upload-folder/dramaticpenguin.MOV';
+        // const filename = path.basename(file);
+        // const mimetype = mime.lookup(file);
+        // res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+        // res.setHeader('Content-type', mimetype);
+        // const filestream = fs.createReadStream(file);
+        res.setHeader('content-disposition', 'attachment; filename=filename.xml');
+        return file.pipe(res);
       }).catch((err) => {
         console.log(err);
         return res.json(err);
       });
     } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'file') {
+      console.log('line 60');
       vs.create('/home/' + req.body.userName + req.body.rafterFile.path + '/', { name: req.body.rafterFile.name }).then((data) => {
-        console.log(data);
+        // console.log(data);
+        console.log('line 62');
+        if (req.body.rafterFile.content !== null && req.body.rafterFile.content !== undefined && req.body.rafterFile.content !== '') {
+          console.log('line 64');
+          vs.put('/home/' + req.body.userName + req.body.rafterFile.path + '/' + req.body.rafterFile.name, req.body.rafterFile.content).then((data2) => {
+            console.log('put file content into a file');
+            console.log(data2);
+            return res.json(data2);
+          }).catch((err2) => {
+            console.log(err2);
+            return res.json(err2);
+          });
+        }
         return res.json(data);
       }).catch((err) => {
         console.log(err);
