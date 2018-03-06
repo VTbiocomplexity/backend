@@ -155,4 +155,18 @@ describe('The Unit Test for Rafter', () => {
     await rafter.runVolumeService(req, res);
   });
 
+  it('downloads a new folder', async() => {
+    const req = { body: { command: 'get', token: 'token', userName: 'yoyo', fileID: '123' } };
+    const res = {
+      setHeader() {}
+      // status: (code) => {
+      //   expect(code).to.equal(200);
+      //   return { json(item) {} };
+      // }
+    };
+    const init = { get() { return Promise.resolve({ name: 'filename' }); } };
+    req.body.init = init;
+    await rafter.runVolumeService(req, res);
+  });
+
 });
