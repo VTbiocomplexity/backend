@@ -90,6 +90,36 @@ describe('The Unit Test for Rafter', () => {
     req.body.init = init;
     await rafter.runVolumeService(req, res);
   });
+  it('creates a new file and puts the contents', async() => {
+    const req = { body: { command: 'create', token: 'token', userName: 'yoyo', rafterFile: { name: 'filename', createType: 'file', content:'howdy' } } };
+    const res = {
+      json(item) {},
+      status: (code) => {
+        expect(code).to.equal(200);
+        return { json(item) {} };
+      }
+    };
+    const init = { create() { return Promise.resolve({ name: 'filename' }); },
+    put() { return Promise.resolve({ name: 'filename' }); }
+    };
+    req.body.init = init;
+    await rafter.runVolumeService(req, res);
+  });
+  it('creates a new file but has error on putting the contents', async() => {
+    const req = { body: { command: 'create', token: 'token', userName: 'yoyo', rafterFile: { name: 'filename', createType: 'file', content:'howdy' } } };
+    const res = {
+      json(item) {},
+      status: (code) => {
+        // expect(code).to.equal(200);
+        // return { json(item) {} };
+      }
+    };
+    const init = { create() { return Promise.resolve({ name: 'filename' }); },
+    put() { return Promise.reject(new Error('fail')); }
+    };
+    req.body.init = init;
+    await rafter.runVolumeService(req, res);
+  });
   it('tries to create a new file but has error', async() => {
     const req = { body: { command: 'create', token: 'token', userName: 'yoyo', rafterFile: { name: 'filename', createType: 'file' } } };
     const res = {
