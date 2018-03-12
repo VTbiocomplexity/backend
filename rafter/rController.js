@@ -41,7 +41,16 @@ class RC {
         console.log(err);
         return res.json(err);
       });
-    } else if (req.body.command === 'get') {
+    }  else if (req.body.command === 'remove') {
+      console.log('line45');
+          vs.remove('/' + req.body.fileID).then((data) => {
+            console.log(data);
+            return res.json(data);
+          }).catch((err) => {
+            console.log(err);
+            return res.json(err);
+          });
+      } else if (req.body.command === 'get') {
       vs.get(req.body.fileID).then((file) => {
         console.log(file);
         // let file = __dirname + '/upload-folder/dramaticpenguin.MOV';
