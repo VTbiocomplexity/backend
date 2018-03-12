@@ -185,7 +185,7 @@ describe('The Unit Test for Rafter', () => {
     await rafter.runVolumeService(req, res);
   });
 
-  it('downloads a new folder', async() => {
+  it('downloads a file', async() => {
     const req = { body: { command: 'get', token: 'token', userName: 'yoyo', fileID: '123' } };
     const res = {
       setHeader() {}
@@ -195,6 +195,35 @@ describe('The Unit Test for Rafter', () => {
       // }
     };
     const init = { get() { return Promise.resolve({ name: 'filename' }); } };
+    req.body.init = init;
+    await rafter.runVolumeService(req, res);
+  });
+
+  it('deletes a file', async() => {
+    const req = { body: { command: 'remove', token: 'token', userName: 'yoyo', fileID: '123' } };
+    const res = {
+      json() {}
+      // status: (code) => {
+      //   expect(code).to.equal(200);
+      //   return { json(item) {} };
+      // }
+    };
+    const init = { remove() { return Promise.resolve(true); } };
+    req.body.init = init;
+    await rafter.runVolumeService(req, res);
+  });
+
+  it('catches error on delete a file', async() => {
+    const req = { body: { command: 'remove', token: 'token', userName: 'yoyo', fileID: '123' } };
+    const res = {
+      json(err) {
+      // status: (code) => {
+      expect(err.message).to.be('you fail');
+      }
+      //   return { json(item) {} };
+      // }
+    };
+    const init = { remove() { return Promise.reject(new Error({ message: 'you fail' })); } };
     req.body.init = init;
     await rafter.runVolumeService(req, res);
   });
