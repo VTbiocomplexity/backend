@@ -3178,9 +3178,9 @@ node-pre-gyp@^0.6.36:
     tar "^2.2.1"
     tar-pack "^3.4.0"
 
-node-rafter@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/node-rafter/-/node-rafter-1.0.0.tgz#55e97535bb57cd20cfcfb0754b71b0b0a8f5d578"
+node-rafter@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/node-rafter/-/node-rafter-1.0.1.tgz#fe4d9aed9228c5b0d892d9ee38c680930c870b33"
   dependencies:
     node-fetch "^1.7.3"
     urijs "^1.19.0"
