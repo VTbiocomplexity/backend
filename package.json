@@ -41,7 +41,6 @@
     "bluebird": "^3.5.1",
     "body-parser": "^1.17.1",
     "cors": "^2.8.1",
-    "cryptr": "^3.0.0",
     "dotenv": "^4.0.0",
     "express": "^4.15.2",
     "express-sslify": "^1.2.0",
