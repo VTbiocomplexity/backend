@@ -49,8 +49,8 @@
     "moment": "^2.15.2",
     "mongoose": "^4.10.0",
     "morgan": "^1.9.0",
-    "nodemailer": "^4.3.0",
     "node-rafter": "^1.0.1",
+    "nodemailer": "^4.3.0",
     "request": "^2.83.0",
     "snyk": "^1.69.10"
   },

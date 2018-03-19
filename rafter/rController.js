@@ -1,6 +1,8 @@
 const request = require('request');
 const VolumeService = require('node-rafter').VolumeService;
-const accessTokenUrl = 'https://rafter.bi.vt.edu/usersvc/login';
+// const accessTokenUrl = 'https://rafter.bi.vt.edu/usersvc/login';
+// const cryptr = require('cryptr');
+// const jwtDecode = require('jwt-decode');
 // const path = require('path');
 // const mime = require('mime');
 // const fs = require('fs');
@@ -43,14 +45,14 @@ class RC {
       });
     }  else if (req.body.command === 'remove') {
       console.log('line45');
-          vs.remove('/' + req.body.fileID).then((data) => {
-            console.log(data);
-            return res.json(data);
-          }).catch((err) => {
-            console.log(err);
-            return res.json(err);
-          });
-      } else if (req.body.command === 'get') {
+      vs.remove('/' + req.body.fileID).then((data) => {
+        console.log(data);
+        return res.json(data);
+      }).catch((err) => {
+        console.log(err);
+        return res.json(err);
+      });
+    } else if (req.body.command === 'get') {
       vs.get(req.body.fileID).then((file) => {
         console.log(file);
         // let file = __dirname + '/upload-folder/dramaticpenguin.MOV';
@@ -102,46 +104,121 @@ class RC {
     // return res.json(vs);
   }
 
-  static rlogin(req, res) {
-    console.log(req.body.id);
-    const myID = encodeURIComponent(req.body.id);
-    const myPassword = encodeURIComponent(req.body.password);
+  static rinit(req, res) {
+    console.log(req.body);
+    const myId = req.body.id;
+    const mySecret = req.body.secret;
     const fetchData = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: 'id=' + myID + '&password=' + myPassword
-    };
-    // console.log(fetchData);
-    request(accessTokenUrl, fetchData, (err, response, body) => {
-      // console.log('this is the body from initial request ' + body);
-      // console.log(response);
-      const resData = response.toJSON();
-      // console.log('this is the status code ' + resData.statusCode);
-      // console.log('this is the cookie ' + resData.headers['set-cookie']);
-      const sendCookie  = resData.headers['set-cookie'];
-      // sendCookie = sendCookie.replace('connect.sid=', '');
-      // const cookieObj = { cookie: sendCookie };
-      // cookieObj = JSON.stringify(cookieObj);
-      // return res.status(200).json(body);
-      if (resData.statusCode === 301) {
-        const data2 = {
-          method: 'GET',
+          method: 'POST',
           headers: {
-            Cookie: sendCookie[0]
-          }
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+          },
+          // body: JSON.stringify({ id: request.body.id, secret: request.body.secret })
+          body: JSON.stringify({ secret: mySecret })
         };
-        request('https://rafter.bi.vt.edu/usersvc/', data2, (err, response, body) => {
-          console.log('trying to get the token now');
-          return res.json(body);
+        request('https://rafter.bi.vt.edu/usersvc/authenticate/' + myId, fetchData, (err, response, data) => {
+          if (err) {
+            res.json(err);
+          } else {
+          console.log(data);
+          res.json(data);
+        }
         });
-        // return res.status(200).json(sendCookie);
-      } else {
-        // console.log(body);
-        return res.status(400).json(body);
-      }
-    });
+    // request.post(
+// 'https://rafter.bi.vt.edu/usersvc/authenticate/' + '?application_id=' + myId,
+// {
+// form: {secret: secret}
+// },
+
   }
+
+//   static rlogin(req, res) {
+//     console.log(req.body.id);
+//     const myID = encodeURIComponent(req.body.id);
+//     const myPassword = encodeURIComponent(req.body.password);
+//     const fetchData = {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/x-www-form-urlencoded'
+//       },
+//       body: 'id=' + myID + '&password=' + myPassword
+//     };
+//     // console.log(fetchData);
+//     request(accessTokenUrl, fetchData, (err, response, body) => {
+//       // console.log('this is the body from initial request ' + body);
+//       // console.log(response);
+//       const resData = response.toJSON();
+//       console.log('this is the status code ' + resData.statusCode);
+//       console.log('this is the cookie ' + resData.headers['set-cookie']);
+//       const sendCookie  = resData.headers['set-cookie'];
+//       // sendCookie = sendCookie.replace('connect.sid=', '');
+//       // const cookieObj = { cookie: sendCookie };
+//       // cookieObj = JSON.stringify(cookieObj);
+//       // return res.status(200).json(body);
+//       if (resData.statusCode === 301) {
+//         const data2 = {
+//           method: 'GET',
+//           headers: {
+//             Cookie: sendCookie[0],
+//             Accept: 'application/json'
+//           }
+//         };
+//         request('https://rafter.bi.vt.edu/usersvc/application/', data2, (err, response) => {
+//           console.log('trying to get the token now');
+//           const appBody = JSON.parse(response.body);
+//           const myId = appBody[0].id;
+//           let myKey = appBody[0].access_token;
+//           console.log(myId);
+//           console.log(myKey);
+//           const myKey1 = cryptr(myKey, 'base64');
+//           console.log('line146');
+//           console.log(myKey1);
+//           // const data3 = {
+//           //   method: 'POST',
+//           //   headers: {
+//           //     Cookie: sendCookie[0],
+//           //     Accept: 'application/json'
+//           //     // 'Content-Type': 'application/json'
+//           //     // 'Content-Type': 'application/x-www-form-urlencoded'
+//           //   },
+//           //   form: { secret: myKey }
+//           //   // body: JSON.stringify({ secret: myKey })
+//           // };
+//           const url = 'https://rafter.bi.vt.edu/usersvc/authenticate/' + myId;
+//           // request('https://rafter.bi.vt.edu/usersvc/application/' + myId + '/', data3, (err, response2)  => {
+//           //   console.log('line 151');
+//           //   const appBody2 = JSON.parse(response2.body);
+//           //   console.log(appBody2);
+//           // });
+//           myKey = 'jAAPwgxQxYkJqGmxpEvVYyXXcyBt72M4';
+//           request.post(url,
+//             {
+//               headers: {
+//                 Cookie: sendCookie[0],
+//                 Accept: 'application/json',
+//               'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify({ secret: myKey })
+//           },
+//             (err, response, data) => {
+//               if (err) { return res.status(400).json(err); }
+//               console.log('token now?');
+//               console.log(data);
+//               return res.json(data);
+//             }
+//           );
+//
+//           // const applicationPage = response.toJSON();
+//           // console.log(applicationPage);
+//           // return res.json(body);
+//         });
+//         // return res.status(200).json(sendCookie);
+//       } else {
+//         // console.log(body);
+//         return res.status(400).json(body);
+//       }
+//     });
+//   }
 }
 module.exports = RC;
