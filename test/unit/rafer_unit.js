@@ -1,8 +1,51 @@
 const rafter = require('../../rafter/rController');
 // const VolumeService = require('rafter').VolumeService;
-// const nock = require('nock');
+const nock = require('nock');
 // VolumeService.list = function() { return promise.resolve({ json: () => Promise.resolve({ name: 'filename' }) }); };
 describe('The Unit Test for Rafter', () => {
+
+  it('initializes a rafter user (returns their token)', (done) => {
+    const token = 'token';
+    nock('https://rafter.bi.vt.edu')
+      .defaultReplyHeaders({
+        'set-cookie':['cookie']
+      })
+      .post('/usersvc/authenticate/123')
+        .reply(200, token);
+    // nock('https://rafter.bi.vt.edu')
+    //   .get('/usersvc/')
+    //   .reply(200, token);
+    const req = { body: { id: '123', secret: 'howdy' } };
+    const res = {
+        json: (data) => {
+        expect(data).to.equal('token');
+        done();
+      }
+    };
+    rafter.rinit(req, res);
+  });
+
+  it('sends error on rafter init)', (done) => {
+    // const token = 'token';
+    nock('https://rafter.bi.vt.edu')
+      .defaultReplyHeaders({
+        'set-cookie':['cookie']
+      })
+      .post('/usersvc/authenticate/123')
+        .replyWithError({ status: 400 });
+    // nock('https://rafter.bi.vt.edu')
+    //   .get('/usersvc/')
+    //   .reply(200, token);
+    const req = { body: { id: '123', secret: 'howdy' } };
+    const res = {
+        json: (err) => {
+        expect(err.status).to.equal(400);
+        done();
+      }
+    };
+    rafter.rinit(req, res);
+  });
+
 
   // it('should login a rafter user', (done) => {
   //   nock('https://rafter.bi.vt.edu')
