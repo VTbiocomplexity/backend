@@ -4,11 +4,13 @@
 [![Issue Count](https://codeclimate.com/github/VTbiocomplexity/backend/badges/issue_count.svg)](https://codeclimate.com/github/VTbiocomplexity/backend/issues)
 [![Maintainability](https://api.codeclimate.com/v1/badges/8e22ce19c2952eae93e2/maintainability)](https://codeclimate.com/github/VTbiocomplexity/backend/maintainability)
 [![Known Vulnerabilities](https://snyk.io/test/github/VTbiocomplexity/backend/badge.svg)](https://snyk.io/test/github/VTbiocomplexity/backend)
-## Installation
 
-* Install Node.js, version listed in package.json
-* Install Yarn (not required, but recommended), see Yarn's installation instructions for your OS.
-* create a .env file at the project root, then request the contents from an app owner
-* download node-rafer from biocomplexity gitlab and unzip it to your project root folder (follow the gitlab repo to keep your local copy up-to-date)
-* For initial or recovery, `npm run clean install`
-* For minor updates, `yarn install`
+## Installation
+* Install node version manager (nvm), close and open terminal afterwards
+* Use nvm to install Node.js, version listed in package.json 
+  - ```nvm install lts/*```
+* Install Yarn - see Yarn's installation instructions for your OS.
+* Install Chrome (needed for browser-based testing)
+* Clone this repo, then navigate into the project folder
+* Create a .env file at the project root, then request the contents from an app owner.
+* ```yarn install``` 
