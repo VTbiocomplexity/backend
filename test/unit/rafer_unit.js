@@ -17,12 +17,13 @@ describe('The Unit Test for Rafter', () => {
     //   .reply(200, token);
     const req = { body: { id: '123', secret: 'howdy' } };
     const res = {
+        status(code) { return { json() {} }; },
         json: (data) => {
         expect(data).to.equal('token');
-        done();
       }
     };
     rafter.rinit(req, res);
+  done();
   });
 
   it('sends error on rafter init)', (done) => {

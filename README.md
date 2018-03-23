@@ -6,11 +6,16 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/VTbiocomplexity/backend/badge.svg)](https://snyk.io/test/github/VTbiocomplexity/backend)
 
 ## Installation
-* Install node version manager (nvm), close and open terminal afterwards
-* Use nvm to install Node.js, version listed in package.json 
-  - ```nvm install lts/*```
-* Install Yarn - see Yarn's installation instructions for your OS.
-* Install Chrome (needed for browser-based testing)
-* Clone this repo, then navigate into the project folder
-* Create a .env file at the project root, then request the contents from an app owner.
-* ```yarn install``` 
+1. Install node version manager (nvm), close and open terminal afterwards
+2. Use nvm to install Node.js, version listed in package.json<br>```nvm install lts/*```
+3. Install Yarn - see Yarn's installation instructions for your OS.
+4. Install Chrome (needed for browser-based testing)
+5. Clone this repo, then navigate into the project folder
+6. Create a .env file at the project root, then request the contents from an app owner.
+7. ```yarn install```
+
+## Reference Documents
+* [NDSSL Getting Started Developing Web Apps](https://docs.google.com/document/d/1V15XleMffaTZIvFHdJUfZulFovaUeGCe_NujhDJpqbQ/edit?usp=sharing)
+* [NDSSL Web App Developer Guide](https://docs.google.com/document/d/14L9S5yM5-NvdZY8hnNEjUDsyD9LjwbX60qyfX5DfQcc/edit?usp=sharing)
+* [Rafter End User Guide](https://docs.google.com/document/d/1BF11gUYfXU8xBSsBW3J2wjK2HWf6NnWzz0y-1XtzoNE/edit?usp=sharing)
+* [Rafter Advanced Applications](https://docs.google.com/document/d/1FIetg3VAuAXj4ZRgjMm005gwHpGXSPTE38ZwtW0djjs/edit?usp=sharing)

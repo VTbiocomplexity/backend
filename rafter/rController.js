@@ -1,23 +1,11 @@
 const request = require('request');
 const VolumeService = require('node-rafter').VolumeService;
-// const accessTokenUrl = 'https://rafter.bi.vt.edu/usersvc/login';
-// const cryptr = require('cryptr');
-// const jwtDecode = require('jwt-decode');
-// const path = require('path');
-// const mime = require('mime');
-// const fs = require('fs');
-
+const User = require('../model/user/user-schema');
 let vs;
 
 class RC {
   static initVolS(req, res) {
-    // console.log(req.body.token);
-    // /* istanbul ignore else */
-    // if (req.body.init !== null && req.body.init !== undefined) {
-    //   vs = req.body.init;
-    // } else {
     vs = new VolumeService('https://rafter.bi.vt.edu/volumesvc/', req.body.token);
-    // }
     vs.init();
     return res.status(200).json({ home: true });
   }
@@ -98,116 +86,128 @@ class RC {
     const myId = req.body.id;
     const mySecret = req.body.secret;
     const fetchData = {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json'
-          },
-          // body: JSON.stringify({ id: request.body.id, secret: request.body.secret })
-          body: JSON.stringify({ secret: mySecret })
-        };
-        request('https://rafter.bi.vt.edu/usersvc/authenticate/' + myId, fetchData, (err, response, data) => {
-          if (err) {
-            res.json(err);
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      // body: JSON.stringify({ id: request.body.id, secret: request.body.secret })
+      body: JSON.stringify({ secret: mySecret })
+    };
+    request('https://rafter.bi.vt.edu/usersvc/authenticate/' + myId, fetchData, (err, response, data) => {
+      if (err) {
+        res.json(err);
+      } else {
+        // console.log(data);
+        const filter = { _id: req.body.uid };
+        User.findOne(filter, (err, existingUser) => {
+          console.log(existingUser);
+          if (existingUser) {
+            console.log('user exist');
+            existingUser.r_app_id = myId;
+            existingUser.r_app_secret = mySecret;
+            existingUser.save();
+            res.json(data);
           } else {
-          console.log(data);
-          res.json(data);
-        }
+            res.status(400).json({ error:'rafter login failed' });
+          }
         });
+      }
+    });
     // request.post(
-// 'https://rafter.bi.vt.edu/usersvc/authenticate/' + '?application_id=' + myId,
-// {
-// form: {secret: secret}
-// },
+    // 'https://rafter.bi.vt.edu/usersvc/authenticate/' + '?application_id=' + myId,
+    // {
+    // form: {secret: secret}
+    // },
 
   }
 
-//   static rlogin(req, res) {
-//     console.log(req.body.id);
-//     const myID = encodeURIComponent(req.body.id);
-//     const myPassword = encodeURIComponent(req.body.password);
-//     const fetchData = {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/x-www-form-urlencoded'
-//       },
-//       body: 'id=' + myID + '&password=' + myPassword
-//     };
-//     // console.log(fetchData);
-//     request(accessTokenUrl, fetchData, (err, response, body) => {
-//       // console.log('this is the body from initial request ' + body);
-//       // console.log(response);
-//       const resData = response.toJSON();
-//       console.log('this is the status code ' + resData.statusCode);
-//       console.log('this is the cookie ' + resData.headers['set-cookie']);
-//       const sendCookie  = resData.headers['set-cookie'];
-//       // sendCookie = sendCookie.replace('connect.sid=', '');
-//       // const cookieObj = { cookie: sendCookie };
-//       // cookieObj = JSON.stringify(cookieObj);
-//       // return res.status(200).json(body);
-//       if (resData.statusCode === 301) {
-//         const data2 = {
-//           method: 'GET',
-//           headers: {
-//             Cookie: sendCookie[0],
-//             Accept: 'application/json'
-//           }
-//         };
-//         request('https://rafter.bi.vt.edu/usersvc/application/', data2, (err, response) => {
-//           console.log('trying to get the token now');
-//           const appBody = JSON.parse(response.body);
-//           const myId = appBody[0].id;
-//           let myKey = appBody[0].access_token;
-//           console.log(myId);
-//           console.log(myKey);
-//           const myKey1 = cryptr(myKey, 'base64');
-//           console.log('line146');
-//           console.log(myKey1);
-//           // const data3 = {
-//           //   method: 'POST',
-//           //   headers: {
-//           //     Cookie: sendCookie[0],
-//           //     Accept: 'application/json'
-//           //     // 'Content-Type': 'application/json'
-//           //     // 'Content-Type': 'application/x-www-form-urlencoded'
-//           //   },
-//           //   form: { secret: myKey }
-//           //   // body: JSON.stringify({ secret: myKey })
-//           // };
-//           const url = 'https://rafter.bi.vt.edu/usersvc/authenticate/' + myId;
-//           // request('https://rafter.bi.vt.edu/usersvc/application/' + myId + '/', data3, (err, response2)  => {
-//           //   console.log('line 151');
-//           //   const appBody2 = JSON.parse(response2.body);
-//           //   console.log(appBody2);
-//           // });
-//           myKey = 'jAAPwgxQxYkJqGmxpEvVYyXXcyBt72M4';
-//           request.post(url,
-//             {
-//               headers: {
-//                 Cookie: sendCookie[0],
-//                 Accept: 'application/json',
-//               'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify({ secret: myKey })
-//           },
-//             (err, response, data) => {
-//               if (err) { return res.status(400).json(err); }
-//               console.log('token now?');
-//               console.log(data);
-//               return res.json(data);
-//             }
-//           );
-//
-//           // const applicationPage = response.toJSON();
-//           // console.log(applicationPage);
-//           // return res.json(body);
-//         });
-//         // return res.status(200).json(sendCookie);
-//       } else {
-//         // console.log(body);
-//         return res.status(400).json(body);
-//       }
-//     });
-//   }
+  //   static rlogin(req, res) {
+  //     console.log(req.body.id);
+  //     const myID = encodeURIComponent(req.body.id);
+  //     const myPassword = encodeURIComponent(req.body.password);
+  //     const fetchData = {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/x-www-form-urlencoded'
+  //       },
+  //       body: 'id=' + myID + '&password=' + myPassword
+  //     };
+  //     // console.log(fetchData);
+  //     request(accessTokenUrl, fetchData, (err, response, body) => {
+  //       // console.log('this is the body from initial request ' + body);
+  //       // console.log(response);
+  //       const resData = response.toJSON();
+  //       console.log('this is the status code ' + resData.statusCode);
+  //       console.log('this is the cookie ' + resData.headers['set-cookie']);
+  //       const sendCookie  = resData.headers['set-cookie'];
+  //       // sendCookie = sendCookie.replace('connect.sid=', '');
+  //       // const cookieObj = { cookie: sendCookie };
+  //       // cookieObj = JSON.stringify(cookieObj);
+  //       // return res.status(200).json(body);
+  //       if (resData.statusCode === 301) {
+  //         const data2 = {
+  //           method: 'GET',
+  //           headers: {
+  //             Cookie: sendCookie[0],
+  //             Accept: 'application/json'
+  //           }
+  //         };
+  //         request('https://rafter.bi.vt.edu/usersvc/application/', data2, (err, response) => {
+  //           console.log('trying to get the token now');
+  //           const appBody = JSON.parse(response.body);
+  //           const myId = appBody[0].id;
+  //           let myKey = appBody[0].access_token;
+  //           console.log(myId);
+  //           console.log(myKey);
+  //           const myKey1 = cryptr(myKey, 'base64');
+  //           console.log('line146');
+  //           console.log(myKey1);
+  //           // const data3 = {
+  //           //   method: 'POST',
+  //           //   headers: {
+  //           //     Cookie: sendCookie[0],
+  //           //     Accept: 'application/json'
+  //           //     // 'Content-Type': 'application/json'
+  //           //     // 'Content-Type': 'application/x-www-form-urlencoded'
+  //           //   },
+  //           //   form: { secret: myKey }
+  //           //   // body: JSON.stringify({ secret: myKey })
+  //           // };
+  //           const url = 'https://rafter.bi.vt.edu/usersvc/authenticate/' + myId;
+  //           // request('https://rafter.bi.vt.edu/usersvc/application/' + myId + '/', data3, (err, response2)  => {
+  //           //   console.log('line 151');
+  //           //   const appBody2 = JSON.parse(response2.body);
+  //           //   console.log(appBody2);
+  //           // });
+  //           myKey = 'jAAPwgxQxYkJqGmxpEvVYyXXcyBt72M4';
+  //           request.post(url,
+  //             {
+  //               headers: {
+  //                 Cookie: sendCookie[0],
+  //                 Accept: 'application/json',
+  //               'Content-Type': 'application/json'
+  //             },
+  //             body: JSON.stringify({ secret: myKey })
+  //           },
+  //             (err, response, data) => {
+  //               if (err) { return res.status(400).json(err); }
+  //               console.log('token now?');
+  //               console.log(data);
+  //               return res.json(data);
+  //             }
+  //           );
+  //
+  //           // const applicationPage = response.toJSON();
+  //           // console.log(applicationPage);
+  //           // return res.json(body);
+  //         });
+  //         // return res.status(200).json(sendCookie);
+  //       } else {
+  //         // console.log(body);
+  //         return res.status(400).json(body);
+  //       }
+  //     });
+  //   }
 }
 module.exports = RC;
