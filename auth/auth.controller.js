@@ -21,8 +21,8 @@ exports.signup = function(req, res) {
   });
   User.findOne({ email: req.body.email }, (err, existingUser) => {
     if (existingUser) { return res.status(409).send({ message: 'Email is already taken' }); }
-    User.findOne({ id: req.body.id }, (err, existingUser2) => {
-      if (existingUser2) { return res.status(409).send({ message: 'Userid is already taken' }); }
+    // User.findOne({ id: req.body.id }, (err, existingUser2) => {
+    //   if (existingUser2) { return res.status(409).send({ message: 'Userid is already taken' }); }
       const validData = user.validateSignup();
       if (validData !== '') { return res.status(409).send({ message: validData }); }
       user.save(() => {
@@ -31,7 +31,7 @@ exports.signup = function(req, res) {
         authUtils.sendEmail(mailbody, user.email, 'Verify Your Email Address');
         return res.status(201).json({ email: user.email });
       });
-    });
+    // });
   });
 };
 
