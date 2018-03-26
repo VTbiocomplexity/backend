@@ -103,7 +103,7 @@ class RC {
         User.findOne(filter, (err, existingUser) => {
           console.log(existingUser);
           if (existingUser) {
-            console.log('user exist');
+            console.log('user exists, yay!');
             existingUser.r_app_id = myId;
             existingUser.r_app_secret = mySecret;
             existingUser.save();
