@@ -16,7 +16,7 @@
     "mocha": "cross-env NODE_ENV=test mocha -r ./test/bootstrap.js test/**/*.js",
     "nyc": "nyc nyc --reporter=lcov --reporter=text-lcov npm run mocha",
     "test": "eslint . && npm run nyc",
-    "test:debug": "./node_modules/.bin/mocha --inspect-brk -r ./test/bootstrap.js test/**/*.js",
+    "test:debug": "cross-env NODE_ENV=test mocha debug -r ./test/bootstrap.js test/**/*.js",
     "eslint-fix": "./node_modules/eslint/bin/eslint.js --fix .",
     "postinstallsh": "./postinstall.sh",
     "snyk-protect": "snyk protect",
