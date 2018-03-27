@@ -185,39 +185,39 @@ describe('Functional test User',  () => {
     });
   });
 
-  it('should get the new user by id', (done) => {
-    const User = new User1();
-    User.name = 'foo2';
-    User.email = 'foo2@example.com';
-    User.save((err) => {
-      const Uid = User._id;
-      chai.request(server)
-      .get('/user/' + Uid)
-      .set({ origin: allowedUrl })
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-      .end((err, res) => {
-        expect(res).to.have.status(200);
-        done();
-      });
-    });
-  });
+  // it('should get the new user by id', (done) => {
+  //   const User = new User1();
+  //   User.name = 'foo2';
+  //   User.email = 'foo2@example.com';
+  //   User.save((err) => {
+  //     const Uid = User._id;
+  //     chai.request(server)
+  //     .get('/user/' + Uid)
+  //     .set({ origin: allowedUrl })
+  //     .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+  //     .end((err, res) => {
+  //       expect(res).to.have.status(200);
+  //       done();
+  //     });
+  //   });
+  // });
 
-  it('should update the new user by id', (done) => {
-    const User = new User1();
-    User.name = 'foo3';
-    User.email = 'foo3@example.com';
-    User.save((err) => {
-      const Uid = User._id;
-      chai.request(server)
-      .put('/user/' + Uid)
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-      .send({ userType: 'Developer' })
-      .end((err, res) => {
-        expect(res).to.have.status(200);
-        done();
-      });
-    });
-  });
+  // it('should update the new user by id', (done) => {
+  //   const User = new User1();
+  //   User.name = 'foo3';
+  //   User.email = 'foo3@example.com';
+  //   User.save((err) => {
+  //     const Uid = User._id;
+  //     chai.request(server)
+  //     .put('/user/' + Uid)
+  //     .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+  //     .send({ userType: 'Developer' })
+  //     .end((err, res) => {
+  //       expect(res).to.have.status(200);
+  //       done();
+  //     });
+  //   });
+  // });
 
   it('should delete the user by id', (done) => {
     const User = new User1();
@@ -247,23 +247,22 @@ describe('Functional test User',  () => {
     });
   });
 
-  it('should not signup the new user if the userid already exists', (done) => {
-    const User = new User1();
-    User.name = 'foo4';
-    User.email = 'foo4@example.com';
-    User.id = 'yoyo23';
-    User.save((err) => {
-      chai.request(server)
-      .post('/auth/signup')
-      // .set({ origin: allowedUrl })
-      // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-      .send({ email: 'foobar@example.com', name: 'foomanchew', password: 'lottanumbers35555', id: 'yoyo23' })
-      .end((err, res) => {
-        expect(res).to.have.status(409);
-        done();
-      });
-    });
-  });
+  // it('should not signup the new user if the userid already exists', (done) => {
+  //   const User = new User1();
+  //   User.name = 'foo4';
+  //   User.email = 'foo4@example.com';
+  //   User.id = 'yoyo23';
+  //   User.save((err) => {
+  //     chai.request(server)
+  //     .post('/auth/signup')
+  //     // .set({ origin: allowedUrl })
+  //     // .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+  //     .send({ email: 'foobar@example.com', name: 'foomanchew', password: 'lottanumbers35555', id: 'yoyo23' })
+  //     .end((err, res) => {
+  //       expect(res).to.have.status(409);
+  //       done();
+  //     });
+  //   });
   // });
 
   it('should not signup the new user if the email already exists', (done) => {
