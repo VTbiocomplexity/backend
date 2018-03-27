@@ -15,6 +15,7 @@ const userSchema = new Schema({
   primaryApp: { type: String, required: false },
   r_app_id: { type: String, required: false },
   r_app_secret: { type: String, required: false },
+  rafterApps: { type: Array, default: [], required: false },
   userPhone: { type: Number, required: false },
   userType: { type: String, required: false },
   userStreetAddress: { type: String, required: false },

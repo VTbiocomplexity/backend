@@ -85,6 +85,7 @@ class RC {
     console.log(req.body);
     const myId = req.body.id;
     const mySecret = req.body.secret;
+    const myAppName = req.body.appName;
     const fetchData = {
       method: 'POST',
       headers: {
@@ -104,8 +105,35 @@ class RC {
           console.log(existingUser);
           if (existingUser) {
             console.log('user exists, yay!');
-            existingUser.r_app_id = myId;
-            existingUser.r_app_secret = mySecret;
+            // const fetchData2 = {
+            //   method:'POST',
+            //   headers: {
+            //     'Content-Type': 'application/json',
+            //     Accept: 'text/html'
+            //   },
+            //   // body: JSON.stringify({ id: request.body.id, secret: request.body.secret })
+            //   body: JSON.stringify({ secret: mySecret })
+            // };
+            // request('https://rafter.bi.vt.edu/usersvc/application/' + myId, fetchData2, (err, response, data1) => {
+            //   console.log(data1);
+            // });
+            // existingUser.r_app_id = myId;
+            // existingUser.r_app_secret = mySecret;
+            if (existingUser.rafterApp !== null && existingUser.rafterApp !== undefined) {
+              console.log(existingUser.rafterApp);
+              // push only if it is not already there add a checker here
+              let found = false;
+              for (let i = 0; i < existingUser.rafterApps.length; i += 1) {
+                if (existingUser.rafterApps[i].r_app_id === myId) {
+                  found = true;
+                }
+              }
+              if (!found) {
+                existingUser.rafterApps.push({ r_app_id: myId, r_app_secret: mySecret, r_app_name: myAppName });
+              }
+            } else {
+              existingUser.rafterApps = [{ r_app_id: myId, r_app_secret: mySecret, r_app_name: myAppName }];
+            }
             existingUser.save();
             res.json(data);
           } else {
