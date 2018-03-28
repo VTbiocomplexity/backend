@@ -104,8 +104,9 @@ class RC {
           console.log(existingUser);
           if (existingUser) {
             console.log('user exists, yay!');
-            if (existingUser.rafterApp !== null && existingUser.rafterApp !== undefined) {
-              console.log(existingUser.rafterApp);
+            /* istanbul ignore else */
+            if (existingUser.rafterApps !== null && existingUser.rafterApps !== undefined) {
+              console.log(existingUser.rafterApps);
               // push only if it is not already there add a checker here
               let found = false;
               for (let i = 0; i < existingUser.rafterApps.length; i += 1) {
@@ -119,8 +120,10 @@ class RC {
             } else {
               existingUser.rafterApps = [{ r_app_id: myId, r_app_secret: mySecret, r_app_name: myAppName }];
             }
-            existingUser.save();
-            res.json(data);
+            // existingUser.save();
+            existingUser.save(() => {
+              res.json(data);
+            });
           } else {
             res.status(400).json({ error:'rafter login failed' });
           }
