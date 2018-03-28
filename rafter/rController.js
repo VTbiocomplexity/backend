@@ -99,28 +99,14 @@ class RC {
       if (err) {
         res.json(err);
       } else {
-        // console.log(data);
         const filter = { _id: req.body.uid };
         User.findOne(filter, (err, existingUser) => {
           console.log(existingUser);
           if (existingUser) {
             console.log('user exists, yay!');
-            // const fetchData2 = {
-            //   method:'POST',
-            //   headers: {
-            //     'Content-Type': 'application/json',
-            //     Accept: 'text/html'
-            //   },
-            //   // body: JSON.stringify({ id: request.body.id, secret: request.body.secret })
-            //   body: JSON.stringify({ secret: mySecret })
-            // };
-            // request('https://rafter.bi.vt.edu/usersvc/application/' + myId, fetchData2, (err, response, data1) => {
-            //   console.log(data1);
-            // });
-            // existingUser.r_app_id = myId;
-            // existingUser.r_app_secret = mySecret;
-            if (existingUser.rafterApp !== null && existingUser.rafterApp !== undefined) {
-              console.log(existingUser.rafterApp);
+            /* istanbul ignore else */
+            if (existingUser.rafterApps !== null && existingUser.rafterApps !== undefined) {
+              console.log(existingUser.rafterApps);
               // push only if it is not already there add a checker here
               let found = false;
               for (let i = 0; i < existingUser.rafterApps.length; i += 1) {
@@ -134,8 +120,10 @@ class RC {
             } else {
               existingUser.rafterApps = [{ r_app_id: myId, r_app_secret: mySecret, r_app_name: myAppName }];
             }
-            existingUser.save();
-            res.json(data);
+            // existingUser.save();
+            existingUser.save(() => {
+              res.json(data);
+            });
           } else {
             res.status(400).json({ error:'rafter login failed' });
           }

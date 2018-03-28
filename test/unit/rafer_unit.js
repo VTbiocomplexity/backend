@@ -8,119 +8,157 @@ describe('The Unit Test for Rafter', () => {
   // let user;
   beforeEach((done) => {
     // Set up an existing user
-      mockgoose(mongoose).then(() => {
-       User1.collection.drop();
-       User1.ensureIndexes();
-       global.server = require('../../index'); // eslint-disable-line global-require
-       done();
+    mockgoose(mongoose).then(() => {
+      User1.collection.drop();
+      User1.ensureIndexes();
+      global.server = require('../../index'); // eslint-disable-line global-require
+      done();
     });
   });
-
-  // it.only('should create a new user', (done) => {
-  // const User = new User1();
-  // User.name = 'foo';
-  // User.email = 'foo@example.com';
-  // User.save((err) => {
-  //   const id = User._id;
-  //   expect(id).to.not.be.null; // eslint-disable-line no-unused-expressions
-  //   done();
-  // });
-  // });
 
   it('initializes a rafter user (returns their token)', (done) => {
     const User = new User1();
     User.name = 'foo';
     User.email = 'foo@example.com';
+    User.rafterApps = [{ r_app_id: '1234' }];
+    let userid;
     User.save((err) => {
-      const userid = User._id;
+      userid = User._id;
       expect(userid).to.not.be.null; // eslint-disable-line no-unused-expressions
-      const token = 'token';
-      nock('https://rafter.bi.vt.edu')
+      User1.findOne({ _id: userid }, (err, existingUser) => {
+        console.log('the user is there');
+        console.log(existingUser);
+        const token = 'token';
+        nock('https://rafter.bi.vt.edu')
         .defaultReplyHeaders({
           'set-cookie':['cookie']
         })
         .post('/usersvc/authenticate/123')
-          .reply(200, token);
-      const req = { body: { id: '123', secret: 'howdy', uid: userid } };
-      const res = {
+        .reply(200, token);
+        const req = { body: { id: '123', secret: 'howdy', uid: userid, appName: 'yo' } };
+        const res = {
           status(code) { return { json() {} }; },
           json: (data) => {
-          expect(data).to.equal('token');
-          done();
-        }
-      };
-      rafter.rinit(req, res);
+            expect(data).to.equal('token');
+            done();
+          }
+        };
+        console.log('the user id');
+        console.log(userid);
+        rafter.rinit(req, res);
+      });
     });
-    // const filter = { email: user.email };
-    // User1.findOne(filter, (err, existingUser) => {
-    //     console.log('this is the existing user');
-    //   console.log(existingUser);
-    // });
-
-    // console.log('this is the userid: ' + userid);
-    // console.log('this is the existing user');
-    // console.log(user);
-    // const User = new User1();
-    // User.save((err) => {
-  //   const token = 'token';
-  //   nock('https://rafter.bi.vt.edu')
-  //     .defaultReplyHeaders({
-  //       'set-cookie':['cookie']
-  //     })
-  //     .post('/usersvc/authenticate/123')
-  //       .reply(200, token);
-  //   const req = { body: { id: '123', secret: 'howdy', uid: userid } };
-  //   const res = {
-  //       status(code) { return { json() {} }; },
-  //       json: (data) => {
-  //       expect(data).to.equal('token');
-  //     }
-  //   };
-  //   rafter.rinit(req, res);
-  // done();
   });
+
+  it('initializes a rafter user and does not add a new rafter app to the user', (done) => {
+    const User = new User1();
+    User.name = 'foo';
+    User.email = 'foo@example.com';
+    User.rafterApps = [{ r_app_id: '123' }];
+    let userid;
+    User.save((err) => {
+      userid = User._id;
+      expect(userid).to.not.be.null; // eslint-disable-line no-unused-expressions
+      User1.findOne({ _id: userid }, (err, existingUser) => {
+        console.log('the user is there');
+        console.log(existingUser);
+        const token = 'token';
+        nock('https://rafter.bi.vt.edu')
+        .defaultReplyHeaders({
+          'set-cookie':['cookie']
+        })
+        .post('/usersvc/authenticate/123')
+        .reply(200, token);
+        const req = { body: { id: '123', secret: 'howdy', uid: userid, appName: 'yo' } };
+        const res = {
+          status(code) { return { json() {} }; },
+          json: (data) => {
+            expect(data).to.equal('token');
+            done();
+          }
+        };
+        console.log('the user id');
+        console.log(userid);
+        rafter.rinit(req, res);
+      });
+    });
+  });
+
+  // it('initializes a rafter user and handles the case where rafterApp attribute did not exist', (done) => {
+  //   const User = new User1();
+  //   User.name = 'foo';
+  //   User.email = 'foo@example.com';
+  //   User.rafterApps = null;
+  //   let userid;
+  //   User.save((err) => {
+  //     userid = User._id;
+  //     expect(userid).to.not.be.null; // eslint-disable-line no-unused-expressions
+  //     User1.findOne({ _id: userid }, (err, existingUser) => {
+  //       console.log('the user is there');
+  //       console.log(existingUser);
+  //       const token = 'token';
+  //       nock('https://rafter.bi.vt.edu')
+  //       .defaultReplyHeaders({
+  //         'set-cookie':['cookie']
+  //       })
+  //       .post('/usersvc/authenticate/123')
+  //       .reply(200, token);
+  //       const req = { body: { id: '123', secret: 'howdy', uid: userid, appName: 'yo' } };
+  //       const res = {
+  //         status(code) { return { json() {} }; },
+  //         json: (data) => {
+  //           expect(data).to.equal('token');
+  //           done();
+  //         }
+  //       };
+  //       console.log('the user id');
+  //       console.log(userid);
+  //       rafter.rinit(req, res);
+  //     });
+  //   });
+  // });
 
   it('sends error on init rafter user (no existing ndssl user)', (done) => {
     const token = 'token';
     nock('https://rafter.bi.vt.edu')
-      .defaultReplyHeaders({
-        'set-cookie':['cookie']
-      })
-      .post('/usersvc/authenticate/123')
-        .reply(200, token);
+    .defaultReplyHeaders({
+      'set-cookie':['cookie']
+    })
+    .post('/usersvc/authenticate/123')
+    .reply(200, token);
     // nock('https://rafter.bi.vt.edu')
     //   .get('/usersvc/')
     //   .reply(200, token);
     const req = { body: { id: '123', secret: 'howdy', uid: 'yo' } };
     const res = {
-        status(code) { expect(status).to.be(400); return { json() {} }; },
-        json: (data) => {
+      status(code) { expect(status).to.be(400); return { json() {} }; },
+      json: (data) => {
         expect(data).to.equal('token');
       }
     };
     rafter.rinit(req, res);
-  done();
+    done();
   });
 
   it('sends error on rafter init)', (done) => {
     // const token = 'token';
     nock('https://rafter.bi.vt.edu')
-      .defaultReplyHeaders({
-        'set-cookie':['cookie']
-      })
-      .post('/usersvc/authenticate/123')
-        .replyWithError({ status: 400 });
+    .defaultReplyHeaders({
+      'set-cookie':['cookie']
+    })
+    .post('/usersvc/authenticate/123')
+    .replyWithError({ status: 400 });
     // nock('https://rafter.bi.vt.edu')
     //   .get('/usersvc/')
     //   .reply(200, token);
     const req = { body: { id: '123', secret: 'howdy' } };
     const res = {
-        json: (err) => {
+      json: (err) => {
         expect(err.status).to.equal(400);
       }
     };
     rafter.rinit(req, res);
-  done();
+    done();
   });
 
 
@@ -226,136 +264,136 @@ describe('The Unit Test for Rafter', () => {
     };
     const init = { create() { return Promise.resolve({ name: 'filename' }); },
     put() { return Promise.resolve({ name: 'filename' }); }
-    };
-    req.body.init = init;
-    await rafter.runVolumeService(req, res);
-  });
+  };
+  req.body.init = init;
+  await rafter.runVolumeService(req, res);
+});
 
-  it('creates a new file but has error on putting the contents', async() => {
-    const req = { body: { command: 'create', token: 'token', userName: 'yoyo', rafterFile: { name: 'filename', createType: 'file', content:'howdy' } } };
-    const res = {
-      json(item) {},
-      status: (code) => {
-        // expect(code).to.equal(200);
-        // return { json(item) {} };
-      }
-    };
-    const init = { create() { return Promise.resolve({ name: 'filename' }); },
-    put() { return Promise.reject(new Error('fail')); }
-    };
-    req.body.init = init;
-    await rafter.runVolumeService(req, res);
-  });
+it('creates a new file but has error on putting the contents', async() => {
+  const req = { body: { command: 'create', token: 'token', userName: 'yoyo', rafterFile: { name: 'filename', createType: 'file', content:'howdy' } } };
+  const res = {
+    json(item) {},
+    status: (code) => {
+      // expect(code).to.equal(200);
+      // return { json(item) {} };
+    }
+  };
+  const init = { create() { return Promise.resolve({ name: 'filename' }); },
+  put() { return Promise.reject(new Error('fail')); }
+};
+req.body.init = init;
+await rafter.runVolumeService(req, res);
+});
 
-  it('tries to create a new file but has error', async() => {
-    const req = { body: { command: 'create', token: 'token', userName: 'yoyo', rafterFile: { name: 'filename', createType: 'file' } } };
-    const res = {
-      json(item) {},
-      status: (code) => {
-        // expect(code).to.equal(400);
-      }
-    };
-    const init = { create() { return Promise.reject(new Error('fail')); } };
-    req.body.init = init;
-    await rafter.runVolumeService(req, res);
-  });
+it('tries to create a new file but has error', async() => {
+  const req = { body: { command: 'create', token: 'token', userName: 'yoyo', rafterFile: { name: 'filename', createType: 'file' } } };
+  const res = {
+    json(item) {},
+    status: (code) => {
+      // expect(code).to.equal(400);
+    }
+  };
+  const init = { create() { return Promise.reject(new Error('fail')); } };
+  req.body.init = init;
+  await rafter.runVolumeService(req, res);
+});
 
-  it('prevents creating a new file without a file name', async() => {
-    const req = { body: { command: 'create', token: 'token', userName: 'yoyo', rafterFile: { name: '', createType: 'file' } } };
-    const res = {
-      json(item) {},
-      status: (code) => {
-        expect(code).to.equal(400);
-        return { json(item) {} };
-      }
-    };
-    const init = { create() { return Promise.resolve({ name: '' }); } };
-    req.body.init = init;
-    await rafter.runVolumeService(req, res);
-  });
+it('prevents creating a new file without a file name', async() => {
+  const req = { body: { command: 'create', token: 'token', userName: 'yoyo', rafterFile: { name: '', createType: 'file' } } };
+  const res = {
+    json(item) {},
+    status: (code) => {
+      expect(code).to.equal(400);
+      return { json(item) {} };
+    }
+  };
+  const init = { create() { return Promise.resolve({ name: '' }); } };
+  req.body.init = init;
+  await rafter.runVolumeService(req, res);
+});
 
-  it('creates a new folder', async() => {
-    const req = { body: { command: 'create', token: 'token', userName: 'yoyo', rafterFile: { name: 'filename', createType: 'folder' } } };
-    const res = {
-      json(item) {},
-      status: (code) => {
-        expect(code).to.equal(200);
-        return { json(item) {} };
-      }
-    };
-    const init = { mkdir() { return Promise.resolve({ name: 'filename' }); } };
-    req.body.init = init;
-    await rafter.runVolumeService(req, res);
-  });
+it('creates a new folder', async() => {
+  const req = { body: { command: 'create', token: 'token', userName: 'yoyo', rafterFile: { name: 'filename', createType: 'folder' } } };
+  const res = {
+    json(item) {},
+    status: (code) => {
+      expect(code).to.equal(200);
+      return { json(item) {} };
+    }
+  };
+  const init = { mkdir() { return Promise.resolve({ name: 'filename' }); } };
+  req.body.init = init;
+  await rafter.runVolumeService(req, res);
+});
 
-  it('catches error on create new folder', async() => {
-    const req = { body: { command: 'create', token: 'token', userName: 'yoyo', rafterFile: { name: 'filename', createType: 'folder' } } };
-    const res = {
-      json(item) {},
-      status: (code) => {
-        // expect(code).to.equal(200);
-        // return { json(item) {} };
-      }
-    };
-    const init = { mkdir() { return Promise.reject({ error: 'you fail' }); } };
-    req.body.init = init;
-    await rafter.runVolumeService(req, res);
-  });
+it('catches error on create new folder', async() => {
+  const req = { body: { command: 'create', token: 'token', userName: 'yoyo', rafterFile: { name: 'filename', createType: 'folder' } } };
+  const res = {
+    json(item) {},
+    status: (code) => {
+      // expect(code).to.equal(200);
+      // return { json(item) {} };
+    }
+  };
+  const init = { mkdir() { return Promise.reject({ error: 'you fail' }); } };
+  req.body.init = init;
+  await rafter.runVolumeService(req, res);
+});
 
-  it('asks for a bogus volume service command', async() => {
-    const req = { body: { command: 'bogas', token: 'token', userName: 'yoyo', rafterFile: { name: 'filename' } } };
-    const res = {
-      json(item) {},
-      status: (code) => {
-        expect(code).to.equal(400);
-        return { json(item) {} };
-      }
-    };
-    const init = { create() { return Promise.resolve({ error: 'you fail' }); } };
-    req.body.init = init;
-    await rafter.runVolumeService(req, res);
-  });
+it('asks for a bogus volume service command', async() => {
+  const req = { body: { command: 'bogas', token: 'token', userName: 'yoyo', rafterFile: { name: 'filename' } } };
+  const res = {
+    json(item) {},
+    status: (code) => {
+      expect(code).to.equal(400);
+      return { json(item) {} };
+    }
+  };
+  const init = { create() { return Promise.resolve({ error: 'you fail' }); } };
+  req.body.init = init;
+  await rafter.runVolumeService(req, res);
+});
 
-  it('downloads a file', async() => {
-    const req = { body: { command: 'get', token: 'token', userName: 'yoyo', fileID: '123' } };
-    const res = {
-      setHeader() {}
-      // status: (code) => {
-      //   expect(code).to.equal(200);
-      //   return { json(item) {} };
-      // }
-    };
-    const init = { get() { return Promise.resolve({ name: 'filename' }); } };
-    req.body.init = init;
-    await rafter.runVolumeService(req, res);
-  });
+it('downloads a file', async() => {
+  const req = { body: { command: 'get', token: 'token', userName: 'yoyo', fileID: '123' } };
+  const res = {
+    setHeader() {}
+    // status: (code) => {
+    //   expect(code).to.equal(200);
+    //   return { json(item) {} };
+    // }
+  };
+  const init = { get() { return Promise.resolve({ name: 'filename' }); } };
+  req.body.init = init;
+  await rafter.runVolumeService(req, res);
+});
 
-  it('deletes a file', async() => {
-    const req = { body: { command: 'remove', token: 'token', userName: 'yoyo', fileID: '123' } };
-    const res = {
-      json() {}
-      // status: (code) => {
-      //   expect(code).to.equal(200);
-      //   return { json(item) {} };
-      // }
-    };
-    const init = { remove() { return Promise.resolve(true); } };
-    req.body.init = init;
-    await rafter.runVolumeService(req, res);
-  });
+it('deletes a file', async() => {
+  const req = { body: { command: 'remove', token: 'token', userName: 'yoyo', fileID: '123' } };
+  const res = {
+    json() {}
+    // status: (code) => {
+    //   expect(code).to.equal(200);
+    //   return { json(item) {} };
+    // }
+  };
+  const init = { remove() { return Promise.resolve(true); } };
+  req.body.init = init;
+  await rafter.runVolumeService(req, res);
+});
 
-  it('catches error on delete a file', async() => {
-    const req = { body: { command: 'remove', token: 'token', userName: 'yoyo', fileID: '123' } };
-    const res = {
-      json(err) {
+it('catches error on delete a file', async() => {
+  const req = { body: { command: 'remove', token: 'token', userName: 'yoyo', fileID: '123' } };
+  const res = {
+    json(err) {
       // status: (code) => {
       expect(err.message).to.be('you fail');
-      }
-      //   return { json(item) {} };
-      // }
-    };
-    const init = { remove() { return Promise.reject(new Error({ message: 'you fail' })); } };
-    req.body.init = init;
-    await rafter.runVolumeService(req, res);
-  });
+    }
+    //   return { json(item) {} };
+    // }
+  };
+  const init = { remove() { return Promise.reject(new Error({ message: 'you fail' })); } };
+  req.body.init = init;
+  await rafter.runVolumeService(req, res);
+});
 });

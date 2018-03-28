@@ -17,7 +17,7 @@ if (fs.existsSync(pathtoconf + 'config.js')) {
 exports.signup = function(req, res) {
   const randomNumba = authUtils.generateCode(99999, 10000);
   const user = new User({
-    name: req.body.name, id: req.body.id, email: req.body.email, password: req.body.password, isPswdReset: false, resetCode: randomNumba, first_name: req.body.first_name, last_name: req.body.last_name, interests: req.body.interests, affiliation: req.body.affiliation, organisms: req.body.organisms
+    name: req.body.name, id: req.body.id, email: req.body.email, password: req.body.password, isPswdReset: false, resetCode: randomNumba, first_name: req.body.first_name, last_name: req.body.last_name, interests: req.body.interests, affiliation: req.body.affiliation, expertise: req.body.expertise
   });
   User.findOne({ email: req.body.email }, (err, existingUser) => {
     if (existingUser) { return res.status(409).send({ message: 'Email is already taken' }); }

@@ -13,8 +13,6 @@ const userSchema = new Schema({
   resetCode: { type: String, required: false },
   isPswdReset: { type: Boolean, required: false },
   primaryApp: { type: String, required: false },
-  r_app_id: { type: String, required: false },
-  r_app_secret: { type: String, required: false },
   rafterApps: { type: Array, default: [], required: false },
   userPhone: { type: Number, required: false },
   userType: { type: String, required: false },
@@ -24,20 +22,13 @@ const userSchema = new Schema({
   userZip: { type: String, required: false },
   userDetails: { type: String, required: false },
   affiliation: { type: String, required: false },
-  organisms: { type: String, required: false },
+  expertise: { type: String, required: false },
   roles: { type: [String], required: false },
   interests: { type: String, required: false },
   creationDate: { type: Date, required: false },
   updateDate: { type: Date, required: false },
   createdBy: { type: String, required: false },
   updatedBy: { type: String, required: false }
-  // volTravelDistMiles: { type: Number, required: false },
-  // volCauses: { type: [String], required: false },
-  // volTalents: { type: [String], required: false },
-  // volWorkPrefs: { type: [String], required: false },
-  // volCauseOther:{ type: String, required: false },
-  // volTalentOther:{ type: String, required: false },
-  // volWorkOther:{ type: String, required: false }
 });
 
 userSchema.pre('save', function(next) {
