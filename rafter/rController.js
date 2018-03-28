@@ -99,26 +99,11 @@ class RC {
       if (err) {
         res.json(err);
       } else {
-        // console.log(data);
         const filter = { _id: req.body.uid };
         User.findOne(filter, (err, existingUser) => {
           console.log(existingUser);
           if (existingUser) {
             console.log('user exists, yay!');
-            // const fetchData2 = {
-            //   method:'POST',
-            //   headers: {
-            //     'Content-Type': 'application/json',
-            //     Accept: 'text/html'
-            //   },
-            //   // body: JSON.stringify({ id: request.body.id, secret: request.body.secret })
-            //   body: JSON.stringify({ secret: mySecret })
-            // };
-            // request('https://rafter.bi.vt.edu/usersvc/application/' + myId, fetchData2, (err, response, data1) => {
-            //   console.log(data1);
-            // });
-            // existingUser.r_app_id = myId;
-            // existingUser.r_app_secret = mySecret;
             if (existingUser.rafterApp !== null && existingUser.rafterApp !== undefined) {
               console.log(existingUser.rafterApp);
               // push only if it is not already there add a checker here
