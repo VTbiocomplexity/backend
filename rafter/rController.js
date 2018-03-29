@@ -108,19 +108,28 @@ class RC {
             if (existingUser.rafterApps !== null && existingUser.rafterApps !== undefined) {
               console.log(existingUser.rafterApps);
               // push only if it is not already there add a checker here
-              let found = false;
+              // let found = false;
+              // let updateSecret = false;
               for (let i = 0; i < existingUser.rafterApps.length; i += 1) {
                 if (existingUser.rafterApps[i].r_app_id === myId) {
-                  found = true;
+                  // found = true;
+                  console.log('I found an app id');
+                  // if (existingUser.rafterApps[i].r_app_secret !== mySecret) {
+                    existingUser.rafterApps.splice(i, 1);
+                    // updateSecret = true;
+                    console.log('change the app secret');
+                    console.log(mySecret);
+                    // found = false;
+                  // }
                 }
               }
-              if (!found) {
+              // if (!found) {
                 existingUser.rafterApps.push({ r_app_id: myId, r_app_secret: mySecret, r_app_name: myAppName });
-              }
-            } else {
+              // }
+            } else {  // condition where rafterUser is not defined because user model was changed
               existingUser.rafterApps = [{ r_app_id: myId, r_app_secret: mySecret, r_app_name: myAppName }];
             }
-            // existingUser.save();
+            console.log(existingUser.rafterApps);
             existingUser.save(() => {
               res.json(data);
             });
