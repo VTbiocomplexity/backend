@@ -50,7 +50,7 @@ describe('The Unit Test for Rafter', () => {
     });
   });
 
-  it('initializes a rafter user and does not add a new rafter app to the user', (done) => {
+  it('initializes a rafter user and adds new rafter app to the user when secret has changed', (done) => {
     const User = new User1();
     User.name = 'foo';
     User.email = 'foo@example.com';
