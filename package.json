@@ -1,29 +1,30 @@
 {
-  "name": "montageBackend",
+  "name": "backend",
   "version": "0.0.1",
-  "description": "montageBackend",
+  "description": "backend",
   "main": "index.js",
   "engines": {
-    "node": "8.7.0",
-    "npm": "5.5.1",
-    "yarn": "1.2.1"
+    "node": "8.10.0"
   },
   "license": "MIT",
   "scripts": {
-    "preinstall": "npm install -g npm && npm install -g yarn",
+    "installglobals": "npm install -g npm@latest",
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && yarn cache clean && yarn install",
+    "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && yarn cache clean && npm run installglobals && yarn install && npm run postinstallsh",
     "debug": "node --inspect-brk index.js",
-    "mocha": "mocha  -r ./test/bootstrap.js test/**/*.js",
-    "nyc": "nyc npm run mocha",
-    "test": "eslint . && istanbul  cover  ./node_modules/.bin/_mocha  -r ./test/bootstrap.js test/**/*.js  --coverage --dir ./coverage",
-    "test:debug": "./node_modules/.bin/mocha --inspect-brk -r ./test/bootstrap.js test/**/*.js",
-    "eslint-fix": "./node_modules/eslint/bin/eslint.js --fix ."
+    "mocha": "cross-env NODE_ENV=test mocha -r ./test/bootstrap.js test/**/*.js",
+    "nyc": "nyc nyc --reporter=lcov --reporter=text-lcov npm run mocha",
+    "test": "eslint . && npm run nyc",
+    "test:debug": "cross-env NODE_ENV=test mocha debug -r ./test/bootstrap.js test/**/*.js",
+    "eslint-fix": "./node_modules/eslint/bin/eslint.js --fix .",
+    "postinstallsh": "./postinstall.sh",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect && npm run postinstallsh"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/VTbiocomplexity/montageBackend.git"
+    "url": "git+ssh://git@github.com/VTbiocomplexity/backend.git"
   },
   "author": "VTbiocomplexity <>",
   "contributors": [
@@ -35,40 +36,39 @@
     }
   ],
   "dependencies": {
-    "bluebird": "^3.4.1",
+    "bcryptjs": "^2.4.3",
+    "bluebird": "^3.5.1",
     "body-parser": "^1.17.1",
     "cors": "^2.8.1",
-    "dotenv": "^2.0.0",
+    "dotenv": "^4.0.0",
     "express": "^4.15.2",
     "express-sslify": "^1.2.0",
-    "helmet": "^3.6.1",
+    "helmet": "^3.9.0",
     "jwt-simple": "^0.5.0",
-    "lodash": "^4.15.0",
     "moment": "^2.15.2",
     "mongoose": "^4.10.0",
-    "morgan": "^1.8.1",
-    "request": "^2.78.0",
-    "snyk": "^1.41.1"
+    "morgan": "^1.9.0",
+    "node-rafter": "^1.0.1",
+    "nodemailer": "^4.3.0",
+    "request": "^2.83.0",
+    "snyk": "^1.69.10"
   },
   "devDependencies": {
-    "babel-eslint": "^7.2.3",
-    "chai": "^3.5.0",
-    "chai-as-promised": "^6.0.0",
+    "chai": "^4.1.2",
     "chai-http": "^3.0.0",
-    "chokidar-cli": "^1.2.0",
+    "cross-env": "^5.0.1",
     "eslint": "^3.2.2",
     "eslint-config-airbnb": "^14.1.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.0.0",
     "istanbul": "^0.4.5",
-    "mocha": "^3.1.2",
+    "mocha": "3.1.2",
     "mockgoose": "^6.0.8",
-    "nock": "^9.0.13",
+    "nock": "^9.0.27",
     "nodemon": "^1.9.2",
-    "proxyquire": "^1.7.11",
-    "sinon": "^1.17.6",
-    "sinon-chai": "^2.8.0",
-    "supertest": "^3.0.0"
-  }
+    "nyc": "^11.3.0",
+    "sinon": "^4.1.0"
+  },
+  "snyk": true
 }
