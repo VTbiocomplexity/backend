@@ -19,3 +19,6 @@
 * [NDSSL Web App Developer Guide](https://docs.google.com/document/d/14L9S5yM5-NvdZY8hnNEjUDsyD9LjwbX60qyfX5DfQcc/edit?usp=sharing)
 * [Rafter End User Guide](https://docs.google.com/document/d/1BF11gUYfXU8xBSsBW3J2wjK2HWf6NnWzz0y-1XtzoNE/edit?usp=sharing)
 * [Rafter Advanced Applications](https://docs.google.com/document/d/1FIetg3VAuAXj4ZRgjMm005gwHpGXSPTE38ZwtW0djjs/edit?usp=sharing)
+
+<br>
+<a href="https://www.browserstack.com"><img src="https://d3but80xmlhqzj.cloudfront.net/production/images/static/header/header-logo.svg" alt="BrowserStack" width="200px"/></a><br>We are using <a href="https://www.browserstack.com">BrowserStack</a> to test compatibility accross Chrome, Firefox, Safari, Edge, and IE 11, and we thank them for supporting open-source projects.
