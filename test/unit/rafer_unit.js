@@ -217,8 +217,8 @@ describe('The Unit Test for Rafter', () => {
     // expect(res.status)
   });
 
-  it('tries to lists the contents of a directory but has an error', async() => {
-    const req = { body: { command: 'ls', token: 'token', userName: 'yoyo', rafterFile: { path: '/yo' } } };
+  it('tries to lists the contents of home directory but has an error', async() => {
+    const req = { body: { command: 'ls', token: 'token', userName: 'yoyo', rafterFile: { path: '/yo', rfid: '' } } };
     const res = {
       status: (code) => {
         // expect(code).to.equal(200);
@@ -230,7 +230,29 @@ describe('The Unit Test for Rafter', () => {
   });
 
   it('lists the contents of home directory', async() => {
-    const req = { body: { command: 'ls', token: 'token', userName: 'yoyo', rafterFile: { path: '/yo' } } };
+    const req = { body: { command: 'ls', token: 'token', userName: 'yoyo', rafterFile: { path: '/yo', rfid: '' } } };
+    const res = {
+      json(item) {}
+    };
+    const init = { list() { return Promise.resolve({ name: 'filename' }); } };
+    req.body.init = init;
+    await rafter.runVolumeService(req, res);
+  });
+
+  it('tries to lists the contents of directory by id but has an error', async() => {
+    const req = { body: { command: 'ls', token: 'token', userName: 'yoyo', rafterFile: { path: '/yo', rfid: '123' } } };
+    const res = {
+      status: (code) => {
+        // expect(code).to.equal(200);
+      }
+    };
+    const init = { list() { return Promise.reject(new Error('fail')); } };
+    req.body.init = init;
+    await rafter.runVolumeService(req, res);
+  });
+
+  it('lists the contents of of a folder by id', async() => {
+    const req = { body: { command: 'ls', token: 'token', userName: 'yoyo', rafterFile: { path: '/yo', rfid: '123' } } };
     const res = {
       json(item) {}
     };

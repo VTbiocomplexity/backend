@@ -19,7 +19,7 @@ class RC {
     if (req.body.command === 'create' && (req.body.rafterFile.name === '' || req.body.rafterFile.name === null || req.body.rafterFile.name === undefined)) {
       return res.status(400).json({ error: 'Invalid request: missing file/folder name' });
     }
-    if (req.body.command === 'ls') {
+    if (req.body.command === 'ls' && req.body.rafterFile.rfid === '') {
       vs.list('/home/' + req.body.userName + req.body.rafterFile.path).then((dir) => {
         console.log(dir);
         return res.json(dir);
@@ -27,7 +27,15 @@ class RC {
         console.log(err);
         return res.json(err);
       });
-    }  else if (req.body.command === 'remove') {
+    }  else if (req.body.command === 'ls' && req.body.rafterFile.rfid !== '') {
+      vs.list('/' + req.body.rafterFile.rfid).then((dir) => {
+        console.log(dir);
+        return res.json(dir);
+      }).catch((err) => {
+        console.log(err);
+        return res.json(err);
+      });
+      } else if (req.body.command === 'remove') {
       console.log('line45');
       vs.remove('/' + req.body.fileID).then((data) => {
         console.log(data);
@@ -45,6 +53,8 @@ class RC {
         console.log(err);
         return res.json(err);
       });
+    // } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'file' && req.body.rafterFile.rfid === '') {
+    //   return res.json({ message:'create by id' });
     } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'file') {
       vs.create('/home/' + req.body.userName + req.body.rafterFile.path + '/', { name: req.body.rafterFile.name, type: req.body.rafterFile.fileType }).then((data) => {
         // console.log(data);
