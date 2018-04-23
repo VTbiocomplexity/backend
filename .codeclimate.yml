@@ -3,10 +3,13 @@ version: "2"
 checks:
   method-lines:
     config:
-      threshold: 30
+      threshold: 31
   method-complexity:
     config:
-      threshold: 7
+      threshold: 10
+  similar-code:
+    config:
+      threshold: 100
 engines:
   duplication:
     enabled: true
@@ -16,7 +19,7 @@ engines:
     config:
       languages:
         javascript:
-          mass_threshold: 60
+          mass_threshold: 40
   eslint:
     enabled: true
   fixme:
@@ -30,4 +33,3 @@ exclude_paths:
 - node_modules/
 - coverage/
 - frontend/
-- node-rafter
