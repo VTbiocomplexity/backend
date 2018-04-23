@@ -20,18 +20,16 @@ class RC {
       return res.status(400).json({ error: 'Invalid request: missing file/folder name' });
     }
     if (req.body.command === 'ls' && req.body.rafterFile.rfid === '') {
-      vs.list('/home/' + req.body.userName + req.body.rafterFile.path).then((dir) => {
-        console.log(dir);
-        return res.json(dir);
-      }).catch((err) => {
+      vs.list('/home/' + req.body.userName + req.body.rafterFile.path).then(dir =>
+        // console.log(dir);
+         res.json(dir)).catch((err) => {
         console.log(err);
         return res.json(err);
       });
     }  else if (req.body.command === 'ls' && req.body.rafterFile.rfid !== '') {
-      vs.list('/' + req.body.rafterFile.rfid).then((dir) => {
-        console.log(dir);
-        return res.json(dir);
-      }).catch((err) => {
+      vs.list('/' + req.body.rafterFile.rfid).then(dir =>
+        // console.log(dir);
+         res.json(dir)).catch((err) => {
         console.log(err);
         return res.json(err);
       });
@@ -63,7 +61,7 @@ class RC {
           console.log('line 64');
           vs.put('/home/' + req.body.userName + req.body.rafterFile.path + '/' + req.body.rafterFile.name, req.body.rafterFile.content).then((data2) => {
             console.log('put file content into a file');
-            console.log(data2);
+            // console.log(data2);
             return res.json(data2);
           }).catch((err2) => {
             console.log(err2);
@@ -76,11 +74,12 @@ class RC {
         return res.json(err);
       });
     } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'folder') {
-      console.log(req.body.rafterFile.name);
-      vs.mkdir('/home/' + req.body.userName + '/' + req.body.rafterFile.name, { recursive: true }).then((data) => {
-        console.log(data);
-        return res.json(data);
-      }).catch((err) => {
+      console.log('line79');
+      const fullPath = '/home/' + req.body.userName + req.body.rafterFile.path + '/' + req.body.rafterFile.name;
+      console.log(fullPath);
+      vs.mkdir(fullPath, { recursive: true }).then(data =>
+        // console.log(data);
+         res.json(data)).catch((err) => {
         console.log(err);
         return res.json(err);
       });
