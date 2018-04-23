@@ -1,6 +1,7 @@
 const request = require('request');
 const VolumeService = require('node-rafter').VolumeService;
 const User = require('../model/user/user-schema');
+const rUtils = require('./rUtils');
 let vs;
 
 class RC {
@@ -95,6 +96,9 @@ class RC {
     const myId = req.body.id;
     const mySecret = req.body.secret;
     const myAppName = req.body.appName;
+    // const handleRafterAppId = this.handleRafterAppId;
+    // console.log('line99');
+    // console.log(handleRafterAppId);
     const fetchData = {
       method: 'POST',
       headers: {
@@ -113,32 +117,34 @@ class RC {
           console.log(existingUser);
           if (existingUser) {
             console.log('user exists, yay!');
+
             /* istanbul ignore else */
             if (existingUser.rafterApps !== null && existingUser.rafterApps !== undefined) {
-              console.log(existingUser.rafterApps);
-              // push only if it is not already there add a checker here
-              // let found = false;
-              // let updateSecret = false;
-              for (let i = 0; i < existingUser.rafterApps.length; i += 1) {
-                if (existingUser.rafterApps[i].r_app_id === myId) {
-                  // found = true;
-                  console.log('I found an app id');
-                  // if (existingUser.rafterApps[i].r_app_secret !== mySecret) {
-                    existingUser.rafterApps.splice(i, 1);
-                    // updateSecret = true;
-                    console.log('change the app secret');
-                    console.log(mySecret);
-                    // found = false;
-                  // }
-                }
-              }
-              // if (!found) {
-                existingUser.rafterApps.push({ r_app_id: myId, r_app_secret: mySecret, r_app_name: myAppName });
+                existingUser = rUtils.handleRafterAppId(existingUser, myId, mySecret, myAppName);
+              // // console.log(existingUser.rafterApps);
+              // // push only if it is not already there add a checker here
+              // // let found = false;
+              // // let updateSecret = false;
+              // for (let i = 0; i < existingUser.rafterApps.length; i += 1) {
+              //   if (existingUser.rafterApps[i].r_app_id === myId) {
+              //     // found = true;
+              //     console.log('I found an app id');
+              //     // if (existingUser.rafterApps[i].r_app_secret !== mySecret) {
+              //       existingUser.rafterApps.splice(i, 1);
+              //       // updateSecret = true;
+              //       console.log('change the app secret');
+              //       console.log(mySecret);
+              //       // found = false;
+              //     // }
+              //   }
               // }
+              // // if (!found) {
+              //   existingUser.rafterApps.push({ r_app_id: myId, r_app_secret: mySecret, r_app_name: myAppName });
+              // // }
             } else {  // condition where rafterUser is not defined because user model was changed
               existingUser.rafterApps = [{ r_app_id: myId, r_app_secret: mySecret, r_app_name: myAppName }];
             }
-            console.log(existingUser.rafterApps);
+            // console.log(existingUser.rafterApps);
             existingUser.save(() => {
               res.json(data);
             });
