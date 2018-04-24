@@ -17,41 +17,33 @@ class RC {
       vs = req.body.init;
     }
     // console.log('this is your command: ' + req.body.command);
-    if (req.body.command === 'create' && (req.body.rafterFile.name === '' || req.body.rafterFile.name === null || req.body.rafterFile.name === undefined)) {
-      return res.status(400).json({ error: 'Invalid request: missing file/folder name' });
-    }
     if (req.body.command === 'ls' && req.body.rafterFile.rfid === '') {
       vs.list('/home/' + req.body.userName + req.body.rafterFile.path).then(dir =>
         // console.log(dir);
-         res.json(dir)).catch((err) => {
-        console.log(err);
-        return res.json(err);
-      });
+         res.json(dir)).catch(err =>
+        // console.log(err);
+         res.json(err));
     }  else if (req.body.command === 'ls' && req.body.rafterFile.rfid !== '') {
       vs.list('/' + req.body.rafterFile.rfid).then(dir =>
         // console.log(dir);
-         res.json(dir)).catch((err) => {
-        console.log(err);
-        return res.json(err);
-      });
+         res.json(dir)).catch(err =>
+        // console.log(err);
+         res.json(err));
       } else if (req.body.command === 'remove') {
       // console.log('line45');
-      vs.remove('/' + req.body.fileID).then((data) => {
-        console.log(data);
-        return res.json(data);
-      }).catch((err) => {
-        console.log(err);
-        return res.json(err);
-      });
+      vs.remove('/' + req.body.fileID).then(data =>
+        // console.log(data);
+         res.json(data)).catch(err =>
+        // console.log(err);
+         res.json(err));
     } else if (req.body.command === 'get') {
       vs.get(req.body.fileID).then((file) => {
         // console.log(file);
         res.setHeader('content-disposition', 'attachment; filename=filename.xml');
         return file.pipe(res);
-      }).catch((err) => {
-        console.log(err);
-        return res.json(err);
-      });
+      }).catch(err =>
+        // console.log(err);
+         res.json(err));
     // } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'file' && req.body.rafterFile.rfid === '') {
     //   return res.json({ message:'create by id' });
   } else  {
