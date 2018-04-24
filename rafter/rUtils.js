@@ -5,7 +5,7 @@ class AuthUtils {
         // found = true;
         console.log('I found an app id');
         // if (existingUser.rafterApps[i].r_app_secret !== mySecret) {
-          existingUser.rafterApps.splice(i, 1);
+        existingUser.rafterApps.splice(i, 1);
           // updateSecret = true;
           // console.log('change the app secret');
           // console.log(mySecret);
@@ -14,8 +14,8 @@ class AuthUtils {
       }
     }
     // if (!found) {
-      existingUser.rafterApps.push({ r_app_id: myId, r_app_secret: mySecret, r_app_name: myAppName });
-      return existingUser;
+    existingUser.rafterApps.push({ r_app_id: myId, r_app_secret: mySecret, r_app_name: myAppName });
+    return existingUser;
   }
   static handleVsCreate(req, res, vs) {
     if (req.body.command === 'create' && (req.body.rafterFile.name === '' || req.body.rafterFile.name === null || req.body.rafterFile.name === undefined)) {
@@ -30,9 +30,9 @@ class AuthUtils {
             // console.log('put file content into a file');
             // console.log(data2);
              res.json(data2)).catch((err2) => {
-            console.log(err2);
-            return res.json(err2);
-          });
+               console.log(err2);
+               return res.json(err2);
+             });
         }
         return res.json(data);
       }).catch((err) => {
@@ -46,9 +46,9 @@ class AuthUtils {
       vs.mkdir(fullPath, { recursive: true }).then(data =>
         // console.log(data);
          res.json(data)).catch((err) => {
-        console.log(err);
-        return res.json(err);
-      });
+           console.log(err);
+           return res.json(err);
+         });
     }  else {
       return res.status(400).json({ error: 'invalid request' });
     }

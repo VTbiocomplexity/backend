@@ -23,14 +23,14 @@ exports.signup = function(req, res) {
     if (existingUser) { return res.status(409).send({ message: 'Email is already taken' }); }
     // User.findOne({ id: req.body.id }, (err, existingUser2) => {
     //   if (existingUser2) { return res.status(409).send({ message: 'Userid is already taken' }); }
-      const validData = user.validateSignup();
-      if (validData !== '') { return res.status(409).send({ message: validData }); }
-      user.save(() => {
-        const mailbody = '<h1>Welcome ' + user.name + ' to PATRIC.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" ' +
+    const validData = user.validateSignup();
+    if (validData !== '') { return res.status(409).send({ message: validData }); }
+    user.save(() => {
+      const mailbody = '<h1>Welcome ' + user.name + ' to PATRIC.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" ' +
         'href="' + frontURL + '/userutil/?email=' + user.email + '">link</a>, then enter the following code to verify your email: <br><br><strong>' + randomNumba + '</strong></p>';
-        authUtils.sendEmail(mailbody, user.email, 'Verify Your Email Address');
-        return res.status(201).json({ email: user.email });
-      });
+      authUtils.sendEmail(mailbody, user.email, 'Verify Your Email Address');
+      return res.status(201).json({ email: user.email });
+    });
     // });
   });
 };
@@ -40,8 +40,8 @@ exports.login = function(req, res) {
   console.log('req body userid ' + req.body.id);
   let reqUserId = '';
   let reqUserEmail = '';
-    reqUserId = authUtils.setIfExists(req.body.id);
-    reqUserEmail = authUtils.setIfExists(req.body.email);
+  reqUserId = authUtils.setIfExists(req.body.id);
+  reqUserEmail = authUtils.setIfExists(req.body.email);
   User.findOne({ $or: [{ id: reqUserId }, { email: reqUserId }, { email: reqUserEmail }] }, '+password', (err, user) => {
     if (!user && reqUserId === '') {
       return res.status(401).json({ message: 'Wrong email address' });
