@@ -32,23 +32,23 @@ const userSchema = new Schema({
 });
 
 userSchema.pre('save', function(next) {
-    const user = this;
-    if (!user.isModified('password')) {
-        return next();
-    }
-    bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(user.password, salt, (err, hash) => {
-            user.password = hash;
-            next();
-        });
+  const user = this;
+  if (!user.isModified('password')) {
+    return next();
+  }
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(user.password, salt, (err, hash) => {
+      user.password = hash;
+      next();
     });
+  });
 });
 
 userSchema.methods.comparePassword = function(password, done) {
   // console.log('trying to compare a password now');
   bcrypt.compare(password, this.password, (err, isMatch) => {
-          done(err, isMatch);
-      });
+    done(err, isMatch);
+  });
 };
 
 userSchema.methods.validateSignup = function() {
