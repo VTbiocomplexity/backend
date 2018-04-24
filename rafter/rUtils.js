@@ -18,7 +18,9 @@ class AuthUtils {
       return existingUser;
   }
   static handleVsCreate(req, res, vs) {
-    if (req.body.command === 'create' && req.body.rafterFile.createType === 'file') {
+    if (req.body.command === 'create' && (req.body.rafterFile.name === '' || req.body.rafterFile.name === null || req.body.rafterFile.name === undefined)) {
+      return res.status(400).json({ error: 'Invalid request: missing file/folder name' });
+    }  else if (req.body.command === 'create' && req.body.rafterFile.createType === 'file') {
       vs.create('/home/' + req.body.userName + req.body.rafterFile.path + '/', { name: req.body.rafterFile.name, type: req.body.rafterFile.fileType }).then((data) => {
         // console.log(data);
         // console.log('line 62');
