@@ -61,16 +61,11 @@ class RC {
     // console.log(handleRafterAppId);
     const fetchData = {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({ secret: mySecret })
     };
     request('https://rafter.bi.vt.edu/usersvc/authenticate/' + myId, fetchData, (err, response, data) => {
-      if (err) {
-        res.json(err);
-      } else {
+      if (err) { res.json(err); } else {
         const filter = { _id: req.body.uid };
         User.findOne(filter, (err, existingUser) => {
           // console.log(existingUser);
@@ -86,9 +81,7 @@ class RC {
             existingUser.save(() => {
               res.json(data);
             });
-          } else {
-            res.status(400).json({ error:'rafter login failed' });
-          }
+          } else { res.status(400).json({ error:'rafter login failed' }); }
         });
       }
     });
