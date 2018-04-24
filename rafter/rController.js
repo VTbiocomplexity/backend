@@ -16,7 +16,7 @@ class RC {
     if (req.body.init !== null && req.body.init !== undefined) {
       vs = req.body.init;
     }
-    console.log('this is your command: ' + req.body.command);
+    // console.log('this is your command: ' + req.body.command);
     if (req.body.command === 'create' && (req.body.rafterFile.name === '' || req.body.rafterFile.name === null || req.body.rafterFile.name === undefined)) {
       return res.status(400).json({ error: 'Invalid request: missing file/folder name' });
     }
@@ -35,7 +35,7 @@ class RC {
         return res.json(err);
       });
       } else if (req.body.command === 'remove') {
-      console.log('line45');
+      // console.log('line45');
       vs.remove('/' + req.body.fileID).then((data) => {
         console.log(data);
         return res.json(data);
@@ -45,7 +45,7 @@ class RC {
       });
     } else if (req.body.command === 'get') {
       vs.get(req.body.fileID).then((file) => {
-        console.log(file);
+        // console.log(file);
         res.setHeader('content-disposition', 'attachment; filename=filename.xml');
         return file.pipe(res);
       }).catch((err) => {
@@ -54,39 +54,41 @@ class RC {
       });
     // } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'file' && req.body.rafterFile.rfid === '') {
     //   return res.json({ message:'create by id' });
-    } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'file') {
-      vs.create('/home/' + req.body.userName + req.body.rafterFile.path + '/', { name: req.body.rafterFile.name, type: req.body.rafterFile.fileType }).then((data) => {
-        // console.log(data);
-        console.log('line 62');
-        if (req.body.rafterFile.content !== null && req.body.rafterFile.content !== undefined && req.body.rafterFile.content !== '') {
-          console.log('line 64');
-          vs.put('/home/' + req.body.userName + req.body.rafterFile.path + '/' + req.body.rafterFile.name, req.body.rafterFile.content).then((data2) => {
-            console.log('put file content into a file');
-            // console.log(data2);
-            return res.json(data2);
-          }).catch((err2) => {
-            console.log(err2);
-            return res.json(err2);
-          });
-        }
-        return res.json(data);
-      }).catch((err) => {
-        console.log(err);
-        return res.json(err);
-      });
-    } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'folder') {
-      console.log('line79');
-      const fullPath = '/home/' + req.body.userName + req.body.rafterFile.path + '/' + req.body.rafterFile.name;
-      console.log(fullPath);
-      vs.mkdir(fullPath, { recursive: true }).then(data =>
-        // console.log(data);
-         res.json(data)).catch((err) => {
-        console.log(err);
-        return res.json(err);
-      });
-    }  else {
-      return res.status(400).json({ error: 'invalid request' });
-    }
+  } else  {
+    rUtils.handleVsCreate(req, res, vs);
+  }
+    // (req.body.command === 'create' && req.body.rafterFile.createType === 'file') {
+    //   vs.create('/home/' + req.body.userName + req.body.rafterFile.path + '/', { name: req.body.rafterFile.name, type: req.body.rafterFile.fileType }).then((data) => {
+    //     // console.log(data);
+    //     // console.log('line 62');
+    //     if (req.body.rafterFile.content !== null && req.body.rafterFile.content !== undefined && req.body.rafterFile.content !== '') {
+    //       // console.log('line 64');
+    //       vs.put('/home/' + req.body.userName + req.body.rafterFile.path + '/' + req.body.rafterFile.name, req.body.rafterFile.content).then(data2 =>
+    //         // console.log('put file content into a file');
+    //         // console.log(data2);
+    //          res.json(data2)).catch((err2) => {
+    //         console.log(err2);
+    //         return res.json(err2);
+    //       });
+    //     }
+    //     return res.json(data);
+    //   }).catch((err) => {
+    //     console.log(err);
+    //     return res.json(err);
+    //   });
+    // } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'folder') {
+    //   // console.log('line79');
+    //   const fullPath = '/home/' + req.body.userName + req.body.rafterFile.path + '/' + req.body.rafterFile.name;
+    //   // console.log(fullPath);
+    //   vs.mkdir(fullPath, { recursive: true }).then(data =>
+    //     // console.log(data);
+    //      res.json(data)).catch((err) => {
+    //     console.log(err);
+    //     return res.json(err);
+    //   });
+    // }  else {
+    //   return res.status(400).json({ error: 'invalid request' });
+    // }
     // vs = '';
     // return res.json(vs);
   }
