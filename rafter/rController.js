@@ -1,6 +1,7 @@
 const request = require('request');
 const VolumeService = require('node-rafter').VolumeService;
 const User = require('../model/user/user-schema');
+const rUtils = require('./rUtils');
 let vs;
 
 class RC {
@@ -15,136 +16,75 @@ class RC {
     if (req.body.init !== null && req.body.init !== undefined) {
       vs = req.body.init;
     }
-    console.log('this is your command: ' + req.body.command);
-    if (req.body.command === 'create' && (req.body.rafterFile.name === '' || req.body.rafterFile.name === null || req.body.rafterFile.name === undefined)) {
-      return res.status(400).json({ error: 'Invalid request: missing file/folder name' });
-    }
-    if (req.body.command === 'ls') {
-      vs.list('/home/' + req.body.userName + req.body.rafterFile.path).then((dir) => {
-        console.log(dir);
-        return res.json(dir);
-      }).catch((err) => {
-        console.log(err);
-        return res.json(err);
-      });
-    }  else if (req.body.command === 'remove') {
-      console.log('line45');
-      vs.remove('/' + req.body.fileID).then((data) => {
-        console.log(data);
-        return res.json(data);
-      }).catch((err) => {
-        console.log(err);
-        return res.json(err);
-      });
+    // console.log('this is your command: ' + req.body.command);
+    if (req.body.command === 'ls' && req.body.rafterFile.rfid === '') {
+      vs.list('/home/' + req.body.userName + req.body.rafterFile.path).then(dir =>
+        // console.log(dir);
+         res.json(dir)).catch(err =>
+        // console.log(err);
+         res.json(err));
+    }  else if (req.body.command === 'ls' && req.body.rafterFile.rfid !== '') {
+      vs.list('/' + req.body.rafterFile.rfid).then(dir =>
+        // console.log(dir);
+         res.json(dir)).catch(err =>
+        // console.log(err);
+         res.json(err));
+    } else if (req.body.command === 'remove') {
+      // console.log('line45');
+      vs.remove('/' + req.body.fileID).then(data =>
+        // console.log(data);
+         res.json(data)).catch(err =>
+        // console.log(err);
+         res.json(err));
     } else if (req.body.command === 'get') {
       vs.get(req.body.fileID).then((file) => {
-        console.log(file);
+        // console.log(file);
         res.setHeader('content-disposition', 'attachment; filename=filename.xml');
         return file.pipe(res);
-      }).catch((err) => {
-        console.log(err);
-        return res.json(err);
-      });
-    } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'file') {
-      vs.create('/home/' + req.body.userName + req.body.rafterFile.path + '/', { name: req.body.rafterFile.name, type: req.body.rafterFile.fileType }).then((data) => {
-        // console.log(data);
-        console.log('line 62');
-        if (req.body.rafterFile.content !== null && req.body.rafterFile.content !== undefined && req.body.rafterFile.content !== '') {
-          console.log('line 64');
-          vs.put('/home/' + req.body.userName + req.body.rafterFile.path + '/' + req.body.rafterFile.name, req.body.rafterFile.content).then((data2) => {
-            console.log('put file content into a file');
-            console.log(data2);
-            return res.json(data2);
-          }).catch((err2) => {
-            console.log(err2);
-            return res.json(err2);
-          });
-        }
-        return res.json(data);
-      }).catch((err) => {
-        console.log(err);
-        return res.json(err);
-      });
-    } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'folder') {
-      console.log(req.body.rafterFile.name);
-      vs.mkdir('/home/' + req.body.userName + '/' + req.body.rafterFile.name, { recursive: true }).then((data) => {
-        console.log(data);
-        return res.json(data);
-      }).catch((err) => {
-        console.log(err);
-        return res.json(err);
-      });
-    }  else {
-      return res.status(400).json({ error: 'invalid request' });
+      }).catch(err =>
+        // console.log(err);
+         res.json(err));
+    // } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'file' && req.body.rafterFile.rfid === '') {
+    //   return res.json({ message:'create by id' });
+    } else  {
+      rUtils.handleVsCreate(req, res, vs);
     }
-    // vs = '';
-    // return res.json(vs);
   }
 
   static rinit(req, res) {
-    console.log(req.body);
+    // console.log(req.body);
     const myId = req.body.id;
     const mySecret = req.body.secret;
     const myAppName = req.body.appName;
+    // const handleRafterAppId = this.handleRafterAppId;
+    // console.log('line99');
+    // console.log(handleRafterAppId);
     const fetchData = {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      },
-      // body: JSON.stringify({ id: request.body.id, secret: request.body.secret })
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({ secret: mySecret })
     };
     request('https://rafter.bi.vt.edu/usersvc/authenticate/' + myId, fetchData, (err, response, data) => {
-      if (err) {
-        res.json(err);
-      } else {
+      if (err) { res.json(err); } else {
         const filter = { _id: req.body.uid };
         User.findOne(filter, (err, existingUser) => {
-          console.log(existingUser);
+          // console.log(existingUser);
           if (existingUser) {
-            console.log('user exists, yay!');
+            // console.log('user exists, yay!');
             /* istanbul ignore else */
             if (existingUser.rafterApps !== null && existingUser.rafterApps !== undefined) {
-              console.log(existingUser.rafterApps);
-              // push only if it is not already there add a checker here
-              // let found = false;
-              // let updateSecret = false;
-              for (let i = 0; i < existingUser.rafterApps.length; i += 1) {
-                if (existingUser.rafterApps[i].r_app_id === myId) {
-                  // found = true;
-                  console.log('I found an app id');
-                  // if (existingUser.rafterApps[i].r_app_secret !== mySecret) {
-                    existingUser.rafterApps.splice(i, 1);
-                    // updateSecret = true;
-                    console.log('change the app secret');
-                    console.log(mySecret);
-                    // found = false;
-                  // }
-                }
-              }
-              // if (!found) {
-                existingUser.rafterApps.push({ r_app_id: myId, r_app_secret: mySecret, r_app_name: myAppName });
-              // }
+              existingUser = rUtils.handleRafterAppId(existingUser, myId, mySecret, myAppName);
             } else {  // condition where rafterUser is not defined because user model was changed
               existingUser.rafterApps = [{ r_app_id: myId, r_app_secret: mySecret, r_app_name: myAppName }];
             }
-            console.log(existingUser.rafterApps);
+            // console.log(existingUser.rafterApps);
             existingUser.save(() => {
               res.json(data);
             });
-          } else {
-            res.status(400).json({ error:'rafter login failed' });
-          }
+          } else { res.status(400).json({ error:'rafter login failed' }); }
         });
       }
     });
-    // request.post(
-    // 'https://rafter.bi.vt.edu/usersvc/authenticate/' + '?application_id=' + myId,
-    // {
-    // form: {secret: secret}
-    // },
-
   }
 
   //   static rlogin(req, res) {

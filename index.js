@@ -12,10 +12,10 @@ const cors = require('cors');
 // const fs = require('fs');
 const enforce = require('express-sslify');
 const corsOptions =
-{ origin: JSON.parse(process.env.AllowUrl).urls,
-  credentials: true,
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-};
+  { origin: JSON.parse(process.env.AllowUrl).urls,
+    credentials: true,
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  };
 const app  = express();
   /* eslint-disable */
 // const  f = __dirname + '/fake.pem';

@@ -26,12 +26,12 @@ describe('Index test', () => {
     .end((err, res) => {
       expect(res).to.have.status(200);
       // res.json().then((data) => {
-        console.log(res.body);
-        expect(res.body).to.eql({ message: 'hello' });
-        done();
+      console.log(res.body);
+      expect(res.body).to.eql({ message: 'hello' });
+      done();
       // });
       // done();
     // });
+    });
   });
-});
 });

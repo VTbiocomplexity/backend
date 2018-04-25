@@ -1,10 +1,10 @@
 {
   "name": "backend",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "backend",
   "main": "index.js",
   "engines": {
-    "node": "8.10.0"
+    "node": "8.11.1"
   },
   "license": "MIT",
   "scripts": {
@@ -17,7 +17,7 @@
     "nyc": "nyc nyc --reporter=lcov --reporter=text-lcov npm run mocha",
     "test": "eslint . && npm run nyc",
     "test:debug": "cross-env NODE_ENV=test mocha debug -r ./test/bootstrap.js test/**/*.js",
-    "eslint-fix": "./node_modules/eslint/bin/eslint.js --fix .",
+    "eslint:fix": "./node_modules/eslint/bin/eslint.js --fix .",
     "postinstallsh": "./postinstall.sh",
     "snyk-protect": "snyk protect",
     "prepublish": "npm run snyk-protect && npm run postinstallsh"
