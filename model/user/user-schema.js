@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
-const Schema   = mongoose.Schema;
+const Schema = mongoose.Schema;
 const bcrypt = require('bcryptjs');
 
 const userSchema = new Schema({
   name: { type: String, required: true },
-  id: { type: String, required: false, unique: true, sparse: true },
+  id: {
+    type: String, required: false, unique: true, sparse: true
+  },
   first_name: { type: String, required: false },
   last_name: { type: String, required: false },
   email: { type: String, required: true, unique: true },
@@ -31,7 +33,7 @@ const userSchema = new Schema({
   updatedBy: { type: String, required: false }
 });
 
-userSchema.pre('save', function(next) {
+userSchema.pre('save', function (next) {
   const user = this;
   if (!user.isModified('password')) {
     return next();
@@ -44,16 +46,16 @@ userSchema.pre('save', function(next) {
   });
 });
 
-userSchema.methods.comparePassword = function(password, done) {
+userSchema.methods.comparePassword = function (password, done) {
   // console.log('trying to compare a password now');
   bcrypt.compare(password, this.password, (err, isMatch) => {
     done(err, isMatch);
   });
 };
 
-userSchema.methods.validateSignup = function() {
+userSchema.methods.validateSignup = function () {
   let message = '';
-  if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(this.email))  {
+  if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) {
     console.log('email is valid');
   } else {
     message = 'Email address is invalid format';

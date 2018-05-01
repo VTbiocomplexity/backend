@@ -27,10 +27,10 @@ class Google {
       // Step 2. Retrieve profile information about the current user.
       const requestConfig = { url: peopleApiUrl, headers, json: true };
       request.get(requestConfig, (err, response, profile) => {
-          // Step 3b. Create a new user account or return an existing one.
+        // Step 3b. Create a new user account or return an existing one.
         const filter = { email: profile.email };
         User.findOne(filter, (err, existingUser) => {
-            // console.log(existingUser);
+          // console.log(existingUser);
           if (existingUser) {
             console.log('user exist');
             return res.send({ token: authUtils.createJWT(existingUser) });

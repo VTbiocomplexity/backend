@@ -20,22 +20,22 @@ class RC {
     if (req.body.command === 'ls' && req.body.rafterFile.rfid === '') {
       vs.list('/home/' + req.body.userName + req.body.rafterFile.path).then(dir =>
         // console.log(dir);
-         res.json(dir)).catch(err =>
+        res.json(dir)).catch(err =>
         // console.log(err);
-         res.json(err));
-    }  else if (req.body.command === 'ls' && req.body.rafterFile.rfid !== '') {
+        res.json(err));
+    } else if (req.body.command === 'ls' && req.body.rafterFile.rfid !== '') {
       vs.list('/' + req.body.rafterFile.rfid).then(dir =>
         // console.log(dir);
-         res.json(dir)).catch(err =>
+        res.json(dir)).catch(err =>
         // console.log(err);
-         res.json(err));
+        res.json(err));
     } else if (req.body.command === 'remove') {
       // console.log('line45');
       vs.remove('/' + req.body.fileID).then(data =>
         // console.log(data);
-         res.json(data)).catch(err =>
+        res.json(data)).catch(err =>
         // console.log(err);
-         res.json(err));
+        res.json(err));
     } else if (req.body.command === 'get') {
       vs.get(req.body.fileID).then((file) => {
         // console.log(file);
@@ -43,10 +43,10 @@ class RC {
         return file.pipe(res);
       }).catch(err =>
         // console.log(err);
-         res.json(err));
+        res.json(err));
     // } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'file' && req.body.rafterFile.rfid === '') {
     //   return res.json({ message:'create by id' });
-    } else  {
+    } else {
       rUtils.handleVsCreate(req, res, vs);
     }
   }
@@ -74,7 +74,7 @@ class RC {
             /* istanbul ignore else */
             if (existingUser.rafterApps !== null && existingUser.rafterApps !== undefined) {
               existingUser = rUtils.handleRafterAppId(existingUser, myId, mySecret, myAppName);
-            } else {  // condition where rafterUser is not defined because user model was changed
+            } else { // condition where rafterUser is not defined because user model was changed
               existingUser.rafterApps = [{ r_app_id: myId, r_app_secret: mySecret, r_app_name: myAppName }];
             }
             // console.log(existingUser.rafterApps);

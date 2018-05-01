@@ -6,10 +6,10 @@ class AuthUtils {
         console.log('I found an app id');
         // if (existingUser.rafterApps[i].r_app_secret !== mySecret) {
         existingUser.rafterApps.splice(i, 1);
-          // updateSecret = true;
-          // console.log('change the app secret');
-          // console.log(mySecret);
-          // found = false;
+        // updateSecret = true;
+        // console.log('change the app secret');
+        // console.log(mySecret);
+        // found = false;
         // }
       }
     }
@@ -20,7 +20,7 @@ class AuthUtils {
   static handleVsCreate(req, res, vs) {
     if (req.body.command === 'create' && (req.body.rafterFile.name === '' || req.body.rafterFile.name === null || req.body.rafterFile.name === undefined)) {
       return res.status(400).json({ error: 'Invalid request: missing file/folder name' });
-    }  else if (req.body.command === 'create' && req.body.rafterFile.createType === 'file') {
+    } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'file') {
       vs.create('/home/' + req.body.userName + req.body.rafterFile.path + '/', { name: req.body.rafterFile.name, type: req.body.rafterFile.fileType }).then((data) => {
         // console.log(data);
         // console.log('line 62');
@@ -29,10 +29,10 @@ class AuthUtils {
           vs.put('/home/' + req.body.userName + req.body.rafterFile.path + '/' + req.body.rafterFile.name, req.body.rafterFile.content).then(data2 =>
             // console.log('put file content into a file');
             // console.log(data2);
-             res.json(data2)).catch((err2) => {
-               console.log(err2);
-               return res.json(err2);
-             });
+            res.json(data2)).catch((err2) => {
+            console.log(err2);
+            return res.json(err2);
+          });
         }
         return res.json(data);
       }).catch((err) => {
@@ -45,11 +45,11 @@ class AuthUtils {
       // console.log(fullPath);
       vs.mkdir(fullPath, { recursive: true }).then(data =>
         // console.log(data);
-         res.json(data)).catch((err) => {
-           console.log(err);
-           return res.json(err);
-         });
-    }  else {
+        res.json(data)).catch((err) => {
+        console.log(err);
+        return res.json(err);
+      });
+    } else {
       return res.status(400).json({ error: 'invalid request' });
     }
   }

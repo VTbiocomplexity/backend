@@ -14,7 +14,7 @@ if (fs.existsSync(pathtoconf + 'config.js')) {
   frontURL = config2.get('frontendUrl');
 }
 /* eslint-enable */
-exports.signup = function(req, res) {
+exports.signup = function (req, res) {
   const randomNumba = authUtils.generateCode(99999, 10000);
   const user = new User({
     name: req.body.name, id: req.body.id, email: req.body.email, password: req.body.password, isPswdReset: false, resetCode: randomNumba, first_name: req.body.first_name, last_name: req.body.last_name, interests: req.body.interests, affiliation: req.body.affiliation, expertise: req.body.expertise
@@ -35,7 +35,7 @@ exports.signup = function(req, res) {
   });
 };
 
-exports.login = function(req, res) {
+exports.login = function (req, res) {
   console.log('req body email' + req.body.email);
   console.log('req body userid ' + req.body.id);
   let reqUserId = '';
@@ -57,7 +57,7 @@ exports.login = function(req, res) {
   });
 };
 
-exports.validemail = function(req, res) {
+exports.validemail = function (req, res) {
   console.log('email:' + req.body.email + ' resetCode:' + req.body.resetCode);
   User.findOne({ email: req.body.email, resetCode: req.body.resetCode }, (err, user) => {
     console.log(user);
@@ -72,9 +72,9 @@ exports.validemail = function(req, res) {
   });
 };
 
-exports.resetpass = function(req, res) {
+exports.resetpass = function (req, res) {
   console.log('email:' + req.body.email);
-    // User.findOne({ $or: [{ id: reqUserId }, { email: reqUserId }, { email: reqUserEmail }] }
+  // User.findOne({ $or: [{ id: reqUserId }, { email: reqUserId }, { email: reqUserEmail }] }
   User.findOne({ $or:[{ email: req.body.email }, { id: req.body.email }] }, (err, user) => {
     console.log(user);
     if (!user) {
@@ -93,7 +93,7 @@ exports.resetpass = function(req, res) {
   });
 };
 
-exports.passwdreset = function(req, res) {
+exports.passwdreset = function (req, res) {
   console.log('email:' + req.body.email + ' resetCode:' + req.body.resetCode);
   User.findOne({ email: req.body.email, resetCode: req.body.resetCode }, (err, user) => {
     console.log(user);
@@ -112,7 +112,7 @@ exports.passwdreset = function(req, res) {
   });
 };
 
-exports.changeemail = function(req, res) {
+exports.changeemail = function (req, res) {
   console.log('request to change the email address');
   authUtils.checkEmailSyntax(req, res);
   User.findOne({ email: req.body.changeemail }, (err, user) => {
@@ -137,7 +137,7 @@ exports.changeemail = function(req, res) {
   });
 };
 
-exports.updateemail = function(req, res) {
+exports.updateemail = function (req, res) {
   console.log('validate with pin then change the email address');
   authUtils.checkEmailSyntax(req, res);
   User.findOne({ email: req.body.email }, (err, user) => {
