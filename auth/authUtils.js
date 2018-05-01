@@ -2,9 +2,6 @@ const moment = require('moment');
 const jwt = require('jwt-simple');
 const config = require('../config');
 const nodemailer = require('nodemailer');
-// const uuid = require('uuid');
-// const crypto = require('crypto');
-// const fs = require('fs');
 
 class AuthUtils {
   static createJWT(user) {
@@ -48,17 +45,15 @@ class AuthUtils {
         pass: emailpassword
       }
     });
-
     const mailOptions = {
       from: 'vt.biocomplexity@gmail.com',
       to: toemail,
       subject: subjectline,
       html: bodyhtml
     };
-    transporter.sendMail(mailOptions, (error, info) => {
+    transporter.sendMail(mailOptions, () => {
     });
   }
-
   static generateCode(hi, low) {
     const min = Math.ceil(low);
     const max = Math.floor(hi);
@@ -83,17 +78,14 @@ class AuthUtils {
       return this.saveSendToken(user, req, res);
     });
   }
-
   static saveSendToken(user, req, res) {
     const userToken = { token: this.createJWT(user), email: user.email };
     user.isPswdReset = false;
     user.resetCode = '';
     user.changeemail = '';
-    user.save(err =>
-      // this.createSession(user, userToken, req, res);
+    user.save(() =>
       res.status(200).json(userToken));
   }
-
   static checkEmailSyntax(req, res) {
     if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(req.body.changeemail)) {
       return console.log('email is valid');
