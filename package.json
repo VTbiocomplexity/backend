@@ -54,8 +54,6 @@
     "snyk": "^1.69.10"
   },
   "devDependencies": {
-    "aurelia-tools": "^2.0.0",
-    "babel-eslint": "^8.2.3",
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",
     "cross-env": "^5.0.1",

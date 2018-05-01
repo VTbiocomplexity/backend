@@ -60,13 +60,13 @@ exports.validemail = function (req, res) {
     }
     user.resetCode = '';
     user.isPswdReset = false;
-    return user.save((error) => {
+    return user.save(() => {
       res.status(201).json({ success: true });
     });
   });
 };
 exports.resetpass = function (req, res) {
-  User.findOne({ $or:[{ email: req.body.email }, { id: req.body.email }] }, (err, user) => {
+  User.findOne({ $or: [{ email: req.body.email }, { id: req.body.email }] }, (err, user) => {
     console.log(user);
     if (!user) {
       return res.status(401).json({ message: 'incorrect email address' });
@@ -74,7 +74,7 @@ exports.resetpass = function (req, res) {
     const randomNumba = authUtils.generateCode(99999, 10000);
     user.resetCode = randomNumba;
     user.isPswdReset = true;
-    return user.save((error) => {
+    return user.save(() => {
       res.status(201).json({ email: user.email });
       const mailBody = '<h1>A NDSSL Password Reset was Requested for ' + user.name +
       '.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" href="' +
@@ -98,7 +98,7 @@ exports.passwdreset = function (req, res) {
     if (user.password.length < 8) {
       return res.status(401).send({ message: 'Password is not min 8 characters' });
     }
-    return user.save((error) => {
+    return user.save(() => {
       res.status(201).json({ success: true });
     });
   });
@@ -110,13 +110,13 @@ exports.changeemail = function (req, res) {
     if (user) {
       return res.status(409).json({ message: 'Email address already exists' });
     }
-    return User.findOne( { email: req.body.email }, (error, existinguser) => {
+    return User.findOne({ email: req.body.email }, (error, existinguser) => {
       if (!existinguser) {
         return res.status(409).json({ message: 'current user does not exist' });
       }
       existinguser.resetCode = authUtils.generateCode(99999, 10000);
       existinguser.changeemail = req.body.changeemail;
-      return existinguser.save((error2) => {
+      return existinguser.save(() => {
         console.log(existinguser);
         res.status(201).json({ success: true });
         const mailBody = '<h1>An Email Address Change was Requested for ' + existinguser.name +
@@ -145,7 +145,7 @@ exports.updateemail = function (req, res) {
     user.resetCode = '';
     user.email = req.body.changeemail;
     user.changeemail = '';
-    return user.save((error) => {
+    return user.save(() => {
       res.status(201).json({ success: true });
     });
   });

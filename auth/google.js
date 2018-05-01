@@ -36,7 +36,7 @@ class Google {
           user.name = profile.name;
           user.email = profile.email;
           user.isOhafUser = req.body.isOhafUser;
-          return user.save((error2) => {
+          return user.save(() => {
             console.log('token sent');
             res.send({ token: authUtils.createJWT(user) });
           });

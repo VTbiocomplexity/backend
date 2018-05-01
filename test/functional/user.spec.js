@@ -14,13 +14,12 @@ describe('Functional test User', () => {
     const User = new User1();
     User.name = 'foo';
     User.email = 'foo@example.com';
-    User.save((err) => {
+    User.save(() => {
       const id = User._id;
       expect(id).to.not.be.null; // eslint-disable-line no-unused-expressions
       done();
     });
   });
-
   it('should not update a user when using a ID that does not exist', (done) => {
     const Uid = '587298a376d5036c68b6ef12';
     chai.request(server)
@@ -37,7 +36,7 @@ describe('Functional test User', () => {
     const User = new User1();
     User.name = 'foo';
     User.email = 'foo2@example.com';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .put('/user/' + User._id)
         .set({ origin: allowedUrl })
@@ -54,7 +53,7 @@ describe('Functional test User', () => {
     const User = new User1();
     User.name = 'foo';
     User.email = 'foo2@example.com';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .put('/user/' + User._id)
         .set({ origin: allowedUrl })
@@ -154,7 +153,7 @@ describe('Functional test User', () => {
       .get('/user/' + id)
       .set({ origin: allowedUrl })
       .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
-      .end((err, res) => {
+      .end((err) => {
         expect(err).to.be.an('error');
         done();
       });
@@ -176,7 +175,7 @@ describe('Functional test User', () => {
     const User = new User1();
     User.name = 'foo3';
     User.email = 'foo3@example.com';
-    User.save((err) => {
+    User.save(() => {
       const Uid = User._id;
       chai.request(server)
         .delete('/user/' + Uid)
@@ -202,7 +201,7 @@ describe('Functional test User', () => {
     const User = new User1();
     User.name = 'foo4';
     User.email = 'foo4@example.com';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .post('/auth/signup')
         .send({ email: 'foo4@example.com', name: 'foomanchew', password: 'lottanumbers35555' })
@@ -227,7 +226,7 @@ describe('Functional test User', () => {
     User.email = 'foo3@example.com';
     User.password = 'lottanumbers35555';
     User.resetCode = '';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .post('/auth/login')
         .send({ email: 'foo3@example.com', password: 'lottanumbers35555' })
@@ -244,7 +243,7 @@ describe('Functional test User', () => {
     User.password = 'lottanumbers35555';
     User.id = 'yoyo23';
     User.resetCode = '';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .post('/auth/login')
         .send({ id: 'yoyo23', password: 'lottanumbers35555' })
@@ -261,7 +260,7 @@ describe('Functional test User', () => {
     User.password = 'lottanumbers35555';
     User.id = 'yoyo23';
     User.resetCode = '';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .post('/auth/login')
         .send({ id: 'yoyo24', password: 'lottanumbers35555' })
@@ -278,7 +277,7 @@ describe('Functional test User', () => {
     User.password = 'lottanumbers35555';
     User.id = 'yoyo23';
     User.resetCode = '';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .post('/auth/login')
         .send({ id: 'yoyo24', password: 'lottanumbers35555', email: 'foogie@yoyo.com' })
@@ -295,7 +294,7 @@ describe('Functional test User', () => {
     User.password = 'lottanumbers35555';
     User.id = 'yoyo23';
     User.resetCode = '';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .post('/auth/login')
         .send({ id: 'yoyo23', password: 'fewnumbers33' })
@@ -312,7 +311,7 @@ describe('Functional test User', () => {
     User.password = 'lottanumbers35555';
     User.id = 'yoyo23';
     User.resetCode = '12345';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .post('/auth/login')
         .send({ id: 'yoyo23', password: 'lottanumbers35555' })
@@ -330,7 +329,7 @@ describe('Functional test User', () => {
     User.id = 'yoyo23';
     User.resetCode = '12345';
     User.isPswdReset = true;
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .post('/auth/login')
         .send({ id: 'yoyo23', password: 'lottanumbers35555' })
@@ -347,7 +346,7 @@ describe('Functional test User', () => {
     User.password = 'lottanumbers35555';
     User.resetCode = '12345';
     User.isPswdReset = true;
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .post('/auth/login')
         .send({ email: 'foo3@example.com', password: 'lottanumbers35555' })
@@ -364,7 +363,7 @@ describe('Functional test User', () => {
     User.password = 'lottanumbers35555';
     User.resetCode = '12345';
     User.changeemail = 'foo@bar.com';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .post('/auth/login')
         .send({ email: 'foo3@example.com', password: 'lottanumbers35555' })
@@ -390,7 +389,7 @@ describe('Functional test User', () => {
     User.email = 'foo3@example.com';
     User.password = 'lottanumbers35555';
     User.resetCode = '';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .post('/auth/login')
         .send({ email: 'foo3@example.com', password: 'notlottanumbers5' })
@@ -406,7 +405,7 @@ describe('Functional test User', () => {
     User.email = 'foo3@example.com';
     User.password = 'lottanumbers35555';
     User.resetCode = '12345';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .post('/auth/login')
         .set({ origin: allowedUrl })
@@ -422,7 +421,7 @@ describe('Functional test User', () => {
     User.name = 'foo3';
     User.email = 'foo3@example.com';
     User.resetCode = '12345';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .put('/auth/validemail')
         .send({ email: 'foo3@example.com', resetCode: '12345' })
@@ -437,7 +436,7 @@ describe('Functional test User', () => {
     User.name = 'foo3';
     User.email = 'foo3@example.com';
     User.resetCode = '12345';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .put('/auth/validemail')
         .send({ email: 'foo3@example.com', resetCode: '12222' })
@@ -451,7 +450,7 @@ describe('Functional test User', () => {
     const User = new User1();
     User.name = 'foo3';
     User.email = 'foo3@example.com';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .put('/auth/resetpass')
         .send({ email: 'foo3@example.com' })
@@ -465,7 +464,7 @@ describe('Functional test User', () => {
     const User = new User1();
     User.name = 'foo3';
     User.email = 'foo3@example.com';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .put('/auth/resetpass')
         .send({ email: 'foosy4@example.com' })
@@ -481,7 +480,7 @@ describe('Functional test User', () => {
     User.email = 'foo3@example.com';
     User.password = 'lottanumbers35555';
     User.resetCode = '12345';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .put('/auth/passwdreset')
         .send({ email: 'foo3@example.com', password: 'gygygygy', resetCode: '12345' })
@@ -497,7 +496,7 @@ describe('Functional test User', () => {
     User.email = 'foo3@example.com';
     User.password = 'lottanumbers35555';
     User.resetCode = '12345';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .put('/auth/passwdreset')
         .send({ email: 'foo3@example.com', password: 'gygygygy', resetCode: '11111' })
@@ -513,7 +512,7 @@ describe('Functional test User', () => {
     User.email = 'foo3@example.com';
     User.password = 'lottanumbers35555';
     User.resetCode = '12345';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .put('/auth/passwdreset')
         .send({ email: 'foo3@example.com', password: 'gyg', resetCode: '12345' })
@@ -528,7 +527,7 @@ describe('Functional test User', () => {
     User.name = 'foo3';
     User.email = 'foo3@example.com';
     User.password = 'lottanumbers35555';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .put('/auth/changeemail')
         .send({ email: 'foo3@example.com', changeemail: 'foo4@foo.com' })
@@ -543,7 +542,7 @@ describe('Functional test User', () => {
     User.name = 'foo3';
     User.email = 'foo3@example.com';
     User.password = 'lottanumbers35555';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .put('/auth/changeemail')
         .send({ email: 'foo3@example.com', changeemail: 'foo3@example.com' })
@@ -558,7 +557,7 @@ describe('Functional test User', () => {
     User.name = 'foo3';
     User.email = 'foo3@example.com';
     User.password = 'lottanumbers35555';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .put('/auth/changeemail')
         .send({ email: 'foo4@example.com', changeemail: 'foo4@example.com' })
@@ -575,7 +574,7 @@ describe('Functional test User', () => {
     User.password = 'lottanumbers35555';
     User.resetCode = '12345';
     User.changeemail = 'foo@bar.com';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .put('/auth/updateemail')
         .send({ email: 'foo3@example.com', changeemail: 'foo@bar.com', resetCode: '12345' })
@@ -592,7 +591,7 @@ describe('Functional test User', () => {
     User.password = 'lottanumbers35555';
     User.resetCode = '12345';
     User.changeemail = 'foo@bar.com';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .put('/auth/updateemail')
         .send({ email: 'foo3@example.com', changeemail: 'foobar.com', resetCode: '12345' })
@@ -609,7 +608,7 @@ describe('Functional test User', () => {
     User.password = 'lottanumbers35555';
     User.resetCode = '12345';
     User.changeemail = 'foo@bar.com';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .put('/auth/updateemail')
         .send({ email: 'foo@example.com', changeemail: 'foo@bar.com', resetCode: '12345' })
@@ -626,7 +625,7 @@ describe('Functional test User', () => {
     User.password = 'lottanumbers35555';
     User.resetCode = '12345';
     User.changeemail = 'foo@bar.com';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .put('/auth/updateemail')
         .send({ email: 'foo3@example.com', changeemail: 'foo@bar.com', resetCode: '12347' })
@@ -643,7 +642,7 @@ describe('Functional test User', () => {
     User.password = 'lottanumbers35555';
     User.resetCode = '12345';
     User.changeemail = 'foo@bar.com';
-    User.save((err) => {
+    User.save(() => {
       chai.request(server)
         .put('/auth/updateemail')
         .send({ email: 'foo3@example.com', changeemail: 'foo12@bar.com', resetCode: '12345' })
