@@ -19,7 +19,8 @@ router.post('/google', google.authenticate);
 router.put('/validemail', authController.validemail);
 router.put('/resetpass', authController.resetpass);
 router.put('/passwdreset', authController.passwdreset);
-router.put('/changeemail', authController.changeemail); // request is made and verification pin is sent to new email, new email is stored in user.changeemail field
+// request is made and verification pin is sent to new email, new email is stored in user.changeemail field
+router.put('/changeemail', authController.changeemail);
 router.put('/updateemail', authController.updateemail); // pin is processed and old email is replaced with new email
 // router.post('/linkedin', linkedin.authenticate);
 // router.post('/twitter', twitter.authenticate);
