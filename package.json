@@ -15,7 +15,7 @@
     "debug": "node --inspect-brk index.js",
     "mocha": "cross-env NODE_ENV=test mocha -r ./test/bootstrap.js test/**/*.js",
     "nyc": "nyc nyc --reporter=lcov --reporter=text-lcov npm run mocha",
-    "test": "eslint . && npm run mocha",
+    "test": "eslint . && npm run nyc",
     "test:lint": "eslint .",
     "test:debug": "cross-env NODE_ENV=test mocha debug -r ./test/bootstrap.js test/**/*.js",
     "eslint:fix": "./node_modules/eslint/bin/eslint.js --fix .",

@@ -3,14 +3,12 @@ const VolumeService = require('node-rafter').VolumeService;
 const User = require('../model/user/user-schema');
 const rUtils = require('./rUtils');
 let vs;
-
 class RC {
   static initVolS(req, res) {
     vs = new VolumeService('https://rafter.bi.vt.edu/volumesvc/', req.body.token);
     vs.init();
     return res.status(200).json({ home: true });
   }
-
   static runVolumeService(req, res) {
     /* istanbul ignore else */
     if (req.body.init !== null && req.body.init !== undefined) {
@@ -67,7 +65,7 @@ class RC {
     request('https://rafter.bi.vt.edu/usersvc/authenticate/' + myId, fetchData, (err, response, data) => {
       if (err) { res.json(err); } else {
         const filter = { _id: req.body.uid };
-        User.findOne(filter, (err, existingUser) => {
+        User.findOne(filter, (error, existingUser) => {
           // console.log(existingUser);
           if (existingUser) {
             // console.log('user exists, yay!');
