@@ -79,7 +79,7 @@ class RC {
             existingUser.save(() => {
               res.json(data);
             });
-          } else { res.status(400).json({ error:'rafter login failed' }); }
+          } else { res.status(400).json({ error: 'rafter login failed' }); }
         });
       }
     });

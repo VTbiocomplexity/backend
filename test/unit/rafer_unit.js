@@ -26,7 +26,7 @@ describe('The Unit Test for Rafter', () => {
         const token = 'token';
         nock('https://rafter.bi.vt.edu')
           .defaultReplyHeaders({
-            'set-cookie':['cookie']
+            'set-cookie': ['cookie']
           })
           .post('/usersvc/authenticate/123')
           .reply(200, token);
@@ -36,7 +36,7 @@ describe('The Unit Test for Rafter', () => {
           }
         };
         const res = {
-          status(code) { return { json() {} }; },
+          status() { return { json() {} }; },
           json: (data) => {
             expect(data).to.equal('token');
             done();
@@ -64,7 +64,7 @@ describe('The Unit Test for Rafter', () => {
         const token = 'token';
         nock('https://rafter.bi.vt.edu')
           .defaultReplyHeaders({
-            'set-cookie':['cookie']
+            'set-cookie': ['cookie']
           })
           .post('/usersvc/authenticate/123')
           .reply(200, token);
@@ -74,7 +74,7 @@ describe('The Unit Test for Rafter', () => {
           }
         };
         const res = {
-          status(code) { return { json() {} }; },
+          status() { return { json() {} }; },
           json: (data) => {
             expect(data).to.equal('token');
             done();
@@ -125,7 +125,7 @@ describe('The Unit Test for Rafter', () => {
     const token = 'token';
     nock('https://rafter.bi.vt.edu')
       .defaultReplyHeaders({
-        'set-cookie':['cookie']
+        'set-cookie': ['cookie']
       })
       .post('/usersvc/authenticate/123')
       .reply(200, token);
@@ -147,7 +147,7 @@ describe('The Unit Test for Rafter', () => {
     // const token = 'token';
     nock('https://rafter.bi.vt.edu')
       .defaultReplyHeaders({
-        'set-cookie':['cookie']
+        'set-cookie': ['cookie']
       })
       .post('/usersvc/authenticate/123')
       .replyWithError({ status: 400 });
@@ -214,16 +214,13 @@ describe('The Unit Test for Rafter', () => {
       }
     };
     const res = {
-      status(code) { return { json() {} }; }
-      //   expect(code).to.equal(200);
-      // }
+      status(code) {
+        expect(code).to.equal(200);
+        return { json() {} };
+      }
     };
-    // const init = { list() { return Promise.reject(new Error('fail')); } };
-    // req.body.init = init;
     await rafter.initVolS(req, res);
-    // expect(res.status)
   });
-
   it('tries to lists the contents of home directory but has an error', async () => {
     const req = {
       body: {
@@ -231,15 +228,13 @@ describe('The Unit Test for Rafter', () => {
       }
     };
     const res = {
-      status: (code) => {
-        // expect(code).to.equal(200);
+      status: () => {
       }
     };
     const init = { list() { return Promise.reject(new Error('fail')); } };
     req.body.init = init;
     await rafter.runVolumeService(req, res);
   });
-
   it('lists the contents of home directory', async () => {
     const req = {
       body: {
@@ -247,7 +242,7 @@ describe('The Unit Test for Rafter', () => {
       }
     };
     const res = {
-      json(item) {}
+      json() {}
     };
     const init = { list() { return Promise.resolve({ name: 'filename' }); } };
     req.body.init = init;
@@ -261,8 +256,7 @@ describe('The Unit Test for Rafter', () => {
       }
     };
     const res = {
-      status: (code) => {
-        // expect(code).to.equal(200);
+      status: () => {
       }
     };
     const init = { list() { return Promise.reject(new Error('fail')); } };
@@ -277,7 +271,7 @@ describe('The Unit Test for Rafter', () => {
       }
     };
     const res = {
-      json(item) {}
+      json() {}
     };
     const init = { list() { return Promise.resolve({ name: 'filename' }); } };
     req.body.init = init;
@@ -291,10 +285,10 @@ describe('The Unit Test for Rafter', () => {
       }
     };
     const res = {
-      json(item) {},
+      json() {},
       status: (code) => {
         expect(code).to.equal(200);
-        return { json(item) {} };
+        return { json() {} };
       }
     };
     const init = { create() { return Promise.resolve({ name: 'filename' }); } };
@@ -305,14 +299,14 @@ describe('The Unit Test for Rafter', () => {
   it('creates a new file and puts the contents', async () => {
     const req = {
       body: {
-        command: 'create', token: 'token', userName: 'yoyo', rafterFile: { name: 'filename', createType: 'file', content:'howdy' }
+        command: 'create', token: 'token', userName: 'yoyo', rafterFile: { name: 'filename', createType: 'file', content: 'howdy' }
       }
     };
     const res = {
-      json(item) {},
+      json() {},
       status: (code) => {
         expect(code).to.equal(200);
-        return { json(item) {} };
+        return { json() {} };
       }
     };
     const init = {
@@ -326,14 +320,13 @@ describe('The Unit Test for Rafter', () => {
   it('creates a new file but has error on putting the contents', async () => {
     const req = {
       body: {
-        command: 'create', token: 'token', userName: 'yoyo', rafterFile: { name: 'filename', createType: 'file', content:'howdy' }
+        command: 'create', token: 'token', userName: 'yoyo', rafterFile: { name: 'filename', createType: 'file', content: 'howdy' }
       }
     };
     const res = {
-      json(item) {},
+      json() {},
       status: (code) => {
-      // expect(code).to.equal(200);
-      // return { json(item) {} };
+        expect(code).to.equal(200);
       }
     };
     const init = {
@@ -351,9 +344,8 @@ describe('The Unit Test for Rafter', () => {
       }
     };
     const res = {
-      json(item) {},
-      status: (code) => {
-      // expect(code).to.equal(400);
+      json() {},
+      status: () => {
       }
     };
     const init = { create() { return Promise.reject(new Error('fail')); } };
@@ -368,10 +360,10 @@ describe('The Unit Test for Rafter', () => {
       }
     };
     const res = {
-      json(item) {},
+      json() {},
       status: (code) => {
         expect(code).to.equal(400);
-        return { json(item) {} };
+        return { json() {} };
       }
     };
     const init = { create() { return Promise.resolve({ name: '' }); } };
@@ -386,10 +378,10 @@ describe('The Unit Test for Rafter', () => {
       }
     };
     const res = {
-      json(item) {},
+      json() {},
       status: (code) => {
         expect(code).to.equal(200);
-        return { json(item) {} };
+        return { json() {} };
       }
     };
     const init = { mkdir() { return Promise.resolve({ name: 'filename' }); } };
@@ -404,10 +396,8 @@ describe('The Unit Test for Rafter', () => {
       }
     };
     const res = {
-      json(item) {},
-      status: (code) => {
-      // expect(code).to.equal(200);
-      // return { json(item) {} };
+      json() {},
+      status: () => {
       }
     };
     const init = { mkdir() { return Promise.reject(new Error({ error: 'you fail' })); } };
@@ -422,10 +412,10 @@ describe('The Unit Test for Rafter', () => {
       }
     };
     const res = {
-      json(item) {},
+      json() {},
       status: (code) => {
         expect(code).to.equal(400);
-        return { json(item) {} };
+        return { json() {} };
       }
     };
     const init = { create() { return Promise.resolve({ error: 'you fail' }); } };

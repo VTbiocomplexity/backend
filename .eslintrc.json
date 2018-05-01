@@ -9,17 +9,7 @@
     "func-names": [0, "never"],
     "prefer-destructuring": [0, "never"],
     "no-param-reassign": [0, "never"],
-    "guard-for-in": 0,
-    "no-restricted-syntax": [2, "WithStatement"],
-    "newline-per-chained-call": [2, {
-      "ignoreChainWithDepth": 5
-    }],
-    "space-in-parens": 0,
-    "key-spacing": 0,
-    "no-unused-vars": [2, {
-      "vars": "all",
-      "args": "none"
-    }],
+    "no-restricted-syntax": [0, "never"],
     "max-len": ["error", {
       "code": 150
     }],

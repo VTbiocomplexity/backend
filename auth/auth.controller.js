@@ -66,7 +66,7 @@ exports.validemail = function (req, res) {
   });
 };
 exports.resetpass = function (req, res) {
-  User.findOne({ $or:[{ email: req.body.email }, { id: req.body.email }] }, (err, user) => {
+  User.findOne({ $or: [{ email: req.body.email }, { id: req.body.email }] }, (err, user) => {
     console.log(user);
     if (!user) {
       return res.status(401).json({ message: 'incorrect email address' });
@@ -110,7 +110,7 @@ exports.changeemail = function (req, res) {
     if (user) {
       return res.status(409).json({ message: 'Email address already exists' });
     }
-    return User.findOne( { email: req.body.email }, (error, existinguser) => {
+    return User.findOne({ email: req.body.email }, (error, existinguser) => {
       if (!existinguser) {
         return res.status(409).json({ message: 'current user does not exist' });
       }
