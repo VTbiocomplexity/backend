@@ -1,6 +1,7 @@
 const rafter = require('../../rafter/rController');
 const User1 = require('../../model/user/user-schema');
 const nock = require('nock');
+
 describe('The Unit Test for Rafter', () => {
   beforeEach((done) => {
     // Set up an existing user

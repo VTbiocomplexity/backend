@@ -2,6 +2,7 @@ const request = require('request');
 const VolumeService = require('node-rafter').VolumeService;
 const User = require('../model/user/user-schema');
 const rUtils = require('./rUtils');
+
 let vs;
 class RC {
   static initVolS(req, res) {
@@ -16,20 +17,20 @@ class RC {
     }
     // console.log('this is your command: ' + req.body.command);
     if (req.body.command === 'ls' && req.body.rafterFile.rfid === '') {
-      vs.list('/home/' + req.body.userName + req.body.rafterFile.path).then(dir =>
+      vs.list(`/home/${req.body.userName}${req.body.rafterFile.path}`).then(dir =>
         // console.log(dir);
         res.json(dir)).catch(err =>
         // console.log(err);
         res.json(err));
     } else if (req.body.command === 'ls' && req.body.rafterFile.rfid !== '') {
-      vs.list('/' + req.body.rafterFile.rfid).then(dir =>
+      vs.list(`/${req.body.rafterFile.rfid}`).then(dir =>
         // console.log(dir);
         res.json(dir)).catch(err =>
         // console.log(err);
         res.json(err));
     } else if (req.body.command === 'remove') {
       // console.log('line45');
-      vs.remove('/' + req.body.fileID).then(data =>
+      vs.remove(`/${req.body.fileID}`).then(data =>
         // console.log(data);
         res.json(data)).catch(err =>
         // console.log(err);
@@ -62,7 +63,7 @@ class RC {
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({ secret: mySecret })
     };
-    request('https://rafter.bi.vt.edu/usersvc/authenticate/' + myId, fetchData, (err, response, data) => {
+    request(`https://rafter.bi.vt.edu/usersvc/authenticate/${myId}`, fetchData, (err, response, data) => {
       if (err) { res.json(err); } else {
         const filter = { _id: req.body.uid };
         User.findOne(filter, (error, existingUser) => {

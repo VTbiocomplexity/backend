@@ -1,4 +1,5 @@
 const Router = require('express').Router;
+
 const router = new Router();
 const user = require('./model/user/user-router');
 const auth = require('./auth');

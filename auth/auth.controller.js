@@ -1,6 +1,7 @@
 const config = require('../config');
 const User = require('../model/user/user-schema');
 const authUtils = require('./authUtils');
+
 const frontURL = config.frontURL;
 exports.signup = function (req, res) {
   const randomNumba = authUtils.generateCode(99999, 10000);
@@ -22,10 +23,10 @@ exports.signup = function (req, res) {
     const validData = user.validateSignup();
     if (validData !== '') { return res.status(409).send({ message: validData }); }
     return user.save(() => {
-      const mailbody = '<h1>Welcome ' + user.name +
-      ' to NDSSL.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" ' +
-        'href="' + frontURL + '/userutil/?email=' + user.email +
-        '">link</a>, then enter the following code to verify your email: <br><br><strong>' + randomNumba + '</strong></p>';
+      const mailbody = `<h1>Welcome ${user.name
+      } to NDSSL.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" ` +
+        `href="${frontURL}/userutil/?email=${user.email
+        }">link</a>, then enter the following code to verify your email: <br><br><strong>${randomNumba}</strong></p>`;
       authUtils.sendEmail(mailbody, user.email, 'Verify Your Email Address');
       return res.status(201).json({ email: user.email });
     });
@@ -52,7 +53,7 @@ exports.login = function (req, res) {
   });
 };
 exports.validemail = function (req, res) {
-  console.log('email:' + req.body.email + ' resetCode:' + req.body.resetCode);
+  console.log(`email:${req.body.email} resetCode:${req.body.resetCode}`);
   User.findOne({ email: req.body.email, resetCode: req.body.resetCode }, (err, user) => {
     console.log(user);
     if (!user) {
@@ -76,17 +77,17 @@ exports.resetpass = function (req, res) {
     user.isPswdReset = true;
     return user.save(() => {
       res.status(201).json({ email: user.email });
-      const mailBody = '<h1>A NDSSL Password Reset was Requested for ' + user.name +
-      '.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" href="' +
-      frontURL + '/userutil/?email=' + user.email + '&form=reset">' +
-      'link</a>, then enter the following code to reset your password: <br><br><strong>' + randomNumba +
-      '</strong></p><p><i>If a reset was requested in error, you can ignore this email and login to NDSSL as usual.</i></p>';
+      const mailBody = `<h1>A NDSSL Password Reset was Requested for ${user.name
+      }.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" href="${
+        frontURL}/userutil/?email=${user.email}&form=reset">` +
+      `link</a>, then enter the following code to reset your password: <br><br><strong>${randomNumba
+      }</strong></p><p><i>If a reset was requested in error, you can ignore this email and login to NDSSL as usual.</i></p>`;
       authUtils.sendEmail(mailBody, user.email, 'Password Reset');
     });
   });
 };
 exports.passwdreset = function (req, res) {
-  console.log('email:' + req.body.email + ' resetCode:' + req.body.resetCode);
+  console.log(`email:${req.body.email} resetCode:${req.body.resetCode}`);
   User.findOne({ email: req.body.email, resetCode: req.body.resetCode }, (err, user) => {
     console.log(user);
     if (!user) {
@@ -119,11 +120,11 @@ exports.changeemail = function (req, res) {
       return existinguser.save(() => {
         console.log(existinguser);
         res.status(201).json({ success: true });
-        const mailBody = '<h1>An Email Address Change was Requested for ' + existinguser.name +
-                '.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" href="' +
-        frontURL + '/userutil/?changeemail=' + existinguser.changeemail + '">' +
-        'link</a>, then enter the following code to validate this new email: <br><br><strong>' +
-        existinguser.resetCode + '</strong></p><p><i>If this reset was requested in error, you can ignore it and login to NDSSL as usual.</i></p>';
+        const mailBody = `<h1>An Email Address Change was Requested for ${existinguser.name
+        }.</h1><p>Click this <a style="color:blue; text-decoration:underline; cursor:pointer; cursor:hand" href="${
+          frontURL}/userutil/?changeemail=${existinguser.changeemail}">` +
+        `link</a>, then enter the following code to validate this new email: <br><br><strong>${
+          existinguser.resetCode}</strong></p><p><i>If this reset was requested in error, you can ignore it and login to NDSSL as usual.</i></p>`;
         authUtils.sendEmail(mailBody, existinguser.changeemail, 'Email Change Request');
       });
     });

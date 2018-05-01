@@ -13,7 +13,7 @@ class AuthUtils {
     req.body.rafterFile.name === undefined)) {
       return res.status(400).json({ error: 'Invalid request: missing file/folder name' });
     } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'file') {
-      return vs.create('/home/' + req.body.userName + req.body.rafterFile.path + '/', {
+      return vs.create(`/home/${req.body.userName}${req.body.rafterFile.path}/`, {
         name: req.body.rafterFile.name,
         type: req.body.rafterFile.fileType
       }).then((data) => {
@@ -21,7 +21,7 @@ class AuthUtils {
         // console.log('line 62');
         if (req.body.rafterFile.content !== null && req.body.rafterFile.content !== undefined && req.body.rafterFile.content !== '') {
           // console.log('line 64');
-          vs.put('/home/' + req.body.userName + req.body.rafterFile.path + '/' + req.body.rafterFile.name, req.body.rafterFile.content).then(data2 =>
+          vs.put(`/home/${req.body.userName}${req.body.rafterFile.path}/${req.body.rafterFile.name}`, req.body.rafterFile.content).then(data2 =>
             // console.log('put file content into a file');
             // console.log(data2);
             res.json(data2)).catch((err2) => {
@@ -36,17 +36,16 @@ class AuthUtils {
       });
     } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'folder') {
       // console.log('line79');
-      const fullPath = '/home/' + req.body.userName + req.body.rafterFile.path + '/' + req.body.rafterFile.name;
+      const fullPath = `/home/${req.body.userName}${req.body.rafterFile.path}/${req.body.rafterFile.name}`;
       // console.log(fullPath);
       return vs.mkdir(fullPath, { recursive: true }).then(data =>
-        // console.log(data);
+      // console.log(data);
         res.json(data)).catch((err) => {
         console.log(err);
         return res.json(err);
       });
     }
     return res.status(400).json({ error: 'invalid request' });
-    
   }
 }
 module.exports = AuthUtils;

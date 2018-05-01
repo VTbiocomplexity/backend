@@ -12,15 +12,6 @@
     "no-restricted-syntax": [0, "never"],
     "max-len": ["error", {
       "code": 150
-    }],
-    "padded-blocks": 0,
-    "no-continue": 0,
-    "import/no-extraneous-dependencies": 0,
-    "import/newline-after-import": 0,
-    "no-mixed-operators": 0,
-    "prefer-template": 0,
-    "no-trailing-spaces": [1, {
-      "skipBlankLines": true
     }]
   }
 }

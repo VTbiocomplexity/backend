@@ -11,6 +11,7 @@ const routes = require('./routes');
 const cors = require('cors');
 // const fs = require('fs');
 const enforce = require('express-sslify');
+
 const corsOptions =
   {
     origin: JSON.parse(process.env.AllowUrl).urls,
