@@ -3,14 +3,12 @@ const VolumeService = require('node-rafter').VolumeService;
 const User = require('../model/user/user-schema');
 const rUtils = require('./rUtils');
 let vs;
-
 class RC {
   static initVolS(req, res) {
     vs = new VolumeService('https://rafter.bi.vt.edu/volumesvc/', req.body.token);
     vs.init();
     return res.status(200).json({ home: true });
   }
-
   static runVolumeService(req, res) {
     /* istanbul ignore else */
     if (req.body.init !== null && req.body.init !== undefined) {
@@ -20,22 +18,22 @@ class RC {
     if (req.body.command === 'ls' && req.body.rafterFile.rfid === '') {
       vs.list('/home/' + req.body.userName + req.body.rafterFile.path).then(dir =>
         // console.log(dir);
-         res.json(dir)).catch(err =>
+        res.json(dir)).catch(err =>
         // console.log(err);
-         res.json(err));
-    }  else if (req.body.command === 'ls' && req.body.rafterFile.rfid !== '') {
+        res.json(err));
+    } else if (req.body.command === 'ls' && req.body.rafterFile.rfid !== '') {
       vs.list('/' + req.body.rafterFile.rfid).then(dir =>
         // console.log(dir);
-         res.json(dir)).catch(err =>
+        res.json(dir)).catch(err =>
         // console.log(err);
-         res.json(err));
+        res.json(err));
     } else if (req.body.command === 'remove') {
       // console.log('line45');
       vs.remove('/' + req.body.fileID).then(data =>
         // console.log(data);
-         res.json(data)).catch(err =>
+        res.json(data)).catch(err =>
         // console.log(err);
-         res.json(err));
+        res.json(err));
     } else if (req.body.command === 'get') {
       vs.get(req.body.fileID).then((file) => {
         // console.log(file);
@@ -43,10 +41,10 @@ class RC {
         return file.pipe(res);
       }).catch(err =>
         // console.log(err);
-         res.json(err));
+        res.json(err));
     // } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'file' && req.body.rafterFile.rfid === '') {
     //   return res.json({ message:'create by id' });
-    } else  {
+    } else {
       rUtils.handleVsCreate(req, res, vs);
     }
   }
@@ -67,14 +65,14 @@ class RC {
     request('https://rafter.bi.vt.edu/usersvc/authenticate/' + myId, fetchData, (err, response, data) => {
       if (err) { res.json(err); } else {
         const filter = { _id: req.body.uid };
-        User.findOne(filter, (err, existingUser) => {
+        User.findOne(filter, (error, existingUser) => {
           // console.log(existingUser);
           if (existingUser) {
             // console.log('user exists, yay!');
             /* istanbul ignore else */
             if (existingUser.rafterApps !== null && existingUser.rafterApps !== undefined) {
               existingUser = rUtils.handleRafterAppId(existingUser, myId, mySecret, myAppName);
-            } else {  // condition where rafterUser is not defined because user model was changed
+            } else { // condition where rafterUser is not defined because user model was changed
               existingUser.rafterApps = [{ r_app_id: myId, r_app_secret: mySecret, r_app_name: myAppName }];
             }
             // console.log(existingUser.rafterApps);

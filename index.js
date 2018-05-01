@@ -1,23 +1,24 @@
 
-const path       = require('path');
-const express    = require('express');
-const mongoose   = require('mongoose');
-const helmet     = require('helmet');
+const path = require('path');
+const express = require('express');
+const mongoose = require('mongoose');
+const helmet = require('helmet');
 const bodyParser = require('body-parser');
-const morgan     = require('morgan');
-const bluebird   = require('bluebird');
+const morgan = require('morgan');
+const bluebird = require('bluebird');
 const config = require('./config');
 const routes = require('./routes');
 const cors = require('cors');
 // const fs = require('fs');
 const enforce = require('express-sslify');
 const corsOptions =
-  { origin: JSON.parse(process.env.AllowUrl).urls,
+  {
+    origin: JSON.parse(process.env.AllowUrl).urls,
     credentials: true,
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
   };
-const app  = express();
-  /* eslint-disable */
+const app = express();
+/* eslint-disable */
 // const  f = __dirname + '/fake.pem';
 // /* eslint-enable */
 //         try {

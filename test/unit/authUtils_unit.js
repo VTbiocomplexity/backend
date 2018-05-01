@@ -26,7 +26,7 @@ describe('The Unit Test for authUtils Module', () => {
   });
 
   describe('ensureAuthenticated', () => {
-    it('should 401 without authorization', async() => {
+    it('should 401 without authorization', async () => {
       const req = { headers: { authorization: false } };
       const res = {
         status(num) {
@@ -41,7 +41,7 @@ describe('The Unit Test for authUtils Module', () => {
       };
       await authUtils.ensureAuthenticated(req, res);
     });
-    it('should 401 when jwt.decode fails', async() => {
+    it('should 401 when jwt.decode fails', async () => {
       const req = { headers: { authorization: 'this will fail jwt.decode' } };
       const res = {
         status(num) {
