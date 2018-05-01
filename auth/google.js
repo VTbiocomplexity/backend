@@ -1,6 +1,7 @@
 const User = require('../model/user/user-schema');
 const request = require('request');
 const authUtils = require('./authUtils');
+
 const accessTokenUrl = 'https://accounts.google.com/o/oauth2/token';
 const peopleApiUrl = 'https://www.googleapis.com/plus/v1/people/me/openIdConnect';
 
@@ -20,7 +21,7 @@ class Google {
       // console.log(token);
       const accessToken = token.access_token;
       // console.log(accessToken);
-      const headers = { Authorization: 'Bearer ' + accessToken };
+      const headers = { Authorization: `Bearer ${accessToken}` };
       // Step 2. Retrieve profile information about the current user.
       const requestConfig = { url: peopleApiUrl, headers, json: true };
       request.get(requestConfig, (err1, response1, profile) => {

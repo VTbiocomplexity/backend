@@ -1,6 +1,8 @@
 const express = require('express');
+
 const router = express.Router();
 const sayhi = require('./sayhi.js');
+
 router.get('/sayhi', sayhi.hi);
 // router.post('/signup', authController.signup);
 // router.post('/login', authController.login);

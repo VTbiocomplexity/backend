@@ -3,7 +3,7 @@ const userModel = require('./user-facade');
 
 class UserController extends Controller {
   find(req, res) {
-    console.log('this is the user email: ' + req.body.email);
+    console.log(`this is the user email: ${req.body.email}`);
     return this.model.find({ email: req.body.email })
       .then((collection) => {
         console.log(collection.length);

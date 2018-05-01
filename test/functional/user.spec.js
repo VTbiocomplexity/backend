@@ -1,5 +1,6 @@
 const User1 = require('../../model/user/user-schema');
 const authUtils = require('../../auth/authUtils');
+
 describe('Functional test User', () => {
   beforeEach((done) => {
     mockgoose(mongoose).then(() => {
@@ -23,9 +24,9 @@ describe('Functional test User', () => {
   it('should not update a user when using a ID that does not exist', (done) => {
     const Uid = '587298a376d5036c68b6ef12';
     chai.request(server)
-      .put('/user/' + Uid)
+      .put(`/user/${Uid}`)
       .set({ origin: allowedUrl })
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .set('authorization', `Bearer ${authUtils.createJWT('foo2@example.com')}`)
       .send({ userType: 'coolGuy' })
       .end((err, res) => {
         expect(res).to.have.status(404);
@@ -38,9 +39,9 @@ describe('Functional test User', () => {
     User.email = 'foo2@example.com';
     User.save(() => {
       chai.request(server)
-        .put('/user/' + User._id)
+        .put(`/user/${User._id}`)
         .set({ origin: allowedUrl })
-        .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+        .set('authorization', `Bearer ${authUtils.createJWT('foo2@example.com')}`)
         .send({ name: '' })
         .end((error, res) => {
           expect(res).to.have.status(400);
@@ -55,9 +56,9 @@ describe('Functional test User', () => {
     User.email = 'foo2@example.com';
     User.save(() => {
       chai.request(server)
-        .put('/user/' + User._id)
+        .put(`/user/${User._id}`)
         .set({ origin: allowedUrl })
-        .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+        .set('authorization', `Bearer ${authUtils.createJWT('foo2@example.com')}`)
         .send({ name: 'foobar' })
         .end((error, res) => {
           expect(res).to.have.status(200);
@@ -72,9 +73,9 @@ describe('Functional test User', () => {
     User.email = 'foo2@example.com';
     User.save();
     chai.request(server)
-      .delete('/user/' + User._id)
+      .delete(`/user/${User._id}`)
       .set({ origin: allowedUrl })
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .set('authorization', `Bearer ${authUtils.createJWT('foo2@example.com')}`)
       .end((error, res) => {
         expect(res).to.have.status(204);
         done();
@@ -88,7 +89,7 @@ describe('Functional test User', () => {
     chai.request(server)
       .delete('/user/53cb6b9b4f4ddef1ad47f943')
       .set({ origin: allowedUrl })
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .set('authorization', `Bearer ${authUtils.createJWT('foo2@example.com')}`)
       .end((err, res) => {
         expect(res).to.have.status(404);
         done();
@@ -100,9 +101,9 @@ describe('Functional test User', () => {
     User.email = 'foo3@example.com';
     User.save();
     chai.request(server)
-      .get('/user/' + User._id)
+      .get(`/user/${User._id}`)
       .set({ origin: allowedUrl })
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .set('authorization', `Bearer ${authUtils.createJWT('foo2@example.com')}`)
       .end((err, res) => {
         expect(res).to.have.status(200);
         done();
@@ -116,7 +117,7 @@ describe('Functional test User', () => {
     chai.request(server)
       .post('/user/')
       .set({ origin: allowedUrl })
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .set('authorization', `Bearer ${authUtils.createJWT('foo2@example.com')}`)
       .send({ email: 'foo3@example.com' })
       .end((err, res) => {
         expect(res).to.have.status(200);
@@ -126,9 +127,9 @@ describe('Functional test User', () => {
   it('should NOT find a user by id', (done) => {
     const id = '587298a376d5036c68b6ef12';
     chai.request(server)
-      .get('/user/' + id)
+      .get(`/user/${id}`)
       .set({ origin: allowedUrl })
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .set('authorization', `Bearer ${authUtils.createJWT('foo2@example.com')}`)
       .end((err, res) => {
         expect(res).to.have.status(404);
         done();
@@ -137,9 +138,9 @@ describe('Functional test User', () => {
   it('should return 404 error when Id not valid on update', (done) => {
     const Uid = '5872';
     chai.request(server)
-      .put('/user/' + Uid)
+      .put(`/user/${Uid}`)
       .set({ origin: allowedUrl })
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .set('authorization', `Bearer ${authUtils.createJWT('foo2@example.com')}`)
       .send({ alien: 'yes' })
       .end((err, res) => {
         expect(err).to.be.an('error');
@@ -150,9 +151,9 @@ describe('Functional test User', () => {
   it('should throw an error in findById()', (done) => {
     const id = 'TYgsfn';
     chai.request(server)
-      .get('/user/' + id)
+      .get(`/user/${id}`)
       .set({ origin: allowedUrl })
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .set('authorization', `Bearer ${authUtils.createJWT('foo2@example.com')}`)
       .end((err) => {
         expect(err).to.be.an('error');
         done();
@@ -162,9 +163,9 @@ describe('Functional test User', () => {
   it('should return 404 error when Id not valid on delete', (done) => {
     const Uid = '5872';
     chai.request(server)
-      .delete('/user/' + Uid)
+      .delete(`/user/${Uid}`)
       .set({ origin: allowedUrl })
-      .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+      .set('authorization', `Bearer ${authUtils.createJWT('foo2@example.com')}`)
       .end((err, res) => {
         expect(err).to.be.an('error');
         expect(res).to.have.status(400);
@@ -178,8 +179,8 @@ describe('Functional test User', () => {
     User.save(() => {
       const Uid = User._id;
       chai.request(server)
-        .delete('/user/' + Uid)
-        .set('authorization', 'Bearer ' + authUtils.createJWT('foo2@example.com'))
+        .delete(`/user/${Uid}`)
+        .set('authorization', `Bearer ${authUtils.createJWT('foo2@example.com')}`)
         .end((error, res) => {
           expect(res).to.have.status(204);
           done();
