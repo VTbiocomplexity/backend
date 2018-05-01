@@ -1,11 +1,7 @@
 const rafter = require('../../rafter/rController');
 const User1 = require('../../model/user/user-schema');
-// const VolumeService = require('rafter').VolumeService;
 const nock = require('nock');
-// VolumeService.list = function() { return promise.resolve({ json: () => Promise.resolve({ name: 'filename' }) }); };
 describe('The Unit Test for Rafter', () => {
-  // let userid;
-  // let user;
   beforeEach((done) => {
     // Set up an existing user
     mockgoose(mongoose).then(() => {
@@ -15,14 +11,13 @@ describe('The Unit Test for Rafter', () => {
       done();
     });
   });
-
   it('initializes a rafter user (returns their token)', (done) => {
     const User = new User1();
     User.name = 'foo';
     User.email = 'foo@example.com';
     User.rafterApps = [{ r_app_id: '1234' }];
     let userid;
-    User.save((err) => {
+    User.save(() => {
       userid = User._id;
       expect(userid).to.not.be.null; // eslint-disable-line no-unused-expressions
       User1.findOne({ _id: userid }, (err, existingUser) => {
@@ -60,7 +55,7 @@ describe('The Unit Test for Rafter', () => {
     User.email = 'foo@example.com';
     User.rafterApps = [{ r_app_id: '123' }];
     let userid;
-    User.save((err) => {
+    User.save(() => {
       userid = User._id;
       expect(userid).to.not.be.null; // eslint-disable-line no-unused-expressions
       User1.findOne({ _id: userid }, (err, existingUser) => {
@@ -139,7 +134,7 @@ describe('The Unit Test for Rafter', () => {
     //   .reply(200, token);
     const req = { body: { id: '123', secret: 'howdy', uid: 'yo' } };
     const res = {
-      status(code) { expect(status).to.be(400); return { json() {} }; },
+      status(code) { expect(status).to.be(400); return { json() {} }; }, //eslint-disable-line
       json: (data) => {
         expect(data).to.equal('token');
       }
@@ -415,7 +410,7 @@ describe('The Unit Test for Rafter', () => {
       // return { json(item) {} };
       }
     };
-    const init = { mkdir() { return Promise.reject({ error: 'you fail' }); } };
+    const init = { mkdir() { return Promise.reject(new Error({ error: 'you fail' })); } };
     req.body.init = init;
     await rafter.runVolumeService(req, res);
   });
