@@ -38,10 +38,9 @@ class RUtils {
       // console.log(fullPath);
       return vs.mkdir(fullPath, { recursive: true }).then(data =>
       // console.log(data);
-        res.json(data)).catch((err) => {
-        console.log(err);
-        return res.json(err);
-      });
+        res.json(data)).catch(err =>
+        // console.log(err);
+        res.json(err));
     }
     return res.status(400).json({ error: 'invalid request' });
   }
