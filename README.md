@@ -3,7 +3,7 @@
 [![Test Coverage](https://codeclimate.com/github/VTbiocomplexity/backend/badges/coverage.svg)](https://codeclimate.com/github/VTbiocomplexity/backend/coverage)
 [![Issue Count](https://codeclimate.com/github/VTbiocomplexity/backend/badges/issue_count.svg)](https://codeclimate.com/github/VTbiocomplexity/backend/issues)
 [![Maintainability](https://api.codeclimate.com/v1/badges/8e22ce19c2952eae93e2/maintainability)](https://codeclimate.com/github/VTbiocomplexity/backend/maintainability)
-[![Known Vulnerabilities](https://snyk.io/test/github/VTbiocomplexity/backend/badge.svg)](https://snyk.io/test/github/VTbiocomplexity/backend)
+[![Known Vulnerabilities](https://snyk.io/test/github/vtbiocomplexity/backend/badge.svg?targetFile=package.json)](https://snyk.io/test/github/vtbiocomplexity/backend?targetFile=package.json)
 
 ## Installation
 1. Install node version manager (nvm), close and open terminal afterwards
