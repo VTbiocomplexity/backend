@@ -1,4 +1,4 @@
-class AuthUtils {
+class RUtils {
   static handleRafterAppId(existingUser, myId, mySecret, myAppName) {
     for (let i = 0; i < existingUser.rafterApps.length; i += 1) {
       if (existingUser.rafterApps[i].r_app_id === myId) {
@@ -24,16 +24,14 @@ class AuthUtils {
           vs.put(`/home/${req.body.userName}${req.body.rafterFile.path}/${req.body.rafterFile.name}`, req.body.rafterFile.content).then(data2 =>
             // console.log('put file content into a file');
             // console.log(data2);
-            res.json(data2)).catch((err2) => {
-            console.log(err2);
-            return res.json(err2);
-          });
+            res.json(data2)).catch(err2 =>
+          // console.log(err2);
+            res.json(err2));
         }
         return res.json(data);
-      }).catch((err) => {
-        console.log(err);
-        return res.json(err);
-      });
+      }).catch(err =>
+      // console.log(err);
+        res.json(err));
     } else if (req.body.command === 'create' && req.body.rafterFile.createType === 'folder') {
       // console.log('line79');
       const fullPath = `/home/${req.body.userName}${req.body.rafterFile.path}/${req.body.rafterFile.name}`;
@@ -48,4 +46,4 @@ class AuthUtils {
     return res.status(400).json({ error: 'invalid request' });
   }
 }
-module.exports = AuthUtils;
+module.exports = RUtils;
