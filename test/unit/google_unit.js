@@ -6,20 +6,18 @@ const nock = require('nock');
 
 describe('The Unit Test for Google Module', () => {
   let userid;
-
   before((done) => {
     // Set up an existing user
     mockgoose(mongoose).then(() => {
       const user = new User();
       user.name = 'foo';
       user.email = 'foo@example.com';
-      user.save((err) => {
+      user.save(() => {
         userid = user._id.toString();
         done();
       });
     });
   });
-
   it('should authenticate with existing user', (done) => {
     const sub = 'foo@example.com';
     const token = { access_token: 'access_token' };

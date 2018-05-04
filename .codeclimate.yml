@@ -3,7 +3,7 @@ version: "2"
 checks:
   method-lines:
     config:
-      threshold: 31
+      threshold: 32
   method-complexity:
     config:
       threshold: 10
@@ -19,7 +19,7 @@ engines:
     config:
       languages:
         javascript:
-          mass_threshold: 50
+          mass_threshold: 60
   eslint:
     enabled: true
   fixme:

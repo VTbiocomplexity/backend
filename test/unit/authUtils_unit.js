@@ -5,7 +5,6 @@ const config = require('../../config');
 const moment = require('moment');
 
 describe('The Unit Test for authUtils Module', () => {
-
   describe('createJWT', () => {
     it('should create token', () => {
       const user = { _id: 'someid' };
@@ -26,7 +25,7 @@ describe('The Unit Test for authUtils Module', () => {
   });
 
   describe('ensureAuthenticated', () => {
-    it('should 401 without authorization', async() => {
+    it('should 401 without authorization', async () => {
       const req = { headers: { authorization: false } };
       const res = {
         status(num) {
@@ -41,7 +40,7 @@ describe('The Unit Test for authUtils Module', () => {
       };
       await authUtils.ensureAuthenticated(req, res);
     });
-    it('should 401 when jwt.decode fails', async() => {
+    it('should 401 when jwt.decode fails', async () => {
       const req = { headers: { authorization: 'this will fail jwt.decode' } };
       const res = {
         status(num) {
@@ -84,12 +83,11 @@ describe('The Unit Test for authUtils Module', () => {
         exp: moment().add(14, 'days').unix()
       };
       const auth = jwt.encode(payload, config.hashString);
-      const req = { headers: { authorization: 'Bearer ' + auth } };
+      const req = { headers: { authorization: `Bearer ${auth}` } };
       const next = sinon.spy();
       authUtils.ensureAuthenticated(req, null, next);
       expect(req.user).to.equal(sub);
       expect(next.called).to.be.true; // eslint-disable-line no-unused-expressions
     });
   });
-
 });

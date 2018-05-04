@@ -2,9 +2,6 @@ const moment = require('moment');
 const jwt = require('jwt-simple');
 const config = require('../config');
 const nodemailer = require('nodemailer');
-// const uuid = require('uuid');
-// const crypto = require('crypto');
-// const fs = require('fs');
 
 class AuthUtils {
   static createJWT(user) {
@@ -32,7 +29,7 @@ class AuthUtils {
       return res.status(401).send({ message: err.message });
     }
     req.user = payload.sub;
-    next();
+    return next();
   }
 
   static sendEmail(bodyhtml, toemail, subjectline) {
@@ -48,17 +45,15 @@ class AuthUtils {
         pass: emailpassword
       }
     });
-
     const mailOptions = {
       from: 'vt.biocomplexity@gmail.com',
       to: toemail,
       subject: subjectline,
       html: bodyhtml
     };
-    transporter.sendMail(mailOptions, (error, info) => {
+    transporter.sendMail(mailOptions, () => {
     });
   }
-
   static generateCode(hi, low) {
     const min = Math.ceil(low);
     const max = Math.floor(hi);
@@ -78,74 +73,19 @@ class AuthUtils {
     if (hascode && !user.isPswdReset && !hasnewemail) {
       return res.status(401).json({ message: 'Validate your email address or click forgot password link to reset' });
     }
-    user.comparePassword(req.body.password, (err, isMatch) => {
+    return user.comparePassword(req.body.password, (err, isMatch) => {
       if (!isMatch) { return res.status(401).json({ message: 'Wrong password' }); }
-      this.saveSendToken(user, req, res);
+      return this.saveSendToken(user, req, res);
     });
   }
-
   static saveSendToken(user, req, res) {
     const userToken = { token: this.createJWT(user), email: user.email };
     user.isPswdReset = false;
     user.resetCode = '';
     user.changeemail = '';
-    user.save(err =>
-      // this.createSession(user, userToken, req, res);
-       res.status(200).json(userToken));
+    user.save(() =>
+      res.status(200).json(userToken));
   }
-
-  // static createSession(user, userToken, req, res) {
-  //   delete user.password;
-  //   delete user.resetCode;
-  //   console.log('am i here yet');
-  //   /* istanbul ignore next */
-  //   if (req.session === undefined) {
-  //     req.session = { authorizationToken: '', save() {} };
-  //   }
-  //   req.session.authorizationToken = this.generateBearerToken(user);
-  //   user.id += '@patricbrc.org';
-  //   req.session.userProfile = user;
-  //   console.log(req.session);
-  //   req.session.save();
-  //   return res.status(200).json(userToken);
-  // }
-
-  // static generateBearerToken(user) {
-  //   let config2;
-  //   /* eslint-disable */
-  //   let pathtoconf = __dirname;
-  //   pathtoconf = pathtoconf.replace('backend/auth', '');
-  //   console.log(pathtoconf);
-  //   /* istanbul ignore if */
-  //   if (fs.existsSync(pathtoconf + 'config.js')) {
-  //     config2 = require('../../config');
-  //     /* eslint-enable */
-  //   } else {
-  //     config2 = { get(item) { return '1234'; } };
-  //   }
-  //   const name = user.id;
-  //   console.log('trying to set the userid: ' + name);
-  //   const tokenid = uuid.v4().toString();
-  //   const exp = new Date(); exp.setFullYear(exp.getFullYear() + 1);
-  //   const expiration = Math.floor(exp.valueOf() / 1000);
-  //   const realm = config2.get('realm');
-  //   const payload = [
-  //     'un=' + name + '@' + realm, 'tokenid=' + tokenid,
-  //     'expiry=' + expiration, 'client_id=' + name + '@' + realm,
-  //     'token_type=Bearer', 'realm=' + realm
-  //   ];
-  //   payload.push('SigningSubject=' + config2.get('signingSubjectURL'));
-  //   console.log('what is the signing pem?');
-  //   console.log(SigningPEM);
-  //   const key = SigningPEM.toString('ascii');
-  //   const sign = crypto.createSign('RSA-SHA1');
-  //   sign.update(payload.join('|'));
-  //   const signature = sign.sign(key, 'hex');
-  //   const token = payload.join('|') + '|sig=' + signature;
-  //   console.log('New Bearer Token: ', token);
-  //   return token;
-  // }
-
   static checkEmailSyntax(req, res) {
     if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(req.body.changeemail)) {
       return console.log('email is valid');

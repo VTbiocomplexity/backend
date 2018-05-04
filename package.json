@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "backend",
   "main": "index.js",
   "engines": {
@@ -16,6 +16,7 @@
     "mocha": "cross-env NODE_ENV=test mocha -r ./test/bootstrap.js test/**/*.js",
     "nyc": "nyc nyc --reporter=lcov --reporter=text-lcov npm run mocha",
     "test": "eslint . && npm run nyc",
+    "test:lint": "eslint .",
     "test:debug": "cross-env NODE_ENV=test mocha debug -r ./test/bootstrap.js test/**/*.js",
     "eslint:fix": "./node_modules/eslint/bin/eslint.js --fix .",
     "postinstallsh": "./postinstall.sh",
@@ -27,8 +28,7 @@
     "url": "git+ssh://git@github.com/VTbiocomplexity/backend.git"
   },
   "author": "VTbiocomplexity <>",
-  "contributors": [
-    {
+  "contributors": [{
       "name": ""
     },
     {
@@ -57,11 +57,11 @@
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",
     "cross-env": "^5.0.1",
-    "eslint": "^3.2.2",
-    "eslint-config-airbnb": "^14.1.0",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^4.0.0",
-    "eslint-plugin-react": "^6.0.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.7.0",
     "istanbul": "^0.4.5",
     "mocha": "3.1.2",
     "mockgoose": "^6.0.8",

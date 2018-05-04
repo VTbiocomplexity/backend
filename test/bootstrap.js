@@ -6,6 +6,7 @@ global.sinon = require('sinon');
 // global.supertest = require('supertest');
 global.mongoose = require('mongoose');
 global.mockgoose = require('mockgoose');
+
 mongoose.Promise = bluebird;
 process.env.NODE_ENV = 'test';
 process.env.MONGO_DB_URI = 'localhost';

@@ -15,22 +15,20 @@ class Google {
       redirect_uri: req.body.redirectUri,
       grant_type: 'authorization_code'
     };
-
     // Step 1. Exchange authorization code for access token.
     request.post(accessTokenUrl, { json: true, form: params }, (err, response, token) => {
       // console.log("After initial access");
       // console.log(token);
       const accessToken = token.access_token;
       // console.log(accessToken);
-      const headers = { Authorization: 'Bearer ' + accessToken };
-
+      const headers = { Authorization: `Bearer ${accessToken}` };
       // Step 2. Retrieve profile information about the current user.
       const requestConfig = { url: peopleApiUrl, headers, json: true };
-      request.get(requestConfig, (err, response, profile) => {
-          // Step 3b. Create a new user account or return an existing one.
+      request.get(requestConfig, (err1, response1, profile) => {
+        // Step 3b. Create a new user account or return an existing one.
         const filter = { email: profile.email };
-        User.findOne(filter, (err, existingUser) => {
-            // console.log(existingUser);
+        User.findOne(filter, (error, existingUser) => {
+          // console.log(existingUser);
           if (existingUser) {
             console.log('user exist');
             return res.send({ token: authUtils.createJWT(existingUser) });
@@ -39,7 +37,7 @@ class Google {
           user.name = profile.name;
           user.email = profile.email;
           user.isOhafUser = req.body.isOhafUser;
-          user.save((err) => {
+          return user.save(() => {
             console.log('token sent');
             res.send({ token: authUtils.createJWT(user) });
           });
